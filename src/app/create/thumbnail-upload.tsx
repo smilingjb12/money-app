@@ -10,6 +10,7 @@ interface ThumbnailUploadProps {
   title: string;
   imageId: string;
   onUploadComplete: (uploaded: UploadFileResponse[]) => void;
+  showUpload: boolean;
   error?: string;
 }
 
@@ -17,6 +18,7 @@ export function ThumbnailUpload({
   title,
   imageId,
   onUploadComplete,
+  showUpload,
   error,
 }: ThumbnailUploadProps) {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
@@ -33,22 +35,33 @@ export function ThumbnailUpload({
     <div
       className={clsx(
         "flex flex-col gap-4 border border-1 rounded-sm p-2",
-        error ? "border-red-500" : "border-transparent"
+        error ? "border-red-400" : "border-transparent"
       )}
     >
-      <h2 className="text-2xl font-bold">{title}</h2>
+      <h2 className="text-2xl font-bold text-center">{title}</h2>
       {imageId && (
-        <Image width={200} height={200} alt={`Image ${title}`} src={imageUrl} />
+        <Image
+          className="w-full max-h-[400px] object-cover"
+          width={400}
+          height={400}
+          alt={`Image ${title}`}
+          src={imageUrl}
+        />
       )}
-      <UploadButton
-        uploadUrl={generateUploadUrl}
-        fileTypes={["image/*"]}
-        onUploadComplete={onUploadComplete}
-        onUploadError={(error: unknown) => {
-          console.error(error);
-        }}
-      />
-      {error && <div className="text-red-500">{error}</div>}
+      {showUpload && (
+        <div className="flex justify-center">
+          <UploadButton
+            uploadUrl={generateUploadUrl}
+            fileTypes={["image/*"]}
+            onUploadComplete={onUploadComplete}
+            onUploadError={(error: unknown) => {
+              console.error(error);
+            }}
+          />
+        </div>
+      )}
+
+      {error && <div className="text-red-400">{error}</div>}
     </div>
   );
 }
