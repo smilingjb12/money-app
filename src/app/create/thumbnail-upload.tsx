@@ -34,16 +34,15 @@ export function ThumbnailUpload({
   return (
     <div
       className={clsx(
-        "flex flex-col gap-4 border border-1 rounded-sm p-2",
+        "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden aspect-square relative h-[400px]",
         error ? "border-red-400" : "border-transparent"
       )}
     >
       <h2 className="text-2xl font-bold text-center">{title}</h2>
       {imageId && (
         <Image
-          className="w-full max-h-[400px] object-cover"
-          width={400}
-          height={400}
+          className="object-cover"
+          fill
           alt={`Image ${title}`}
           src={imageUrl}
         />

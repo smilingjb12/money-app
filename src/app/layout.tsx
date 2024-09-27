@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "./header";
 import { Providers } from "./providers";
+import { Footer } from "./footer";
 
 export const metadata: Metadata = {
   title: "Thumb Scorer",
@@ -21,10 +22,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.className} antialiased flex flex-col min-h-screen`}
+      >
         <Providers>
           <Header />
-          <div className="px-8 mt-8 h-full">{children}</div>
+          <main className="flex-grow px-8 mt-8">{children}</main>
+          <Footer />
           <Toaster />
         </Providers>
       </body>

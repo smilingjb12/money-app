@@ -1,12 +1,12 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
+import { paginationOptsValidator } from "convex/server";
 
-// Define the interface for the thumbnail with URL properties
-interface ThumbnailWithUrls extends Doc<"thumbnails"> {
-  aImageUrl: string;
-  bImageUrl: string;
-}
+type ThumbnailWithImageUrls = Doc<"thumbnails"> & {
+  aImageUrl: string | null;
+  bImageUrl: string | null;
+};
 
 export const createThumbnail = mutation({
   args: {
@@ -44,9 +44,32 @@ export const getThumbnail = query({
   },
 });
 
+export const getRecentThumbnails = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    const page = await ctx.db
+      .query("thumbnails")
+      .order("desc")
+      .paginate(args.paginationOpts);
+    const result = await Promise.all(
+      page.page.map(async (thumbnail) => ({
+        ...thumbnail,
+        aImageUrl: await ctx.storage.getUrl(
+          thumbnail.aImageId as Id<"_storage">
+        ),
+        bImageUrl: await ctx.storage.getUrl(
+          thumbnail.bImageId as Id<"_storage">
+        ),
+      }))
+    );
+    page.page = result;
+    return page;
+  },
+});
+
 export const getThumbnailsForUser = query({
   args: {},
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<Array<ThumbnailWithImageUrls> | undefined> => {
     const user = await ctx.auth.getUserIdentity();
     if (!user) {
       return [];

@@ -1,8 +1,8 @@
 export default {
-    providers: [
-        {
-            domain: 'https://bursting-alpaca-47.clerk.accounts.dev',
-            applicationID: 'convex'
-        }
-    ]
+  providers: [
+    {
+      domain: process.env.CLERK_JWT_ISSUER_DOMAIN,
+      applicationID: 'convex'
+    }
+  ]
 }

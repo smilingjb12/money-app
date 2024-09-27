@@ -1,12 +1,9 @@
 import { useQuery } from "convex/react";
+import { useParams } from "next/navigation";
+import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { VoteCount } from "./vote-count";
 import { VoteOption } from "./vote-option";
-import { api } from "../../../../convex/_generated/api";
-import { useParams } from "next/navigation";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { useSession } from "@clerk/nextjs";
 
 export const ImageView = ({
   imageId,
@@ -15,7 +12,6 @@ export const ImageView = ({
   imageId: string;
   title: string;
 }) => {
-  const { session } = useSession();
   const { thumbnailId } = useParams<{ thumbnailId: Id<"thumbnails"> }>();
   const thumbnail = useQuery(api.thumbnails.getThumbnail, {
     thumbnailId: thumbnailId,

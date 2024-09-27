@@ -23,19 +23,22 @@ export function Header() {
           onClick={() => router.push("/")}
         >
           <StackIcon className="size-7" />
-          <span className="font-semibold">Thumb Scorer</span>
+          <span className="font-semibold invisible sm:visible">
+            Thumb Scorer
+          </span>
         </div>
 
         {/* Desktop menu */}
         <div className="md:visible gap-x-12 items-center invisible">
           <SignedIn>
             <Button asChild variant="ghost" className="text-md">
-              <Link href="/dashboard">Dashboard</Link>
-            </Button>
-            <Button asChild variant="ghost" className="text-md">
               <Link href="/create">Create</Link>
             </Button>
           </SignedIn>
+
+          <Button asChild variant="ghost" className="text-md">
+            <Link href="/explore">Explore</Link>
+          </Button>
         </div>
 
         <div className="flex items-center gap-4">
@@ -58,7 +61,7 @@ export function Header() {
               <DropdownMenuContent align="end">
                 <SignedIn>
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href="/explore">Explore</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/create">Create</Link>
