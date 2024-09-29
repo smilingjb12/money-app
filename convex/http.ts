@@ -9,7 +9,7 @@ http.route({
   method: "POST",
   handler: httpAction(async (ctx, req) => {
     const signature = req.headers.get("stripe-signature") as string;
-    const result = await ctx.runAction(internal.stripe.fulfill, {
+    const result = await ctx.runAction(internal.stripe.webhook, {
       payload: await req.text(),
       signature,
     });
@@ -34,7 +34,7 @@ http.route({
     const headerPayload = req.headers;
 
     try {
-      const result = await ctx.runAction(internal.clerk.fulfill, {
+      const result = await ctx.runAction(internal.clerk.webhook, {
         payload: payloadString,
         headers: {
           "svix-id": headerPayload.get("svix-id"),

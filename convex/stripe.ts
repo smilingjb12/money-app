@@ -1,15 +1,15 @@
 "use node";
 
-import Stripe from "stripe";
-import { action, internalAction, mutation } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
+import Stripe from "stripe";
 import { internal } from "./_generated/api";
+import { action, internalAction } from "./_generated/server";
 
 type Metadata = {
   userId: string;
 };
 
-export const fulfill = internalAction({
+export const webhook = internalAction({
   args: { signature: v.string(), payload: v.string() },
   handler: async (ctx, args) => {
     const stripe = new Stripe(process.env.STRIPE_KEY!, {
