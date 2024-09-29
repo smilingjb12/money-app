@@ -1,5 +1,6 @@
 "use client";
 
+import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,14 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
+import { useSessionId } from "convex-helpers/react/sessions";
 import { useAction, useQuery } from "convex/react";
+import { GemIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "../../convex/_generated/api";
-import { ModeToggle } from "./mode-toggle";
-import { Gem, GemIcon } from "lucide-react";
-import { Hint } from "@/components/hint";
-import { useSessionId } from "convex-helpers/react/sessions";
+import { DarkModeToggle } from "./dark-mode-toggle";
 
 export function Header() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function Header() {
               </div>
             </Hint>
           </div>
-          <ModeToggle />
+          <DarkModeToggle />
           <SignedIn>
             <Button onClick={handleUpgradeClick}>Upgrade</Button>
             <UserButton />

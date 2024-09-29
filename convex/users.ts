@@ -27,7 +27,7 @@ export const getAvailableCredits = queryWithSession({
       const user = await ctx.runQuery(internal.users.getById, {
         userId: userIdentity.subject,
       });
-      credits = user!.credits;
+      credits = user ? user.credits : Number(process.env.DEFAULT_CREDITS);
     } else {
       const session = await ctx.runQuery(internal["sessions"].getBySessionId, {
         sessionId: ctx.sessionId,
