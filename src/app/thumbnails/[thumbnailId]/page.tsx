@@ -1,6 +1,8 @@
 "use client";
 
 import LoadingIndicator from "@/components/loading-indicator";
+import { Button } from "@/components/ui/button";
+import { SignInButton, useSession } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { shuffle } from "lodash";
 import { useParams } from "next/navigation";
@@ -8,17 +10,13 @@ import { useMemo } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ImageView } from "./image-view";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
-import { useSession } from "@clerk/nextjs";
 
 export default function ThumbnailPage() {
-  const { session } = useSession();
+  const { session, isSignedIn } = useSession();
   const params = useParams<{ thumbnailId: Id<"thumbnails"> }>();
   const thumbnail = useQuery(api.thumbnails.getThumbnail, {
     thumbnailId: params.thumbnailId,
   });
-  const hasVoted = thumbnail?.votedUserIds.includes(session!.user.id);
 
   const images = useMemo(() => {
     return shuffle([thumbnail?.aImageId, thumbnail?.bImageId]);
@@ -34,18 +32,11 @@ export default function ThumbnailPage() {
         <ImageView imageId={images[0]!} title="Image A" />
         <ImageView imageId={images[1]!} title="Image B" />
       </div>
-      {hasVoted && (
-        <div className="flex justify-center">
-          <Alert
-            className="mt-4 max-w-xs bg-orange-100 dark:text-slate-900"
-            variant="default"
-          >
-            <AlertCircle className="h-4 w-4 dark:text-slate-900" />
-            <AlertTitle>Voting not available</AlertTitle>
-            <AlertDescription>
-              You have already voted for this poll.
-            </AlertDescription>
-          </Alert>
+      {!isSignedIn && (
+        <div className="flex items-center justify-center mt-20">
+          <Button asChild>
+            <SignInButton>Sign in to Vote</SignInButton>
+          </Button>
         </div>
       )}
     </div>

@@ -11,4 +11,14 @@ export default defineSchema({
     bVotes: v.number(),
     votedUserIds: v.array(v.string()),
   }),
+  users: defineTable({
+    userId: v.string(),
+    email: v.string(),
+    stripeId: v.optional(v.string()),
+    credits: v.number(),
+  }).index("by_userId", ["userId"]),
+  sessions: defineTable({
+    sessionId: v.string(),
+    credits: v.number(),
+  }).index("by_sessionId", ["sessionId"]),
 });

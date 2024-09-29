@@ -1,18 +1,20 @@
 "use client";
 
+import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { UploadFileResponse } from "@xixixao/uploadstuff/react";
 import "@xixixao/uploadstuff/react/styles.css";
-import { useMutation } from "convex/react";
+import clsx from "clsx";
+import { useSessionId } from "convex-helpers/react/sessions";
+import { useMutation, useQuery } from "convex/react";
 import { isEmpty } from "lodash";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
-import clsx from "clsx";
-import { useRouter } from "next/navigation";
 
 interface FormErrors {
   title?: string;
@@ -21,13 +23,26 @@ interface FormErrors {
 }
 
 export default function CreatePage() {
+  const [sessionId] = useSessionId();
   const createThumbnail = useMutation(api.thumbnails.createThumbnail);
   const [imageAId, setImageAId] = useState<string>("");
   const [imageBId, setImageBId] = useState<string>("");
   const router = useRouter();
-
+  const creditsAvailable = useQuery(api.users.getAvailableCredits, {
+    sessionId: sessionId!,
+  });
   const [errors, setErrors] = useState<FormErrors>({});
   const { toast } = useToast();
+
+  const hasNoCreditsLeft = creditsAvailable === 0;
+
+  const SubmitButton = () => {
+    return (
+      <Button disabled={hasNoCreditsLeft} className="mt-8">
+        Create a Test (1 Credit)
+      </Button>
+    );
+  };
 
   const validateForm = (title: string, imageAId: string, imageBId: string) => {
     const formErrors: FormErrors = {};
@@ -62,6 +77,7 @@ export default function CreatePage() {
       aImageId: imageAId!,
       bImageId: imageBId!,
       title,
+      sessionId: sessionId!,
     });
 
     router.push(`/thumbnails/${thumbnailId}`);
@@ -97,7 +113,9 @@ export default function CreatePage() {
             imageId={imageAId}
             onUploadComplete={async (uploaded: UploadFileResponse[]) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              setImageAId((uploaded[0].response as any).storageId);
+              setImageAId(
+                (uploaded[0].response as { storageId: string }).storageId
+              );
             }}
             error={errors.imageA}
           />
@@ -113,7 +131,18 @@ export default function CreatePage() {
           />
         </div>
 
-        <Button className="mt-8">Create Thumbnail Test</Button>
+        {hasNoCreditsLeft ? (
+          <Hint
+            label="No more credits available. Purchase more for additional tests"
+            side="right"
+          >
+            <div className="w-fit">
+              <SubmitButton />
+            </div>
+          </Hint>
+        ) : (
+          <SubmitButton />
+        )}
       </form>
     </div>
   );

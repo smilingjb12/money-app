@@ -1,10 +1,5 @@
 "use client";
 
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { StackIcon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { ModeToggle } from "./mode-toggle";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,9 +7,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
+import { useAction, useQuery } from "convex/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { api } from "../../convex/_generated/api";
+import { ModeToggle } from "./mode-toggle";
+import { Gem, GemIcon } from "lucide-react";
+import { Hint } from "@/components/hint";
+import { useSessionId } from "convex-helpers/react/sessions";
 
 export function Header() {
   const router = useRouter();
+  const [sessionId] = useSessionId();
+  const creditsAvailable = useQuery(api.users.getAvailableCredits, {
+    sessionId: sessionId!,
+  });
+  const pay = useAction(api.stripe.pay);
+  const handleUpgradeClick = async () => {
+    const url = await pay();
+    router.push(url!);
+  };
   return (
     <header className="border-b">
       <div className="container h-16 px-4 mx-auto flex justify-between items-center">
@@ -30,20 +44,27 @@ export function Header() {
 
         {/* Desktop menu */}
         <div className="md:visible gap-x-12 items-center invisible">
-          <SignedIn>
-            <Button asChild variant="ghost" className="text-md">
-              <Link href="/create">Create</Link>
-            </Button>
-          </SignedIn>
+          <Button asChild variant="ghost" className="text-md">
+            <Link href="/create">Create</Link>
+          </Button>
 
           <Button asChild variant="ghost" className="text-md">
             <Link href="/explore">Explore</Link>
           </Button>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 min-w-[300px] justify-end">
+          <div className="flex gap-1">
+            <Hint label="Credits Available" side="left">
+              <div className="flex gap-1">
+                <GemIcon />
+                {creditsAvailable}
+              </div>
+            </Hint>
+          </div>
           <ModeToggle />
           <SignedIn>
+            <Button onClick={handleUpgradeClick}>Upgrade</Button>
             <UserButton />
           </SignedIn>
           <SignedOut>
@@ -59,14 +80,12 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <SignedIn>
-                  <DropdownMenuItem asChild>
-                    <Link href="/explore">Explore</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/create">Create</Link>
-                  </DropdownMenuItem>
-                </SignedIn>
+                <DropdownMenuItem asChild>
+                  <Link href="/explore">Explore</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/create">Create</Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

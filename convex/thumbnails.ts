@@ -1,33 +1,56 @@
-import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
 import { paginationOptsValidator } from "convex/server";
+import { ConvexError, v } from "convex/values";
+import { Doc, Id } from "./_generated/dataModel";
+import { mutation, query } from "./_generated/server";
+import { mutationWithSession } from "./lib/session";
+import { internal } from "./_generated/api";
 
 type ThumbnailWithImageUrls = Doc<"thumbnails"> & {
   aImageUrl: string | null;
   bImageUrl: string | null;
 };
 
-export const createThumbnail = mutation({
+export const createThumbnail = mutationWithSession({
   args: {
     title: v.string(),
     aImageId: v.string(),
     bImageId: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.auth.getUserIdentity();
-    if (!user) {
-      throw new Error("Unauthorized");
+    const userIdentity = await ctx.auth.getUserIdentity();
+    if (userIdentity) {
+      const user = await ctx.runQuery(internal.users.getById, {
+        userId: userIdentity.subject,
+      });
+      await ctx.db.patch(user!._id, {
+        credits: user!.credits - 1,
+      });
+    } else {
+      const session = await ctx.runQuery(internal.sessions.getBySessionId, {
+        sessionId: ctx.sessionId,
+      });
+
+      if (!session) {
+        await ctx.runMutation(internal.sessions.createSession, {
+          sessionId: ctx.sessionId,
+        });
+      } else {
+        ctx.db.patch(session._id, {
+          credits: session.credits - 1,
+        });
+      }
     }
-    return await ctx.db.insert("thumbnails", {
+    const creatorUserId = userIdentity ? userIdentity.subject : ctx.sessionId;
+    const thumbnailId = await ctx.db.insert("thumbnails", {
       title: args.title,
-      userId: user.subject,
+      userId: creatorUserId,
       aImageId: args.aImageId,
       bImageId: args.bImageId,
       aVotes: 0,
       bVotes: 0,
       votedUserIds: [],
     });
+    return thumbnailId;
   },
 });
 
@@ -36,10 +59,6 @@ export const getThumbnail = query({
     thumbnailId: v.id("thumbnails"),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.auth.getUserIdentity();
-    if (!user) {
-      return null;
-    }
     return await ctx.db.get(args.thumbnailId);
   },
 });
@@ -102,17 +121,17 @@ export const voteOnThumbnail = mutation({
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
     if (!user) {
-      throw new Error("Unauthorized");
+      throw new ConvexError("Unauthorized");
     }
     const thumbnail = await ctx.db.get(args.thumbnailId);
     if (!thumbnail) {
-      throw new Error("Thumbnail not found");
+      throw new ConvexError("Thumbnail not found");
     }
     if (thumbnail.votedUserIds.includes(user.subject)) {
-      throw new Error("User has already voted");
+      throw new ConvexError("User has already voted for this poll");
     }
     if (![thumbnail.aImageId, thumbnail.bImageId].includes(args.imageId)) {
-      throw new Error("Given imageId doesn't exist");
+      throw new ConvexError("Given imageId doesn't exist");
     }
 
     if (thumbnail.aImageId === args.imageId) {
