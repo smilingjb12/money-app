@@ -1,14 +1,26 @@
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
-import { mutation, query } from "./_generated/server";
+import { mutation, MutationCtx, query } from "./_generated/server";
 import { mutationWithSession } from "./lib/session";
 import { internal } from "./_generated/api";
+import { SessionId } from "convex-helpers/server/sessions";
 
 type ThumbnailWithImageUrls = Doc<"thumbnails"> & {
   aImageUrl: string | null;
   bImageUrl: string | null;
 };
+
+async function createAnonymousUser(
+  ctx: MutationCtx & { sessionId: SessionId }
+): Promise<Id<"users">> {
+  return await ctx.runMutation(internal.users.createUser, {
+    userId: ctx.sessionId,
+    email: "anonymous",
+    isAnonymous: true,
+    credits: Number(process.env.DEFAULT_CREDITS!),
+  });
+}
 
 export const createThumbnail = mutationWithSession({
   args: {
@@ -16,34 +28,29 @@ export const createThumbnail = mutationWithSession({
     aImageId: v.string(),
     bImageId: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<Id<"thumbnails">> => {
+    console.log("Creating thumbnail with args:", args);
     const userIdentity = await ctx.auth.getUserIdentity();
-    if (userIdentity) {
-      const user = await ctx.runQuery(internal.users.getById, {
-        userId: userIdentity.subject,
-      });
-      await ctx.db.patch(user!._id, {
-        credits: user!.credits - 1,
-      });
-    } else {
-      const session = await ctx.runQuery(internal.sessions.getBySessionId, {
-        sessionId: ctx.sessionId,
-      });
-
-      if (!session) {
-        await ctx.runMutation(internal.sessions.createSession, {
-          sessionId: ctx.sessionId,
-        });
-      } else {
-        ctx.db.patch(session._id, {
-          credits: session.credits - 1,
-        });
-      }
+    if (!userIdentity) {
+      console.log("No user identity found, creating anonymous user");
+      const anonUser = await createAnonymousUser(ctx);
+      console.log("anonUser:", anonUser);
     }
-    const creatorUserId = userIdentity ? userIdentity.subject : ctx.sessionId;
+    const userId = userIdentity?.subject ?? ctx.sessionId;
+    const user = await ctx.runQuery(internal.users.getByUserId, {
+      userId: userId,
+    });
+    console.log("Current user:", user);
+    if (user!.credits - 1 < 0) {
+      throw new ConvexError("Not enough credits to create new test");
+    }
+    await ctx.runMutation(internal.users.decrementCredits, {
+      userId: user!.userId,
+    });
+
     const thumbnailId = await ctx.db.insert("thumbnails", {
       title: args.title,
-      userId: creatorUserId,
+      userId: user!.userId,
       aImageId: args.aImageId,
       bImageId: args.bImageId,
       aVotes: 0,

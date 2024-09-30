@@ -47,7 +47,9 @@ http.route({
         case "user.created":
           await ctx.runMutation(internal.users.createUser, {
             userId: result.data.id,
+            isAnonymous: false,
             email: result.data.email_addresses[0].email_address,
+            credits: Number(process.env.DEFAULT_CREDITS),
           });
       }
 

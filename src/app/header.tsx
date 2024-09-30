@@ -58,7 +58,7 @@ export function Header() {
             <Hint label="Credits Available" side="left">
               <div className="flex gap-1">
                 <GemIcon />
-                {creditsAvailable}
+                {creditsAvailable ?? "-"}
               </div>
             </Hint>
           </div>

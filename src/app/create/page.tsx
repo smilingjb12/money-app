@@ -38,7 +38,7 @@ export default function CreatePage() {
 
   const SubmitButton = () => {
     return (
-      <Button disabled={hasNoCreditsLeft} className="mt-8">
+      <Button type="submit" disabled={hasNoCreditsLeft} className="mt-8">
         Create a Test (1 Credit)
       </Button>
     );
@@ -109,7 +109,7 @@ export default function CreatePage() {
         <div className="grid grid-cols-2 gap-8 mb-8">
           <ThumbnailUpload
             title="Test image A"
-            showUpload={true}
+            showUpload={!hasNoCreditsLeft}
             imageId={imageAId}
             onUploadComplete={async (uploaded: UploadFileResponse[]) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,7 +121,7 @@ export default function CreatePage() {
           />
           <ThumbnailUpload
             title="Test image B"
-            showUpload={true}
+            showUpload={!hasNoCreditsLeft}
             imageId={imageBId}
             onUploadComplete={async (uploaded: UploadFileResponse[]) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

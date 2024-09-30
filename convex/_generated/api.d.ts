@@ -19,7 +19,6 @@ import type * as clerk from "../clerk.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as lib_session from "../lib/session.js";
-import type * as sessions from "../sessions.js";
 import type * as stripe from "../stripe.js";
 import type * as thumbnails from "../thumbnails.js";
 import type * as users from "../users.js";
@@ -37,7 +36,6 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   http: typeof http;
   "lib/session": typeof lib_session;
-  sessions: typeof sessions;
   stripe: typeof stripe;
   thumbnails: typeof thumbnails;
   users: typeof users;

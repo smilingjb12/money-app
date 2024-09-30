@@ -16,6 +16,10 @@ export const getFileUrl = query({
   },
 });
 
+// TODO: use sha256 to reassign thumbnail file ids
+// export const deduplicateFiles = internalMutation({
+// });
+
 export const removeTemporaryFiles = internalMutation({
   args: {},
   handler: async (ctx) => {
@@ -28,7 +32,6 @@ export const removeTemporaryFiles = internalMutation({
     );
 
     const allFiles = await ctx.db.system.query("_storage").collect();
-
     const unusedFiles = allFiles.filter((file) => !usedImageIds.has(file._id));
 
     for (const file of unusedFiles) {

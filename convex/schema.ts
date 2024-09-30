@@ -16,9 +16,6 @@ export default defineSchema({
     email: v.string(),
     stripeId: v.optional(v.string()),
     credits: v.number(),
+    isAnonymous: v.boolean(),
   }).index("by_userId", ["userId"]),
-  sessions: defineTable({
-    sessionId: v.string(),
-    credits: v.number(),
-  }).index("by_sessionId", ["sessionId"]),
 });

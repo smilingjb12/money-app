@@ -7,43 +7,65 @@ export const createUser = internalMutation({
   args: {
     userId: v.string(),
     email: v.string(),
+    isAnonymous: v.boolean(),
+    credits: v.number(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("users", {
+    return await ctx.db.insert("users", {
       userId: args.userId,
       email: args.email,
-      credits: Number(process.env.DEFAULT_CREDITS!),
+      credits: args.credits,
+      isAnonymous: args.isAnonymous,
+    });
+  },
+});
+
+export const decrementCredits = internalMutation({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(internal.users.getByUserId, {
+      userId: args.userId,
+    });
+    await ctx.db.patch(user!._id, {
+      credits: user!.credits - 1,
     });
   },
 });
 
 export const getAvailableCredits = queryWithSession({
   args: {},
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<number> => {
     const userIdentity = await ctx.auth.getUserIdentity();
-    console.log("userIdentity", userIdentity);
-    let credits: number = 0;
-    if (userIdentity) {
-      const user = await ctx.runQuery(internal.users.getById, {
-        userId: userIdentity.subject,
-      });
-      credits = user ? user.credits : Number(process.env.DEFAULT_CREDITS);
-    } else {
-      const session = await ctx.runQuery(internal["sessions"].getBySessionId, {
-        sessionId: ctx.sessionId,
-      });
-      console.log("session", session);
-      credits = session
-        ? session.credits!
-        : Number(process.env.DEFAULT_CREDITS);
-    }
-
-    console.log("Returning credits:", credits);
-    return credits;
+    const userId = userIdentity?.subject ?? ctx.sessionId;
+    const user = await ctx.runQuery(internal.users.getByUserId, {
+      userId: userId,
+    });
+    return user ? user.credits : Number(process.env.DEFAULT_CREDITS);
   },
 });
 
-export const getById = internalQuery({
+export const getByUserIds = internalQuery({
+  args: {
+    loggedInUserId: v.optional(v.string()),
+    anonymousUserId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) =>
+        q.or(
+          q.eq("userId", args.loggedInUserId),
+          q.eq("userId", args.anonymousUserId)
+        )
+      )
+      .first();
+    return user;
+  },
+});
+
+export const getByUserId = internalQuery({
   args: {
     userId: v.string(),
   },
