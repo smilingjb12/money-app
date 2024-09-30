@@ -53,7 +53,7 @@ export function Header() {
           </Button>
         </div>
 
-        <div className="flex items-center gap-4 min-w-[300px] justify-end">
+        <div className="flex items-center gap-4 md:min-w-[300px] justify-end invisible md:visible">
           <div className="flex gap-1">
             <Hint label="Credits Available" side="left">
               <div className="flex gap-1">
@@ -72,7 +72,7 @@ export function Header() {
           </SignedOut>
 
           {/* Mobile menu */}
-          <div className="md:hidden">
+          <div className="visible sm:invisible">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
