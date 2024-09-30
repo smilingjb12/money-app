@@ -98,7 +98,6 @@ export const addCredits = internalMutation({
     }
 
     await ctx.db.patch(user._id, {
-      stripeId: args.stripeCheckoutSessionId,
       credits: user.credits + args.creditsToAdd,
       stripeCompletedCheckoutSessionIds: [
         ...user.stripeCompletedCheckoutSessionIds,

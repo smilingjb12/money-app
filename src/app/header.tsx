@@ -16,7 +16,6 @@ import { GemIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "../../convex/_generated/api";
-import { DarkModeToggle } from "./dark-mode-toggle";
 
 export function Header() {
   const router = useRouter();
@@ -62,14 +61,15 @@ export function Header() {
               </div>
             </Hint>
           </div>
-          <DarkModeToggle />
-          <SignedIn>
-            <Button onClick={handleUpgradeClick}>Upgrade</Button>
-            <UserButton />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
+          <div className="invisible md:visible flex items-center justify-center gap-x-4">
+            <SignedIn>
+              <Button onClick={handleUpgradeClick}>Upgrade</Button>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton />
+            </SignedOut>
+          </div>
 
           {/* Mobile menu */}
           <div className="visible sm:invisible">
