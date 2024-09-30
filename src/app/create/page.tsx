@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
+import { ConvexError } from "convex/values";
 
 interface FormErrors {
   title?: string;
@@ -60,14 +61,27 @@ export default function CreatePage() {
       return;
     }
 
-    const thumbnailId = await createPoll({
+    createPoll({
       aImageId: imageAId!,
       bImageId: imageBId!,
       title,
       sessionId: sessionId!,
-    });
-
-    router.push(`/thumbnail-polls/${thumbnailId}`);
+    })
+      .then((pollId) => {
+        toast({
+          title: "Test created!",
+        });
+        router.push(`/thumbnail-polls/${pollId}`);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof ConvexError) {
+          toast({
+            title: "Error",
+            description: error.data,
+            variant: "destructive",
+          });
+        }
+      });
   };
 
   const SubmitButton = () => {
@@ -78,6 +92,7 @@ export default function CreatePage() {
     );
   };
 
+  // todo: refactor to use react-hook-form
   return (
     <div className="mx-auto max-w-screen-lg">
       <h1 className="text-4xl font-bold mb-6">Create a Thumbnail Test</h1>

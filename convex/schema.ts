@@ -10,6 +10,15 @@ export default defineSchema({
     aVotes: v.number(),
     bVotes: v.number(),
     votedUserIds: v.array(v.string()),
+    comments: v.array(
+      v.object({
+        userId: v.string(),
+        text: v.string(),
+        createdAt: v.number(),
+        userName: v.string(),
+        profileUrl: v.string(),
+      })
+    ),
   }),
   users: defineTable({
     userId: v.string(),

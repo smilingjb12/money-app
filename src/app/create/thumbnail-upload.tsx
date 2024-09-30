@@ -34,7 +34,7 @@ export function ThumbnailUpload({
   return (
     <div
       className={clsx(
-        "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden aspect-square relative h-[400px]",
+        "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden aspect-square relative h-[350px]",
         error ? "border-red-400" : "border-transparent"
       )}
     >

@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ImageView } from "./image-view";
+import { Comments } from "./comments";
 
 export default function ThumbnailPage() {
   const { isSignedIn } = useSession();
@@ -32,8 +33,9 @@ export default function ThumbnailPage() {
         <ImageView imageId={images[0]!} title="Image A" />
         <ImageView imageId={images[1]!} title="Image B" />
       </div>
+      <Comments poll={poll} />
       {!isSignedIn && (
-        <div className="flex items-center justify-center mt-20">
+        <div className="flex items-center justify-center mb-5">
           <Button asChild>
             <SignInButton>Sign in to Vote</SignInButton>
           </Button>

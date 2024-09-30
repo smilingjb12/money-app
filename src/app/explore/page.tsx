@@ -47,7 +47,7 @@ export default function DashboardPage() {
                 <div className="flex flex-row justify-between w-full items-center">
                   <div>
                     <h3 className="text-white text-xl font-semibold mb-2 line-clamp-1">
-                      <p>{i.title}</p>
+                      <p className="text-lg">{i.title}</p>
                     </h3>
                   </div>
                   <div className="flex items-center">
@@ -57,7 +57,7 @@ export default function DashboardPage() {
                 </div>
                 <Button
                   variant="default"
-                  className="w-3/4 mx-auto mt-3 bg-background text-foreground dark:bg-foreground dark:text-background"
+                  className="w-3/4 mx-auto mt-3 bg-background text-foreground dark:bg-foreground dark:text-background hover:bg-background"
                 >
                   {alreadyVotedFor(i) ? "View Results" : "Vote"}
                 </Button>

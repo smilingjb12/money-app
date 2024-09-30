@@ -17,6 +17,30 @@ async function createAnonymousUser(
   });
 }
 
+export const addComment = mutation({
+  args: { pollId: v.id("thumbnailPolls"), text: v.string() },
+  handler: async (ctx, args) => {
+    const userIdentity = await ctx.auth.getUserIdentity();
+    if (!userIdentity) {
+      throw new ConvexError("Unauthorized");
+    }
+    const poll = await ctx.db.get(args.pollId);
+    if (!poll) {
+      throw new ConvexError("Poll not found");
+    }
+    const newComment = {
+      createdAt: Date.now(),
+      text: args.text,
+      userId: userIdentity.subject,
+      userName: userIdentity.name ?? "Anonymous",
+      profileUrl: userIdentity.pictureUrl ?? "",
+    };
+    await ctx.db.patch(poll._id, {
+      comments: [newComment, ...poll.comments],
+    });
+  },
+});
+
 export const createThumbnailPoll = mutationWithSession({
   args: {
     title: v.string(),
@@ -51,6 +75,7 @@ export const createThumbnailPoll = mutationWithSession({
       aVotes: 0,
       bVotes: 0,
       votedUserIds: [],
+      comments: [],
     });
     return pollId;
   },
