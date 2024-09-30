@@ -13,13 +13,13 @@ import { Doc } from "../../../convex/_generated/dataModel";
 export default function DashboardPage() {
   const { session } = useSession();
   const { results, isLoading } = usePaginatedQuery(
-    api.thumbnails.getRecentThumbnails,
+    api.thumbnailPolls.getRecentThumbnailPolls,
     {},
     { initialNumItems: 20 }
   );
 
-  const alreadyVotedFor = (thumbnail: Doc<"thumbnails">) => {
-    return session != null && thumbnail.votedUserIds.includes(session!.user.id);
+  const alreadyVotedFor = (poll: Doc<"thumbnailPolls">) => {
+    return session != null && poll.votedUserIds.includes(session!.user.id);
   };
 
   if (isLoading) {
@@ -31,7 +31,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {results?.map((i) => (
           <Link
-            href={`/thumbnails/${i._id}`}
+            href={`/thumbnail-polls/${i._id}`}
             key={i._id}
             className="aspect-square relative overflow-hidden hover:opacity-90 transition-all"
           >

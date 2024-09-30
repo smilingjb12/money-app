@@ -14,22 +14,23 @@ export const VoteOption = ({
 }: {
   imageId: string;
   title: string;
-  thumbnailId: Id<"thumbnails">;
 }) => {
   const { session } = useSession();
-  const { thumbnailId } = useParams<{ thumbnailId: Id<"thumbnails"> }>();
-  const voteOnThumbnail = useMutation(api.thumbnails.voteOnThumbnail);
+  const { thumbnailPollId } = useParams<{
+    thumbnailPollId: Id<"thumbnailPolls">;
+  }>();
+  const voteOnThumbnail = useMutation(api.thumbnailPolls.voteOnThumbnailPoll);
   const { toast } = useToast();
-  const thumbnail = useQuery(api.thumbnails.getThumbnail, {
-    thumbnailId: thumbnailId,
+  const poll = useQuery(api.thumbnailPolls.getThumbnailPoll, {
+    thumbnailPollId,
   });
-  const hasVoted = session && thumbnail?.votedUserIds.includes(session.user.id);
+  const hasVoted = session && poll?.votedUserIds.includes(session.user.id);
 
   const vote = async () => {
     try {
       await voteOnThumbnail({
         imageId,
-        thumbnailId,
+        thumbnailPollId,
       });
 
       toast({

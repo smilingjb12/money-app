@@ -7,8 +7,13 @@ import { internal } from "./_generated/api";
 import { action, internalAction } from "./_generated/server";
 import { DataModel } from "./_generated/dataModel";
 
+const PRICE_ID_CREDITS: Record<string, number> = {
+  [process.env.PRICE_ID!]: 5,
+};
+
 type Metadata = {
   userId: string;
+  priceId: string;
 };
 
 async function processCheckoutSessionCompletedEvent(
@@ -19,10 +24,12 @@ async function processCheckoutSessionCompletedEvent(
     metadata: Metadata;
   };
   const userId = completedEvent.metadata.userId;
-
-  await ctx.runMutation(internal.users.setStripeId, {
+  console.log("Completed checkout session event:", completedEvent);
+  const priceId = completedEvent.metadata.priceId;
+  await ctx.runMutation(internal.users.addCredits, {
     userId,
-    stripeId: completedEvent.id, // TODO: rename
+    stripeCheckoutSessionId: completedEvent.id,
+    creditsToAdd: PRICE_ID_CREDITS[priceId],
   });
 }
 
@@ -34,6 +41,7 @@ async function createCheckoutSession(
   const stripe = new Stripe(process.env.STRIPE_KEY!, {
     apiVersion: "2024-06-20",
   });
+  // todo: Add branding
   return await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -47,6 +55,7 @@ async function createCheckoutSession(
     cancel_url: `${domain}`,
     metadata: {
       userId: user.subject,
+      priceId: process.env.PRICE_ID!,
     },
   });
 }
@@ -84,7 +93,7 @@ export const pay = action({
     const user = await ctx.auth.getUserIdentity();
     console.log("Caller user:", user);
     if (!user) {
-      throw new ConvexError("You must  be logged in to pay");
+      throw new ConvexError("You must be logged in to pay");
     }
     if (!user.emailVerified) {
       throw new ConvexError("You must have a verified email to pay");

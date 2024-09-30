@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <body
-        className={`${inter.className} antialiased flex flex-col min-h-screen`}
+        className={`${inter.className} antialiased flex flex-col min-h-screen mt-[60px]`}
       >
         <Providers>
           <Header />

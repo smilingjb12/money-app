@@ -2,7 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  thumbnails: defineTable({
+  thumbnailPolls: defineTable({
     title: v.string(),
     userId: v.string(),
     aImageId: v.string(),
@@ -17,5 +17,6 @@ export default defineSchema({
     stripeId: v.optional(v.string()),
     credits: v.number(),
     isAnonymous: v.boolean(),
+    stripeCompletedCheckoutSessionIds: v.array(v.string()),
   }).index("by_userId", ["userId"]),
 });

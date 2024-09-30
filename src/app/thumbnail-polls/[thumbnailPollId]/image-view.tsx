@@ -12,19 +12,19 @@ export const ImageView = ({
   imageId: string;
   title: string;
 }) => {
-  const { thumbnailId } = useParams<{ thumbnailId: Id<"thumbnails"> }>();
-  const thumbnail = useQuery(api.thumbnails.getThumbnail, {
-    thumbnailId: thumbnailId,
+  const { thumbnailPollId } = useParams<{
+    thumbnailPollId: Id<"thumbnailPolls">;
+  }>();
+  const poll = useQuery(api.thumbnailPolls.getThumbnailPoll, {
+    thumbnailPollId,
   });
 
   const getVotesForImage = (imageId: string): number => {
-    return thumbnail?.aImageId === imageId
-      ? thumbnail!.aVotes
-      : thumbnail!.bVotes;
+    return poll?.aImageId === imageId ? poll!.aVotes : poll!.bVotes;
   };
 
   const getVotePercentage = (imageId: string) => {
-    const totalVotes = thumbnail!.aVotes + thumbnail!.bVotes;
+    const totalVotes = poll!.aVotes + poll!.bVotes;
     return (
       100.0 * (getVotesForImage(imageId) / (totalVotes === 0 ? 1 : totalVotes))
     );
@@ -32,7 +32,7 @@ export const ImageView = ({
 
   return (
     <div>
-      <VoteOption imageId={imageId} title={title} thumbnailId={thumbnailId} />
+      <VoteOption imageId={imageId} title={title} />
       <div className="mt-3"></div>
       <VoteCount
         votes={getVotesForImage(imageId)}

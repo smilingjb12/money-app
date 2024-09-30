@@ -16,6 +16,7 @@ export const createUser = internalMutation({
       email: args.email,
       credits: args.credits,
       isAnonymous: args.isAnonymous,
+      stripeCompletedCheckoutSessionIds: [],
     });
   },
 });
@@ -79,12 +80,14 @@ export const getByUserId = internalQuery({
   },
 });
 
-export const setStripeId = internalMutation({
+export const addCredits = internalMutation({
   args: {
     userId: v.string(),
-    stripeId: v.string(),
+    stripeCheckoutSessionId: v.string(),
+    creditsToAdd: v.number(),
   },
   handler: async (ctx, args) => {
+    console.log("Adding", args.creditsToAdd, "credits to user:", args.userId);
     const user = await ctx.db
       .query("users")
       .withIndex("by_userId", (q) => q.eq("userId", args.userId))
@@ -95,7 +98,12 @@ export const setStripeId = internalMutation({
     }
 
     await ctx.db.patch(user._id, {
-      stripeId: args.stripeId,
+      stripeId: args.stripeCheckoutSessionId,
+      credits: user.credits + args.creditsToAdd,
+      stripeCompletedCheckoutSessionIds: [
+        ...user.stripeCompletedCheckoutSessionIds,
+        args.stripeCheckoutSessionId,
+      ],
     });
   },
 });

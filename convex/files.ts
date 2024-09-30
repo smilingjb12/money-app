@@ -23,12 +23,9 @@ export const getFileUrl = query({
 export const removeTemporaryFiles = internalMutation({
   args: {},
   handler: async (ctx) => {
-    const thumbnails = await ctx.db.query("thumbnails").collect();
+    const polls = await ctx.db.query("thumbnailPolls").collect();
     const usedImageIds = new Set(
-      thumbnails.flatMap((thumbnail) => [
-        thumbnail.aImageId,
-        thumbnail.bImageId,
-      ])
+      polls.flatMap((poll) => [poll.aImageId, poll.bImageId])
     );
 
     const allFiles = await ctx.db.system.query("_storage").collect();

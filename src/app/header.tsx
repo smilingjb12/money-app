@@ -30,7 +30,7 @@ export function Header() {
     router.push(url!);
   };
   return (
-    <header className="border-b">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
       <div className="container h-16 px-4 mx-auto flex justify-between items-center">
         <div
           className="flex items-center gap-2 cursor-pointer"

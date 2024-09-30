@@ -20,7 +20,7 @@ import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as lib_session from "../lib/session.js";
 import type * as stripe from "../stripe.js";
-import type * as thumbnails from "../thumbnails.js";
+import type * as thumbnailPolls from "../thumbnailPolls.js";
 import type * as users from "../users.js";
 
 /**
@@ -37,7 +37,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   "lib/session": typeof lib_session;
   stripe: typeof stripe;
-  thumbnails: typeof thumbnails;
+  thumbnailPolls: typeof thumbnailPolls;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

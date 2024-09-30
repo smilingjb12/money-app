@@ -12,17 +12,17 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { ImageView } from "./image-view";
 
 export default function ThumbnailPage() {
-  const { session, isSignedIn } = useSession();
-  const params = useParams<{ thumbnailId: Id<"thumbnails"> }>();
-  const thumbnail = useQuery(api.thumbnails.getThumbnail, {
-    thumbnailId: params.thumbnailId,
+  const { isSignedIn } = useSession();
+  const params = useParams<{ thumbnailPollId: Id<"thumbnailPolls"> }>();
+  const poll = useQuery(api.thumbnailPolls.getThumbnailPoll, {
+    thumbnailPollId: params.thumbnailPollId,
   });
 
   const images = useMemo(() => {
-    return shuffle([thumbnail?.aImageId, thumbnail?.bImageId]);
-  }, [thumbnail?.aImageId, thumbnail?.bImageId]);
+    return shuffle([poll?.aImageId, poll?.bImageId]);
+  }, [poll?.aImageId, poll?.bImageId]);
 
-  if (thumbnail == null) {
+  if (poll == null) {
     return <LoadingIndicator className="mt-40" />;
   }
 

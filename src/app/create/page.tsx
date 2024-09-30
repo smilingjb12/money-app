@@ -24,7 +24,7 @@ interface FormErrors {
 
 export default function CreatePage() {
   const [sessionId] = useSessionId();
-  const createThumbnail = useMutation(api.thumbnails.createThumbnail);
+  const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
   const [imageBId, setImageBId] = useState<string>("");
   const router = useRouter();
@@ -35,14 +35,6 @@ export default function CreatePage() {
   const { toast } = useToast();
 
   const hasNoCreditsLeft = creditsAvailable === 0;
-
-  const SubmitButton = () => {
-    return (
-      <Button type="submit" disabled={hasNoCreditsLeft} className="mt-8">
-        Create a Test (1 Credit)
-      </Button>
-    );
-  };
 
   const validateForm = (title: string, imageAId: string, imageBId: string) => {
     const formErrors: FormErrors = {};
@@ -65,22 +57,25 @@ export default function CreatePage() {
     const formErrors = validateForm(title, imageAId, imageBId);
     setErrors(formErrors);
     if (!isEmpty(formErrors)) {
-      toast({
-        title: "Form Errors",
-        description: "Please fill all fields on the page",
-        variant: "destructive",
-      });
       return;
     }
 
-    const thumbnailId = await createThumbnail({
+    const thumbnailId = await createPoll({
       aImageId: imageAId!,
       bImageId: imageBId!,
       title,
       sessionId: sessionId!,
     });
 
-    router.push(`/thumbnails/${thumbnailId}`);
+    router.push(`/thumbnail-polls/${thumbnailId}`);
+  };
+
+  const SubmitButton = () => {
+    return (
+      <Button type="submit" disabled={hasNoCreditsLeft} className="mt-6 mb-4">
+        Create a Test (1 Credit)
+      </Button>
+    );
   };
 
   return (
