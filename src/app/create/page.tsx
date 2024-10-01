@@ -23,6 +23,7 @@ interface FormErrors {
   imageB?: string;
 }
 
+// todo: set upload limit client/server side
 export default function CreatePage() {
   const [sessionId] = useSessionId();
   const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);

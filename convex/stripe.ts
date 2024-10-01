@@ -41,6 +41,7 @@ async function createCheckoutSession(
   const stripe = new Stripe(process.env.STRIPE_KEY!, {
     apiVersion: "2024-06-20",
   });
+  // todo: add 3 pricing tiers
   // todo: Add branding
   return await stripe.checkout.sessions.create({
     line_items: [
