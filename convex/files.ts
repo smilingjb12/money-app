@@ -7,7 +7,6 @@ import { mutationWithSession } from "./lib/session";
 export const generateUploadUrl = mutationWithSession({
   args: SessionIdArg,
   handler: async (ctx) => {
-    // todo: limit uploads for anonymous users
     // const currentUser = await ctx.runQuery(api.users.getCurrentUser, {
     //   sessionId: ctx.sessionId,
     // });

@@ -5,7 +5,6 @@ import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 import { v } from "convex/values";
 import { Webhook } from "svix";
 
-// todo: branding
 export const webhook = internalAction({
   args: {
     headers: v.any(),

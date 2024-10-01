@@ -26,7 +26,6 @@ interface FormErrors {
   imageB?: string;
 }
 
-// todo: set upload limit client/server side
 export default function CreatePage() {
   const createPoll = useSessionMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
@@ -92,7 +91,6 @@ export default function CreatePage() {
     );
   };
 
-  // todo: refactor to use react-hook-form
   return (
     <div className="mx-auto max-w-screen-lg">
       <h1 className="text-4xl font-bold mb-6">Create a Thumbnail Test</h1>
