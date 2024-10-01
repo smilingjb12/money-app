@@ -7,7 +7,6 @@
 https://thumbnail-scorer-production.up.railway.app
 
 todo:
-- Add constant margin above footer.
 - Configure Clerk branding.
 - Limit file uploads for anonymous users.
 - Add rate limiting (make it aggressive for anonymous users).
