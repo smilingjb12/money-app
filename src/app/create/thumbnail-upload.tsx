@@ -35,18 +35,20 @@ export function ThumbnailUpload({
   return (
     <div
       className={clsx(
-        "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden relative h-[350px]",
+        "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden relative h-[350px] w-[350px]",
         error ? "border-red-400" : "border-transparent"
       )}
     >
       <h2 className="text-2xl font-bold">{title}</h2>
       {imageId && (
-        <Image
-          className="object-cover"
-          fill
-          alt={`Image ${title}`}
-          src={imageUrl}
-        />
+        <div className="relative w-full h-full">
+          <Image
+            className="object-cover"
+            fill
+            alt={`Image ${title}`}
+            src={imageUrl}
+          />
+        </div>
       )}
       {showUpload && (
         <div className="flex justify-center">

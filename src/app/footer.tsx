@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="flex gap-2 flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+    <footer className="flex mt-20 gap-2 flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
       <p className="text-xs text-gray-500 dark:text-gray-400">
         © 2024 Acme Inc. All rights reserved.
       </p>
