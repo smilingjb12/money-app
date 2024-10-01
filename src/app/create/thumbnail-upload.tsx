@@ -1,9 +1,10 @@
 import { UploadFileResponse } from "@xixixao/uploadstuff";
 import { UploadButton } from "@xixixao/uploadstuff/react";
 import clsx from "clsx";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { useSessionMutation } from "convex-helpers/react/sessions";
+import { useQuery } from "convex/react";
 import Image from "next/image";
+import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 
 interface ThumbnailUploadProps {
@@ -21,7 +22,7 @@ export function ThumbnailUpload({
   showUpload,
   error,
 }: ThumbnailUploadProps) {
-  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
+  const generateUploadUrl = useSessionMutation(api.files.generateUploadUrl);
   const imageUrl = useQuery(
     api.files.getFileUrl,
     imageId

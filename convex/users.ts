@@ -1,9 +1,32 @@
 import { ConvexError, v } from "convex/values";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery } from "./_generated/server";
-import { queryWithSession } from "./lib/session";
+import { getDefaultFreeCredits } from "./lib/credits";
+import { mutationWithSession, queryWithSession } from "./lib/session";
 
-export const createUser = internalMutation({
+export const createAnonymousUserOnStartup = mutationWithSession({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await ctx.runQuery(api.users.getCurrentUser, {
+      sessionId: ctx.sessionId,
+    });
+    if (currentUser) {
+      console.log("user already exists", currentUser);
+      return;
+    }
+    console.log("Creating anonymous user:", ctx.sessionId);
+    return await ctx.db.insert("users", {
+      userId: ctx.sessionId,
+      email: "Anonymous",
+      credits: getDefaultFreeCredits(),
+      isAnonymous: true,
+      stripeCompletedCheckoutSessionIds: [],
+    });
+  },
+});
+
+export const createSignedInUser = internalMutation({
   args: {
     userId: v.string(),
     email: v.string(),
@@ -43,26 +66,22 @@ export const getAvailableCredits = queryWithSession({
     const user = await ctx.runQuery(internal.users.getByUserId, {
       userId: userId,
     });
-    return user ? user.credits : Number(process.env.DEFAULT_CREDITS);
+    return user ? user.credits : getDefaultFreeCredits();
   },
 });
 
-export const getByUserIds = internalQuery({
-  args: {
-    loggedInUserId: v.optional(v.string()),
-    anonymousUserId: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .filter((q) =>
-        q.or(
-          q.eq("userId", args.loggedInUserId),
-          q.eq("userId", args.anonymousUserId)
-        )
-      )
-      .first();
-    return user;
+export const getCurrentUser = queryWithSession({
+  args: {},
+  handler: async (ctx): Promise<Doc<"users"> | null> => {
+    const userIdentity = await ctx.auth.getUserIdentity();
+    if (!userIdentity) {
+      return await ctx.runQuery(internal.users.getByUserId, {
+        userId: ctx.sessionId,
+      });
+    }
+    return await ctx.runQuery(internal.users.getByUserId, {
+      userId: userIdentity!.subject,
+    });
   },
 });
 

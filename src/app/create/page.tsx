@@ -8,14 +8,16 @@ import { useToast } from "@/hooks/use-toast";
 import { UploadFileResponse } from "@xixixao/uploadstuff/react";
 import "@xixixao/uploadstuff/react/styles.css";
 import clsx from "clsx";
-import { useSessionId } from "convex-helpers/react/sessions";
-import { useMutation, useQuery } from "convex/react";
+import {
+  useSessionMutation,
+  useSessionQuery,
+} from "convex-helpers/react/sessions";
+import { ConvexError } from "convex/values";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
-import { ConvexError } from "convex/values";
 
 interface FormErrors {
   title?: string;
@@ -25,14 +27,11 @@ interface FormErrors {
 
 // todo: set upload limit client/server side
 export default function CreatePage() {
-  const [sessionId] = useSessionId();
-  const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);
+  const createPoll = useSessionMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
   const [imageBId, setImageBId] = useState<string>("");
   const router = useRouter();
-  const creditsAvailable = useQuery(api.users.getAvailableCredits, {
-    sessionId: sessionId!,
-  });
+  const creditsAvailable = useSessionQuery(api.users.getAvailableCredits);
   const [errors, setErrors] = useState<FormErrors>({});
   const { toast } = useToast();
 
@@ -66,7 +65,6 @@ export default function CreatePage() {
       aImageId: imageAId!,
       bImageId: imageBId!,
       title,
-      sessionId: sessionId!,
     })
       .then((pollId) => {
         toast({

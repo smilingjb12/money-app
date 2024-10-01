@@ -1,6 +1,7 @@
 import { httpRouter } from "convex/server";
 import { internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
+import { getDefaultFreeCredits } from "./lib/credits";
 
 const http = httpRouter();
 
@@ -45,11 +46,11 @@ http.route({
 
       switch (result.type) {
         case "user.created":
-          await ctx.runMutation(internal.users.createUser, {
+          await ctx.runMutation(internal.users.createSignedInUser, {
             userId: result.data.id,
             isAnonymous: false,
             email: result.data.email_addresses[0].email_address,
-            credits: Number(process.env.DEFAULT_CREDITS),
+            credits: getDefaultFreeCredits(),
           });
       }
 

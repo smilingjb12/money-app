@@ -1,21 +1,9 @@
-import { SessionId } from "convex-helpers/server/sessions";
 import { paginationOptsValidator } from "convex/server";
 import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
-import { mutation, MutationCtx, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { mutationWithSession } from "./lib/session";
-
-async function createAnonymousUser(
-  ctx: MutationCtx & { sessionId: SessionId }
-): Promise<Id<"users">> {
-  return await ctx.runMutation(internal.users.createUser, {
-    userId: ctx.sessionId,
-    email: "anonymous",
-    isAnonymous: true,
-    credits: Number(process.env.DEFAULT_CREDITS!),
-  });
-}
 
 export const addComment = mutation({
   args: { pollId: v.id("thumbnailPolls"), text: v.string() },
@@ -50,11 +38,6 @@ export const createThumbnailPoll = mutationWithSession({
   handler: async (ctx, args): Promise<Id<"thumbnailPolls">> => {
     console.log("Creating poll with args:", args);
     const userIdentity = await ctx.auth.getUserIdentity();
-    if (!userIdentity) {
-      console.log("No user identity found, creating anonymous user");
-      const anonUser = await createAnonymousUser(ctx);
-      console.log("anonUser:", anonUser);
-    }
     const userId = userIdentity?.subject ?? ctx.sessionId;
     const user = await ctx.runQuery(internal.users.getByUserId, {
       userId: userId,
