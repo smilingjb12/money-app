@@ -12,10 +12,9 @@ export const createAnonymousUserOnStartup = mutationWithSession({
       sessionId: ctx.sessionId,
     });
     if (currentUser) {
-      console.log("user already exists", currentUser);
       return;
     }
-    console.log("Creating anonymous user:", ctx.sessionId);
+    console.log("Creating new anonymous user:", ctx.sessionId);
     return await ctx.db.insert("users", {
       userId: ctx.sessionId,
       email: "Anonymous",

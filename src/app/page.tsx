@@ -27,7 +27,7 @@ export default function Home() {
           <div
             className={`transition-all duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
           >
-            <a className="cursor-pointer inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+            <div className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
               Get started
               <svg
                 className="w-5 h-5 ml-2 -mr-1"
@@ -41,7 +41,7 @@ export default function Home() {
                   clipRule="evenodd"
                 ></path>
               </svg>
-            </a>
+            </div>
             <Link
               href="/create"
               className="cursor-pointer inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
@@ -51,14 +51,16 @@ export default function Home() {
           </div>
         </div>
         <div className="lg:col-span-6 lg:flex mt-12 lg:mt-0">
-          <div className="w-full h-[500px] relative">
+          <div className="w-full relative">
             <Image
-              className="rounded-lg"
-              src="/brandbird.png"
+              className="rounded-lg object-cover skew-y-3"
+              src="/landing.png"
               alt="mockup"
-              layout="fill"
+              width={700}
+              height={500}
               priority
             />
+            <div className="absolute -bottom-4 left-0 right-0 h-16 bg-gradient-to-t from-black/30 to-transparent blur-xl transform -skew-y-3"></div>
           </div>
         </div>
       </div>

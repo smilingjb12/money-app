@@ -25,11 +25,11 @@ export const getFileUrl = query({
   },
 });
 
-export const optimizeFileStorage = internalMutation({
+export const cleanupFileStorage = internalMutation({
   args: {},
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<string> => {
     await ctx.runMutation(internal.files.deduplicateFilesByHash, {});
-    await ctx.runMutation(internal.files.removeTemporaryFiles, {});
+    return await ctx.runMutation(internal.files.removeTemporaryFiles, {});
   },
 });
 

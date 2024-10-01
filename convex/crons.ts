@@ -6,7 +6,7 @@ const crons = cronJobs();
 crons.daily(
   "Optimize file storage",
   { hourUTC: 0, minuteUTC: 0 },
-  internal.files.optimizeFileStorage
+  internal.files.cleanupFileStorage
 );
 
 export default crons;

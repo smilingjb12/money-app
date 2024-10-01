@@ -1,6 +1,6 @@
 "use client";
 
-import { Hint } from "@/components/hint";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,7 @@ import {
 } from "convex-helpers/react/sessions";
 import { ConvexError } from "convex/values";
 import { isEmpty } from "lodash";
+import { TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
@@ -140,17 +141,15 @@ export default function CreatePage() {
           />
         </div>
 
-        {hasNoCreditsLeft ? (
-          <Hint
-            label="No more credits available. Purchase more for additional tests"
-            side="right"
-          >
-            <div className="w-fit">
-              <SubmitButton />
-            </div>
-          </Hint>
-        ) : (
-          <SubmitButton />
+        <SubmitButton />
+        {hasNoCreditsLeft && (
+          <Alert className="mb-4 max-w-sm">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>Out of Credits</AlertTitle>
+            <AlertDescription>
+              No credits left to create a poll. Upgrade to get more credits.
+            </AlertDescription>
+          </Alert>
         )}
       </form>
     </div>
