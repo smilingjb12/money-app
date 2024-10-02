@@ -7,6 +7,7 @@
 https://thumbnail-scorer-production.up.railway.app
 
 todo:
+- Scroll to top on route change.
 - Configure Clerk branding.
 - Limit file uploads for anonymous users.
 - Add rate limiting (make it aggressive for anonymous users).
