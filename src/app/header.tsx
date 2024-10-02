@@ -11,7 +11,6 @@ import {
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
 import { useSessionQuery } from "convex-helpers/react/sessions";
-import { useAction } from "convex/react";
 import { GemIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,11 +19,6 @@ import { api } from "../../convex/_generated/api";
 export function Header() {
   const router = useRouter();
   const creditsAvailable = useSessionQuery(api.users.getAvailableCredits);
-  const pay = useAction(api.stripe.pay);
-  const handleUpgradeClick = async () => {
-    const url = await pay();
-    router.push(url!);
-  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
@@ -42,10 +36,14 @@ export function Header() {
         {/* Desktop menu */}
         <div className="max-sm:hidden md:flex gap-x-2 items-center">
           <Button asChild variant="ghost" className="text-md">
-            <Link href="/create">Create</Link>
+            <Link className="hover:text-primary" href="/create">
+              Create
+            </Link>
           </Button>
           <Button asChild variant="ghost" className="text-md">
-            <Link href="/explore">Explore</Link>
+            <Link className="hover:text-primary" href="/explore">
+              Explore
+            </Link>
           </Button>
         </div>
 
@@ -60,11 +58,13 @@ export function Header() {
           </div>
           <div className="max-sm:hidden sm:flex items-center justify-center gap-x-4">
             <SignedIn>
-              <Button onClick={handleUpgradeClick}>Upgrade</Button>
+              <Button asChild>
+                <Link href="/upgrade">Upgrade</Link>
+              </Button>
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <SignInButton />
+              <SignInButton></SignInButton>
             </SignedOut>
           </div>
 
@@ -84,8 +84,8 @@ export function Header() {
                   <Link href="/create">Create</Link>
                 </DropdownMenuItem>
                 <SignedIn>
-                  <DropdownMenuItem onClick={handleUpgradeClick}>
-                    Upgrade
+                  <DropdownMenuItem>
+                    <Link href="/upgrade">Upgrade</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <UserButton />

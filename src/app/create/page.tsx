@@ -18,6 +18,8 @@ import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
 import { UploadFileResponse } from "@/components/upload-zone/upload-files";
+import { SignInButton, useSession } from "@clerk/nextjs";
+import Link from "next/link";
 
 interface FormErrors {
   title?: string;
@@ -26,6 +28,7 @@ interface FormErrors {
 }
 
 export default function CreatePage() {
+  const { session } = useSession();
   const createPoll = useSessionMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
   const [imageBId, setImageBId] = useState<string>("");
@@ -113,7 +116,7 @@ export default function CreatePage() {
           />
           {errors.title && <div className="text-red-400">{errors.title}</div>}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-1 mb-8">
           <ThumbnailUpload
             title="Test image A"
             showUpload={!hasNoCreditsLeft}
@@ -138,13 +141,29 @@ export default function CreatePage() {
           />
         </div>
 
-        <SubmitButton />
-        {hasNoCreditsLeft && (
+        <div className="flex justify-start">
+          <SubmitButton />
+        </div>
+        {!session && hasNoCreditsLeft && (
           <Alert className="mb-4 max-w-sm">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>Out of Credits</AlertTitle>
-            <AlertDescription>
-              No credits left to create a poll. Upgrade to get more credits.
+            <AlertDescription className="text-left">
+              No credits left to create a poll.{" "}
+              <SignInButton>Sign In </SignInButton> to get more credits.
+            </AlertDescription>
+          </Alert>
+        )}
+        {session && hasNoCreditsLeft && (
+          <Alert className="mb-4 max-w-sm">
+            <TriangleAlert className="h-4 w-4" />
+            <AlertTitle>Out of Credits</AlertTitle>
+            <AlertDescription className="text-left">
+              No credits left to create a poll.{" "}
+              <Button asChild variant="default">
+                <Link href="/upgrade">Upgrade</Link>
+              </Button>{" "}
+              to get more credits.
             </AlertDescription>
           </Alert>
         )}
