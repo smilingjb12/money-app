@@ -3,6 +3,7 @@ import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
+import { ensureUploadSizeIsNotExceeded } from "./lib/helpers";
 import { mutationWithSession } from "./lib/session";
 
 export const addComment = mutation({
@@ -37,6 +38,7 @@ export const createThumbnailPoll = mutationWithSession({
   },
   handler: async (ctx, args): Promise<Id<"thumbnailPolls">> => {
     console.log("Creating poll with args:", args);
+    await ensureUploadSizeIsNotExceeded(ctx, args.aImageId, args.bImageId);
     const userIdentity = await ctx.auth.getUserIdentity();
     const userId = userIdentity?.subject ?? ctx.sessionId;
     const user = await ctx.runQuery(internal.users.getByUserId, {

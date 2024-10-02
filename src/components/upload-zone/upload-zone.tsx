@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { UploadFileResponse } from "./upload-files";
 import { useUploadFiles } from "./use-upload-files";
 import { UploadSpinner } from "./upload-spinner";
+import { CloudUpload } from "lucide-react";
 
 type UploadDropzoneState = {
   progress: number | null;
@@ -25,6 +26,9 @@ export function UploadZone(props: {
   multiple?: boolean;
   // Whether the upload should start right after the user drags the file in. Defaults to `false`
   uploadImmediately?: boolean;
+
+  // Maximum allowed file size in bytes. Defaults to no limit.
+  maxFileSizeInBytes: number;
 
   /// Optional life-cycle props
 
@@ -47,6 +51,7 @@ export function UploadZone(props: {
   className?: (state: UploadDropzoneState) => string;
 }) {
   const [files, setFiles] = useState<File[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const [uploadProgress, setUploadProgress] = useState(0);
   const { startUpload, isUploading } = useUploadFiles(props.uploadUrl, {
@@ -65,6 +70,18 @@ export function UploadZone(props: {
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
+      if (props.maxFileSizeInBytes) {
+        const oversizedFiles = acceptedFiles.filter(
+          (f) => f.size > props.maxFileSizeInBytes!
+        );
+        if (oversizedFiles.length) {
+          const sizeLimit = formatFileSize(props.maxFileSizeInBytes);
+          setError(
+            `File size exceeds ${sizeLimit}. Please try uploading a smaller file.`
+          );
+          return;
+        }
+      }
       setFiles(acceptedFiles);
 
       if (props.uploadImmediately === true) {
@@ -96,6 +113,7 @@ export function UploadZone(props: {
   const combinedState = {
     isDragActive,
     progress: isUploading ? uploadProgress : null,
+    error,
   };
 
   return (
@@ -103,39 +121,26 @@ export function UploadZone(props: {
       className={
         props.className?.(combinedState) ??
         twMerge(
-          "flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-200/25 px-6 py-10 text-center",
+          "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-200/25 px-6 py-10 text-center",
           isDragActive && "bg-blue-600/10",
           files.length === 0 && "py-[4.25rem]"
         )
       }
       {...getRootProps()}
     >
-      {props.content?.(combinedState) ?? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          className={twMerge(
-            "mx-auto block h-12 w-12 align-middle text-gray-400 dark:text-gray-300"
-          )}
-        >
-          <path
-            fill="currentColor"
-            fillRule="evenodd"
-            d="M5.5 17a4.5 4.5 0 0 1-1.44-8.765a4.5 4.5 0 0 1 8.302-3.046a3.5 3.5 0 0 1 4.504 4.272A4 4 0 0 1 15 17H5.5Zm3.75-2.75a.75.75 0 0 0 1.5 0V9.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0l-3.25 3.5a.75.75 0 1 0 1.1 1.02l1.95-2.1v4.59Z"
-            clipRule="evenodd"
-          ></path>
-        </svg>
-      )}
+      {props.content?.(combinedState) ?? <CloudUpload className="size-10" />}
       <label
         htmlFor="file-upload"
         className={twMerge(
-          "relative mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 text-gray-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500",
-          "text-blue-600"
+          "relative text-primary mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500"
         )}
       >
         Choose files or drag and drop
         <input className="sr-only" {...getInputProps()} />
       </label>
+      <div className="text-sm text-muted-foreground">
+        Max file size: {formatFileSize(props.maxFileSizeInBytes)}
+      </div>
       {props.subtitle !== undefined ? (
         <div
           className={twMerge(
@@ -145,6 +150,7 @@ export function UploadZone(props: {
           {props.subtitle}
         </div>
       ) : null}
+      {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
       {files.length > 0 ? (
         <button
           className={twMerge(
@@ -181,3 +187,11 @@ const progressWidths: Record<number, string> = {
   90: "after:w-[90%]",
   100: "after:w-[100%]",
 };
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return bytes + " B";
+
+  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+
+  return (bytes / 1048576).toFixed(1) + " MB";
+}

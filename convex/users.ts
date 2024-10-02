@@ -2,8 +2,8 @@ import { ConvexError, v } from "convex/values";
 import { api, internal } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery } from "./_generated/server";
-import { getDefaultFreeCredits } from "./lib/credits";
 import { mutationWithSession, queryWithSession } from "./lib/session";
+import { settings } from "../src/lib/settings";
 
 export const createAnonymousUserOnStartup = mutationWithSession({
   args: {},
@@ -18,7 +18,7 @@ export const createAnonymousUserOnStartup = mutationWithSession({
     return await ctx.db.insert("users", {
       userId: ctx.sessionId,
       email: "Anonymous",
-      credits: getDefaultFreeCredits(),
+      credits: settings.getDefaultFreeCredits(),
       isAnonymous: true,
       stripeCompletedCheckoutSessionIds: [],
     });
@@ -34,7 +34,7 @@ export const createSignedInUser = internalMutation({
     return await ctx.db.insert("users", {
       userId: args.userId,
       email: args.email,
-      credits: getDefaultFreeCredits(),
+      credits: settings.getDefaultFreeCredits(),
       isAnonymous: false,
       stripeCompletedCheckoutSessionIds: [],
     });
@@ -61,7 +61,7 @@ export const getAvailableCredits = queryWithSession({
     const user = await ctx.runQuery(api.users.getCurrentUser, {
       sessionId: ctx.sessionId,
     });
-    return user ? user.credits : getDefaultFreeCredits();
+    return user ? user.credits : settings.getDefaultFreeCredits();
   },
 });
 

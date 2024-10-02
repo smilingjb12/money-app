@@ -19,7 +19,7 @@ import type * as clerk from "../clerk.js";
 import type * as crons from "../crons.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
-import type * as lib_credits from "../lib/credits.js";
+import type * as lib_helpers from "../lib/helpers.js";
 import type * as lib_session from "../lib/session.js";
 import type * as stripe from "../stripe.js";
 import type * as thumbnailPolls from "../thumbnailPolls.js";
@@ -38,7 +38,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   files: typeof files;
   http: typeof http;
-  "lib/credits": typeof lib_credits;
+  "lib/helpers": typeof lib_helpers;
   "lib/session": typeof lib_session;
   stripe: typeof stripe;
   thumbnailPolls: typeof thumbnailPolls;

@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import Image from "next/image";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+import { settings } from "@/lib/settings";
 
 interface ThumbnailUploadProps {
   title: string;
@@ -55,6 +56,7 @@ export function ThumbnailUpload({
         <div className="flex justify-center">
           <UploadZone
             uploadImmediately
+            maxFileSizeInBytes={settings.getUploadSizeLimit()}
             uploadUrl={generateUploadUrl}
             fileTypes={{
               "image/*": [".png", ".jpeg", ".jpg"],

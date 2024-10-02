@@ -2,15 +2,13 @@ import { SessionIdArg } from "convex-helpers/server/sessions";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
 import { internalMutation, query } from "./_generated/server";
+import { ensureHasCredits } from "./lib/helpers";
 import { mutationWithSession } from "./lib/session";
 
 export const generateUploadUrl = mutationWithSession({
   args: SessionIdArg,
   handler: async (ctx) => {
-    // const currentUser = await ctx.runQuery(api.users.getCurrentUser, {
-    //   sessionId: ctx.sessionId,
-    // });
-    // console.log("currentUser:", currentUser);
+    await ensureHasCredits(ctx);
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -26,9 +24,9 @@ export const getFileUrl = query({
 
 export const cleanupFileStorage = internalMutation({
   args: {},
-  handler: async (ctx): Promise<string> => {
+  handler: async (ctx): Promise<void> => {
     await ctx.runMutation(internal.files.deduplicateFilesByHash, {});
-    return await ctx.runMutation(internal.files.removeTemporaryFiles, {});
+    await ctx.runMutation(internal.files.removeTemporaryFiles, {});
   },
 });
 
@@ -75,7 +73,6 @@ export const removeTemporaryFiles = internalMutation({
     for (const file of unusedFiles) {
       await ctx.storage.delete(file._id);
     }
-
-    return `Deleted ${unusedFiles.length} unused files.`;
+    console.log("Deleted", unusedFiles.length, "unused files.");
   },
 });
