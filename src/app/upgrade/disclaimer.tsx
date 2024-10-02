@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon, Link } from "lucide-react";
+import { InfoIcon } from "lucide-react";
+import Link from "next/link";
 
 export const Disclaimer = () => {
   return (
