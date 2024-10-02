@@ -1,5 +1,4 @@
 import { UploadZone } from "@/components/upload-zone/upload-zone";
-import { UploadFileResponse } from "@xixixao/uploadstuff";
 import clsx from "clsx";
 import { useSessionMutation } from "convex-helpers/react/sessions";
 import { useQuery } from "convex/react";
@@ -7,6 +6,7 @@ import Image from "next/image";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { settings } from "@/lib/settings";
+import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 
 interface ThumbnailUploadProps {
   title: string;
