@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
+import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 
 interface FormErrors {
   title?: string;
