@@ -1,5 +1,5 @@
+import { UploadZone } from "@/components/upload-zone/upload-zone";
 import { UploadFileResponse } from "@xixixao/uploadstuff";
-import { UploadButton } from "@xixixao/uploadstuff/react";
 import clsx from "clsx";
 import { useSessionMutation } from "convex-helpers/react/sessions";
 import { useQuery } from "convex/react";
@@ -23,6 +23,7 @@ export function ThumbnailUpload({
   error,
 }: ThumbnailUploadProps) {
   const generateUploadUrl = useSessionMutation(api.files.generateUploadUrl);
+  const alreadyUploaded = !!imageId;
   const imageUrl = useQuery(
     api.files.getFileUrl,
     imageId
@@ -50,11 +51,14 @@ export function ThumbnailUpload({
           />
         </div>
       )}
-      {showUpload && (
+      {showUpload && !alreadyUploaded && (
         <div className="flex justify-center">
-          <UploadButton
+          <UploadZone
+            uploadImmediately
             uploadUrl={generateUploadUrl}
-            fileTypes={["image/*"]}
+            fileTypes={{
+              "image/*": [".png", ".jpeg", ".jpg"],
+            }}
             onUploadComplete={onUploadComplete}
             onUploadError={(error: unknown) => {
               console.error(error);
