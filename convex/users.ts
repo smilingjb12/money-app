@@ -29,15 +29,13 @@ export const createSignedInUser = internalMutation({
   args: {
     userId: v.string(),
     email: v.string(),
-    isAnonymous: v.boolean(),
-    credits: v.number(),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("users", {
       userId: args.userId,
       email: args.email,
-      credits: args.credits,
-      isAnonymous: args.isAnonymous,
+      credits: getDefaultFreeCredits(),
+      isAnonymous: false,
       stripeCompletedCheckoutSessionIds: [],
     });
   },
@@ -60,10 +58,8 @@ export const decrementCredits = internalMutation({
 export const getAvailableCredits = queryWithSession({
   args: {},
   handler: async (ctx): Promise<number> => {
-    const userIdentity = await ctx.auth.getUserIdentity();
-    const userId = userIdentity?.subject ?? ctx.sessionId;
-    const user = await ctx.runQuery(internal.users.getByUserId, {
-      userId: userId,
+    const user = await ctx.runQuery(api.users.getCurrentUser, {
+      sessionId: ctx.sessionId,
     });
     return user ? user.credits : getDefaultFreeCredits();
   },
