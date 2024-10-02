@@ -11,7 +11,7 @@ export default function Home() {
   }, []);
 
   return (
-    <section className="bg-white dark:bg-gray-900 mx-auto max-w-screen-2xl">
+    <section className="bg-white dark:bg-gray-900 mx-auto max-w-screen-2xl mb-[300px]">
       <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-6">
           <h1
@@ -44,6 +44,7 @@ export default function Home() {
             </div>
             <Link
               href="/create"
+              scroll={true}
               className="cursor-pointer inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
             >
               Create a test
