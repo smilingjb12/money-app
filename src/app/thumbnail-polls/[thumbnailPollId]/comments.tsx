@@ -1,5 +1,5 @@
+import { ActionButton } from "@/components/action-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,12 +10,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "convex/react";
-import { ConvexError } from "convex/values";
 import { formatDistance } from "date-fns";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { api } from "../../../../convex/_generated/api";
@@ -26,7 +27,9 @@ const formSchema = z.object({
 });
 
 export const Comments = ({ poll }: { poll: Doc<"thumbnailPolls"> }) => {
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { handleError } = useMutationErrorHandler();
   const { session } = useSession();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,7 +40,9 @@ export const Comments = ({ poll }: { poll: Doc<"thumbnailPolls"> }) => {
   const addComment = useMutation(api.thumbnailPolls.addComment);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    addComment({
+    setLoading(true);
+
+    await addComment({
       text: values.text,
       pollId: poll._id,
     })
@@ -48,14 +53,9 @@ export const Comments = ({ poll }: { poll: Doc<"thumbnailPolls"> }) => {
         });
         form.reset();
       })
-      .catch((error: unknown) => {
-        if (error instanceof ConvexError) {
-          toast({
-            title: "Error",
-            description: error.data,
-            variant: "destructive",
-          });
-        }
+      .catch(handleError)
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -86,7 +86,9 @@ export const Comments = ({ poll }: { poll: Doc<"thumbnailPolls"> }) => {
                   </FormItem>
                 )}
               ></FormField>
-              <Button type="submit">Post Comment</Button>
+              <ActionButton type="submit" isLoading={loading}>
+                Post Comment
+              </ActionButton>
             </form>
           </Form>
         )}

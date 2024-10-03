@@ -1,7 +1,6 @@
 import { UploadZone } from "@/components/upload-zone/upload-zone";
 import clsx from "clsx";
-import { useSessionMutation } from "convex-helpers/react/sessions";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -23,7 +22,7 @@ export function ThumbnailUpload({
   showUpload,
   error,
 }: ThumbnailUploadProps) {
-  const generateUploadUrl = useSessionMutation(api.files.generateUploadUrl);
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const alreadyUploaded = !!imageId;
   const imageUrl = useQuery(
     api.files.getFileUrl,

@@ -8,16 +8,18 @@ export const PricingCard = ({
   title,
   description,
   credits,
+  stripePriceId,
 }: {
   title?: string;
   description: string;
   iconGenerator: () => React.ReactNode;
   credits: number;
+  stripePriceId: string;
 }) => {
   const router = useRouter();
   const pay = useAction(api.stripe.pay);
   const handleUpgradeClick = async () => {
-    const url = await pay();
+    const url = await pay({ stripePriceId });
     router.push(url!);
   };
   return (

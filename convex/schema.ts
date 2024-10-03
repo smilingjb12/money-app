@@ -1,7 +1,9 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { rateLimitTables } from "convex-helpers/server/rateLimit";
 
 export default defineSchema({
+  ...rateLimitTables,
   thumbnailPolls: defineTable({
     title: v.string(),
     userId: v.string(),
@@ -20,11 +22,15 @@ export default defineSchema({
       })
     ),
   }),
+  userPurchases: defineTable({
+    userId: v.string(),
+    stripeItemId: v.string(),
+    stripeCheckoutSessionId: v.string(),
+  }),
   users: defineTable({
     userId: v.string(),
     email: v.string(),
     credits: v.number(),
     isAnonymous: v.boolean(),
-    stripeCompletedCheckoutSessionIds: v.array(v.string()),
   }).index("by_userId", ["userId"]),
 });

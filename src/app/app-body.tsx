@@ -1,9 +1,7 @@
 "use client";
 
 import { Toaster } from "@/components/ui/toaster";
-import { useSessionMutation } from "convex-helpers/react/sessions";
 import * as React from "react";
-import { api } from "../../convex/_generated/api";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Providers } from "./providers";
@@ -21,13 +19,9 @@ export default function AppBody({ children }: Props) {
 }
 
 function AppContent({ children }: Props) {
-  const createAnonymousUser = useSessionMutation(
-    api.users.createAnonymousUserOnStartup
-  );
-
   React.useEffect(() => {
-    createAnonymousUser(); // maybe handle error?
-  }, [createAnonymousUser]);
+    // Do something on startup, maybe some day
+  }, []);
 
   return (
     <>

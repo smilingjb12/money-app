@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
-import { useSessionQuery } from "convex-helpers/react/sessions";
 import { GemIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "../../convex/_generated/api";
+import { useQuery } from "convex/react";
 
 export function Header() {
   const router = useRouter();
-  const creditsAvailable = useSessionQuery(api.users.getAvailableCredits);
+  const creditsAvailable = useQuery(api.users.getAvailableCredits);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">

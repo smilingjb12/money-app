@@ -1,9 +1,9 @@
 import { ThumbnailUpload } from "@/app/create/thumbnail-upload";
 import { Button } from "@/components/ui/button";
+import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
-import { ConvexError } from "convex/values";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -16,6 +16,7 @@ export const VoteOption = ({
   title: string;
 }) => {
   const { session } = useSession();
+  const { handleError } = useMutationErrorHandler();
   const { thumbnailPollId } = useParams<{
     thumbnailPollId: Id<"thumbnailPolls">;
   }>();
@@ -40,9 +41,7 @@ export const VoteOption = ({
         duration: 5000,
       });
     } catch (error: unknown) {
-      if (error instanceof ConvexError) {
-        toast({ title: error.data, variant: "destructive" });
-      }
+      handleError(error);
     }
   };
 

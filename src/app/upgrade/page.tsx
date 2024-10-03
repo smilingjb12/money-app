@@ -1,7 +1,7 @@
 "use client";
 
+import { settings } from "@/lib/settings";
 import { PlaneIcon, RocketIcon, SendIcon } from "lucide-react";
-import { Disclaimer } from "./disclaimer";
 import { PricingCard } from "./pricing-card";
 
 export default function UpgradePage() {
@@ -20,21 +20,23 @@ export default function UpgradePage() {
         <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
           <PricingCard
             description="~$0.10 per image"
+            stripePriceId={settings.getStripeTier1PriceId()}
             iconGenerator={() => <SendIcon className="size-14" />}
-            credits={50}
+            credits={settings.getStripeTier1Credits()}
           />
           <PricingCard
             description="~$0.09 per image"
+            stripePriceId={settings.getStripeTier2PriceId()}
             iconGenerator={() => <PlaneIcon className="size-14" />}
-            credits={100}
+            credits={settings.getStripeTier2Credits()}
           />
           <PricingCard
             description="~$0.08 per image"
+            stripePriceId={settings.getStripeTier3PriceId()}
             iconGenerator={() => <RocketIcon className="size-14" />}
-            credits={250}
+            credits={settings.getStripeTier3Credits()}
           />
         </div>
-        <Disclaimer />
       </div>
     </section>
   );

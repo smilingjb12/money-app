@@ -6,20 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import clsx from "clsx";
-import {
-  useSessionMutation,
-  useSessionQuery,
-} from "convex-helpers/react/sessions";
-import { ConvexError } from "convex/values";
+
+import { UploadFileResponse } from "@/components/upload-zone/upload-files";
+import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
+import { useSession } from "@clerk/nextjs";
+import { useMutation, useQuery } from "convex/react";
 import { isEmpty } from "lodash";
 import { TriangleAlert } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
-import { UploadFileResponse } from "@/components/upload-zone/upload-files";
-import { SignInButton, useSession } from "@clerk/nextjs";
-import Link from "next/link";
 
 interface FormErrors {
   title?: string;
@@ -29,11 +27,12 @@ interface FormErrors {
 
 export default function CreatePage() {
   const { session } = useSession();
-  const createPoll = useSessionMutation(api.thumbnailPolls.createThumbnailPoll);
+  const { handleError } = useMutationErrorHandler();
+  const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
   const [imageBId, setImageBId] = useState<string>("");
   const router = useRouter();
-  const creditsAvailable = useSessionQuery(api.users.getAvailableCredits);
+  const creditsAvailable = useQuery(api.users.getAvailableCredits);
   const [errors, setErrors] = useState<FormErrors>({});
   const { toast } = useToast();
 
@@ -74,23 +73,7 @@ export default function CreatePage() {
         });
         router.push(`/thumbnail-polls/${pollId}`);
       })
-      .catch((error: unknown) => {
-        if (error instanceof ConvexError) {
-          toast({
-            title: "Error",
-            description: error.data,
-            variant: "destructive",
-          });
-        }
-      });
-  };
-
-  const SubmitButton = () => {
-    return (
-      <Button type="submit" disabled={hasNoCreditsLeft} className="mt-6 mb-4">
-        Create a Test (1 Credit)
-      </Button>
-    );
+      .catch(handleError);
   };
 
   return (
@@ -142,20 +125,16 @@ export default function CreatePage() {
         </div>
 
         <div className="flex justify-start">
-          <SubmitButton />
+          <Button
+            type="submit"
+            disabled={!!session && hasNoCreditsLeft}
+            className="mt-6 mb-4"
+          >
+            Create a Poll (1 credit)
+          </Button>
         </div>
-        {!session && hasNoCreditsLeft && (
-          <Alert className="mb-4 max-w-sm">
-            <TriangleAlert className="h-4 w-4" />
-            <AlertTitle>Out of Credits</AlertTitle>
-            <AlertDescription className="text-left">
-              No credits left to create a poll.{" "}
-              <SignInButton>Sign In </SignInButton> to get more credits.
-            </AlertDescription>
-          </Alert>
-        )}
-        {session && hasNoCreditsLeft && (
-          <Alert className="mb-4 max-w-sm">
+        {!!session && hasNoCreditsLeft && (
+          <Alert className="mb-4 max-w-lg">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>Out of Credits</AlertTitle>
             <AlertDescription className="text-left">
