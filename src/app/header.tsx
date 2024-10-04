@@ -10,18 +10,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
+import { useQuery } from "convex/react";
 import { GemIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "../../convex/_generated/api";
-import { useQuery } from "convex/react";
 
 export function Header() {
   const router = useRouter();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b px-4">
       <div className="container h-16 px-4 mx-auto flex justify-between items-center">
         <div
           className="flex items-center gap-2 cursor-pointer"
@@ -64,7 +64,7 @@ export function Header() {
               <UserButton />
             </SignedIn>
             <SignedOut>
-              <SignInButton></SignInButton>
+              <SignInButton mode="modal" />
             </SignedOut>
           </div>
 

@@ -1,2 +1,3 @@
 - Stripe price Ids @stripe and @env
 - Rebrand /rate-limited page
+- Configure protected routes in middleware

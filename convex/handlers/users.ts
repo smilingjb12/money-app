@@ -32,7 +32,7 @@ export const getAvailableCreditsHandler = async (ctx: QueryCtx) => {
     return settings.getDefaultFreeCredits();
   }
   const user = await ctx.runQuery(api.users.getCurrentUser, {});
-  return user!.credits;
+  return user?.credits ?? settings.getDefaultFreeCredits();
 };
 
 export const getCurrentUserHandler = async (ctx: QueryCtx) => {
