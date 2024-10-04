@@ -1,14 +1,13 @@
 import { ThumbnailUpload } from "@/app/create/thumbnail-upload";
-import { Button } from "@/components/ui/button";
+import { ActionButton } from "@/components/action-button";
 import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
-import { ActionButton } from "@/components/action-button";
-import { useState } from "react";
 
 export const VoteOption = ({
   imageId,
