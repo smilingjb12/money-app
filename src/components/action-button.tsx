@@ -36,13 +36,18 @@ const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
   ({ className, variant, size, isLoading, children, ...props }, ref) => {
     return (
       <Button
-        className={cn(actionButtonVariants({ variant, size, className }))}
+        className={cn(
+          actionButtonVariants({ variant, size, className }),
+          "relative"
+        )}
         ref={ref}
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {isLoading && <Loader className={cn("w-4 h-4 animate-spin mr-2")} />}
-        {children}
+        {isLoading && (
+          <Loader className={cn("w-4 h-4 animate-spin absolute")} />
+        )}
+        <div className={isLoading ? "invisible" : ""}> {children}</div>
       </Button>
     );
   }

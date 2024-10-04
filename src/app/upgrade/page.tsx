@@ -1,6 +1,6 @@
 "use client";
 
-import { settings } from "@/lib/settings";
+import { nextEnv } from "@/nextEnv";
 import { PlaneIcon, RocketIcon, SendIcon } from "lucide-react";
 import { PricingCard } from "./pricing-card";
 
@@ -20,21 +20,21 @@ export default function UpgradePage() {
         <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
           <PricingCard
             description="~$0.10 per image"
-            stripePriceId={settings.getStripeTier1PriceId()}
+            stripePriceId={nextEnv.NEXT_PUBLIC_STRIPE_TIER_1_PRICEID}
             iconGenerator={() => <SendIcon className="size-14" />}
-            credits={settings.getStripeTier1Credits()}
+            credits={Number(nextEnv.NEXT_PUBLIC_STRIPE_TIER_1_CREDITS)}
           />
           <PricingCard
             description="~$0.09 per image"
-            stripePriceId={settings.getStripeTier2PriceId()}
+            stripePriceId={nextEnv.NEXT_PUBLIC_STRIPE_TIER_2_PRICEID}
             iconGenerator={() => <PlaneIcon className="size-14" />}
-            credits={settings.getStripeTier2Credits()}
+            credits={Number(nextEnv.NEXT_PUBLIC_STRIPE_TIER_2_CREDITS)}
           />
           <PricingCard
             description="~$0.08 per image"
-            stripePriceId={settings.getStripeTier3PriceId()}
+            stripePriceId={nextEnv.NEXT_PUBLIC_STRIPE_TIER_3_PRICEID}
             iconGenerator={() => <RocketIcon className="size-14" />}
-            credits={settings.getStripeTier3Credits()}
+            credits={Number(nextEnv.NEXT_PUBLIC_STRIPE_TIER_3_CREDITS)}
           />
         </div>
       </div>

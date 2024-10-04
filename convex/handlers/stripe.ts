@@ -5,16 +5,19 @@ import { ActionCtx } from "../_generated/server";
 import { GenericActionCtx, UserIdentity } from "convex/server";
 import Stripe from "stripe";
 import { DataModel } from "../_generated/dataModel";
-import { settings } from "../../src/lib/settings";
 import { internal } from "../_generated/api";
+import { convexEnv } from "../lib/convexEnv";
 
 const PRICE_ID_CREDITS: Record<string, number> = {
-  [process.env.NEXT_PUBLIC_STRIPE_TIER_1_PRICEID!]:
-    settings.getStripeTier1Credits(),
-  [process.env.NEXT_PUBLIC_STRIPE_TIER_2_PRICEID!]:
-    settings.getStripeTier2Credits(),
-  [process.env.NEXT_PUBLIC_STRIPE_TIER_3_PRICEID!]:
-    settings.getStripeTier3Credits(),
+  [convexEnv.NEXT_PUBLIC_STRIPE_TIER_1_PRICEID]: Number(
+    convexEnv.NEXT_PUBLIC_STRIPE_TIER_1_CREDITS
+  ),
+  [convexEnv.NEXT_PUBLIC_STRIPE_TIER_2_PRICEID]: Number(
+    convexEnv.NEXT_PUBLIC_STRIPE_TIER_2_CREDITS
+  ),
+  [convexEnv.NEXT_PUBLIC_STRIPE_TIER_3_PRICEID]: Number(
+    convexEnv.NEXT_PUBLIC_STRIPE_TIER_3_CREDITS
+  ),
 };
 
 type Metadata = {
@@ -45,11 +48,11 @@ export const stripeWebhookHandler = async (
   ctx: ActionCtx,
   args: { payload: string; signature: string }
 ) => {
-  const stripe = new Stripe(process.env.STRIPE_KEY!, {
+  const stripe = new Stripe(convexEnv.STRIPE_KEY, {
     apiVersion: "2024-06-20",
   });
 
-  const webhookSecret = process.env.STRIPE_WEBHOOKS_SECRET!;
+  const webhookSecret = convexEnv.STRIPE_WEBHOOKS_SECRET;
   try {
     const event = stripe.webhooks.constructEvent(
       args.payload,
@@ -71,15 +74,15 @@ async function createCheckoutSession(
   user: UserIdentity,
   stripePriceId: string
 ): Promise<Stripe.Response<Stripe.Checkout.Session>> {
-  const domain = process.env.HOSTING_URL;
+  const domain = convexEnv.SITE_URL;
   console.log("Hosting URL:", domain);
-  const stripe = new Stripe(process.env.STRIPE_KEY!, {
+  const stripe = new Stripe(convexEnv.STRIPE_KEY!, {
     apiVersion: "2024-06-20",
   });
   return await stripe.checkout.sessions.create({
     line_items: [
       {
-        price: process.env.PRICE_ID,
+        price: stripePriceId,
         quantity: 1,
       },
     ],

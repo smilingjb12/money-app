@@ -1,11 +1,11 @@
+import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 import { UploadZone } from "@/components/upload-zone/upload-zone";
+import { nextEnv } from "@/nextEnv";
 import clsx from "clsx";
 import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { settings } from "@/lib/settings";
-import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 
 interface ThumbnailUploadProps {
   title: string;
@@ -55,7 +55,7 @@ export function ThumbnailUpload({
         <div className="flex justify-center">
           <UploadZone
             uploadImmediately
-            maxFileSizeInBytes={settings.getUploadSizeLimit()}
+            maxFileSizeInBytes={Number(nextEnv.NEXT_PUBLIC_UPLOAD_SIZE_LIMIT)}
             uploadUrl={generateUploadUrl}
             fileTypes={{
               "image/*": [".png", ".jpeg", ".jpg"],

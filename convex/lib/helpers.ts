@@ -1,8 +1,8 @@
 import { UserIdentity } from "convex/server";
 import { ConvexError } from "convex/values";
-import { settings } from "../../src/lib/settings";
 import { api } from "../_generated/api";
 import { QueryCtx } from "../_generated/server";
+import { convexEnv } from "./convexEnv";
 
 export async function requireAuthentication(
   ctx: QueryCtx
@@ -27,14 +27,19 @@ export async function ensureUploadSizeIsNotExceeded(
     )
     .collect();
 
-  if (uploadedFiles.some((f) => f.size > settings.getUploadSizeLimit())) {
+  if (
+    uploadedFiles.some(
+      (f) => f.size > Number(convexEnv.NEXT_PUBLIC_UPLOAD_SIZE_LIMIT)
+    )
+  ) {
     throw new ConvexError("Upload size exceeded");
   }
 }
 
 export async function ensureHasPositiveCredits(ctx: QueryCtx) {
   const currentUser = await ctx.runQuery(api.users.getCurrentUser, {});
-  if (!currentUser || currentUser.credits <= 0) {
+  console.log("currentUser", currentUser);
+  if (currentUser!.credits <= 0) {
     throw new Error("Not enough credits to perform the action");
   }
 }

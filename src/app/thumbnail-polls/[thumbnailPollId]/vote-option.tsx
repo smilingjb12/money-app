@@ -7,6 +7,8 @@ import { useMutation, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { ActionButton } from "@/components/action-button";
+import { useState } from "react";
 
 export const VoteOption = ({
   imageId,
@@ -15,6 +17,7 @@ export const VoteOption = ({
   imageId: string;
   title: string;
 }) => {
+  const [loading, setLoading] = useState(false);
   const { session } = useSession();
   const { handleError } = useMutationErrorHandler();
   const { thumbnailPollId } = useParams<{
@@ -29,6 +32,7 @@ export const VoteOption = ({
 
   const vote = async () => {
     try {
+      setLoading(true);
       await voteOnThumbnail({
         imageId,
         thumbnailPollId,
@@ -42,6 +46,8 @@ export const VoteOption = ({
       });
     } catch (error: unknown) {
       handleError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,9 +60,14 @@ export const VoteOption = ({
         title={title}
       />
       {session && !hasVoted && (
-        <Button size="lg" className="mt-5 w-[200px] mb-6" onClick={vote}>
+        <ActionButton
+          isLoading={loading}
+          size="lg"
+          className="mt-5 w-[200px] mb-6"
+          onClick={vote}
+        >
           Vote
-        </Button>
+        </ActionButton>
       )}
     </div>
   );

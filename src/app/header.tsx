@@ -48,7 +48,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4 justify-end">
-          <div className="flex gap-1">
+          <div className="flex gap-1 min-w-[40px]">
             <Hint label="Credits Available" side="left">
               <div className="flex gap-1">
                 <GemIcon />

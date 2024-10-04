@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
+import { ActionButton } from "@/components/action-button";
 
 interface FormErrors {
   title?: string;
@@ -125,13 +126,13 @@ export default function CreatePage() {
         </div>
 
         <div className="flex justify-start">
-          <Button
-            type="submit"
-            disabled={!!session && hasNoCreditsLeft}
+          <ActionButton
+            isLoading={!!session && hasNoCreditsLeft}
             className="mt-6 mb-4"
+            type="submit"
           >
             Create a Poll (1 credit)
-          </Button>
+          </ActionButton>
         </div>
         {!!session && hasNoCreditsLeft && (
           <Alert className="mb-4 max-w-lg">
@@ -139,7 +140,7 @@ export default function CreatePage() {
             <AlertTitle>Out of Credits</AlertTitle>
             <AlertDescription className="text-left">
               No credits left to create a poll.{" "}
-              <Button asChild variant="default">
+              <Button asChild className="p-0" variant="link">
                 <Link href="/upgrade">Upgrade</Link>
               </Button>{" "}
               to get more credits.

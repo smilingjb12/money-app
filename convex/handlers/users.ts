@@ -1,7 +1,7 @@
 import { ConvexError } from "convex/values";
-import { settings } from "../../src/lib/settings";
 import { api, internal } from "../_generated/api";
 import { MutationCtx, QueryCtx } from "../_generated/server";
+import { convexEnv } from "../lib/convexEnv";
 
 export const createSignedInUserHandler = async (
   ctx: MutationCtx,
@@ -10,7 +10,7 @@ export const createSignedInUserHandler = async (
   return await ctx.db.insert("users", {
     userId: args.userId,
     email: args.email,
-    credits: settings.getDefaultFreeCredits(),
+    credits: Number(convexEnv.DEFAULT_CREDITS),
     isAnonymous: false,
   });
 };
@@ -29,10 +29,10 @@ export const decrementCreditsHandler = async (
 
 export const getAvailableCreditsHandler = async (ctx: QueryCtx) => {
   if (!(await ctx.auth.getUserIdentity())) {
-    return settings.getDefaultFreeCredits();
+    return Number(convexEnv.DEFAULT_CREDITS);
   }
   const user = await ctx.runQuery(api.users.getCurrentUser, {});
-  return user?.credits ?? settings.getDefaultFreeCredits();
+  return user?.credits ?? Number(convexEnv.DEFAULT_CREDITS);
 };
 
 export const getCurrentUserHandler = async (ctx: QueryCtx) => {
