@@ -70,6 +70,18 @@ export function Header() {
           {isAuthenticated && (
             <Button variant="outline">{creditsAvailable} Credits</Button>
           )}
+          <Authenticated>
+            <Button
+              variant="ghost"
+              className="hover:bg-transparent/20 justify-center w-full"
+              onClick={() => {
+                clerk.signOut();
+              }}
+            >
+              <LogOutIcon className="mr-2" />
+              Sign Out
+            </Button>
+          </Authenticated>
           <Unauthenticated>
             <Button variant="default" onClick={signInWithGoogle}>
               Sign In
