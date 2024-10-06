@@ -12,6 +12,7 @@ import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
+import { Constants } from "@/constants";
 
 export function Header() {
   const { isAuthenticated } = useConvexAuth();
@@ -35,24 +36,24 @@ export function Header() {
         <div className="flex items-center gap-12">
           <Link
             href="/"
-            className="flex items-center gap-2 group hover:text-primary"
+            className="flex items-center gap-2 group hover:text-primary transition-colors duration-100"
           >
             <PackageIcon className="size-8" />
             <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-2xl group-hover:text-primary">
-              ThumbScorer
+              {Constants.APP_NAME}
             </span>
           </Link>
-          <div className="hidden md:flex md:items-center ml-8">
+          <div className="hidden md:flex md:items-center ml-16">
             <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
               <Link
                 href="/explore"
-                className="hover:text-primary text-foreground"
+                className="hover:text-primary text-foreground transition-colors duration-100"
               >
                 Explore
               </Link>
               <Link
                 href="/create"
-                className="hover:text-primary text-foreground"
+                className="hover:text-primary text-foreground transition-colors duration-100"
               >
                 Create
               </Link>
