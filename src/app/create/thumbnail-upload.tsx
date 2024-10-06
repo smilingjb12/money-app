@@ -13,6 +13,7 @@ interface ThumbnailUploadProps {
   onUploadComplete: (uploaded: UploadFileResponse[]) => void;
   showUpload: boolean;
   error?: string;
+  className?: string;
 }
 
 export function ThumbnailUpload({
@@ -21,6 +22,7 @@ export function ThumbnailUpload({
   onUploadComplete,
   showUpload,
   error,
+  className,
 }: ThumbnailUploadProps) {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const alreadyUploaded = !!imageId;
@@ -37,10 +39,11 @@ export function ThumbnailUpload({
     <div
       className={clsx(
         "flex flex-col gap-4 border border-1 rounded-sm p-2 overflow-hidden relative h-[350px] w-[350px]",
-        error ? "border-red-400" : "border-transparent"
+        error ? "border-red-400" : "border-transparent",
+        className
       )}
     >
-      <h2 className="text-2xl font-bold">{title}</h2>
+      <h2 className="text-2xl font-bold text-center">{title}</h2>
       {imageId && (
         <div className="relative w-full h-full">
           <Image

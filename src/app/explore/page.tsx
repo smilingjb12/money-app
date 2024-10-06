@@ -27,7 +27,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-screen-lg mx-auto">
+    <div className="container items-center justify-center max-w-6xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {results?.map((i) => (
           <Link

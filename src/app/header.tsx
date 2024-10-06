@@ -1,106 +1,139 @@
 "use client";
 
-import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
+import { SignInButton, useClerk } from "@clerk/nextjs";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { HamburgerMenuIcon, StackIcon } from "@radix-ui/react-icons";
-import { useQuery } from "convex/react";
-import { GemIcon } from "lucide-react";
+  Authenticated,
+  Unauthenticated,
+  useConvexAuth,
+  useQuery,
+} from "convex/react";
+import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 
 export function Header() {
-  const router = useRouter();
+  const { isAuthenticated } = useConvexAuth();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
+  const clerk = useClerk();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b px-4">
-      <div className="container h-16 px-4 mx-auto flex justify-between items-center">
-        <div
-          className="flex items-center gap-2 cursor-pointer"
-          onClick={() => router.push("/")}
+    <header className="fixed top-0 left-0 right-0 z-50 shadow-md bg-secondary">
+      <nav className="container flex h-20 w-full items-center justify-between px-4 md:px-6">
+        <div className="flex items-center gap-12">
+          <Link
+            href="/"
+            className="flex items-center gap-2 group hover:text-primary"
+          >
+            <PackageIcon className="size-8" />
+            <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-2xl group-hover:text-primary">
+              ThumbScorer
+            </span>
+          </Link>
+          <div className="hidden md:flex md:items-center ml-8">
+            <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
+              <Link
+                href="/explore"
+                className="hover:text-primary text-foreground"
+              >
+                Explore
+              </Link>
+              <Link
+                href="/create"
+                className="hover:text-primary text-foreground"
+              >
+                Create
+              </Link>
+            </div>
+          </div>
+        </div>
+        <Button
+          className="md:hidden"
+          variant="ghost"
+          onClick={toggleMobileMenu}
         >
-          <StackIcon className="min-w-[28px] min-h-[28px]" />
-          <span className="font-semibold max-sm:hidden sm:inline">
-            Thumb Scorer
-          </span>
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </Button>
+        <div className="hidden md:flex md:items-center gap-4 text-foreground">
+          {isAuthenticated && (
+            <Button variant="outline">{creditsAvailable} Credits</Button>
+          )}
+          <Authenticated>
+            <Button
+              variant="ghost"
+              className="hover:bg-transparent/20"
+              onClick={() => clerk.signOut()}
+            >
+              <LogOutIcon className="mr-2" />
+              Sign Out
+            </Button>
+          </Authenticated>
+          <Unauthenticated>
+            <SignInButton>
+              <Button variant="default">Sign In</Button>
+            </SignInButton>
+          </Unauthenticated>
         </div>
+      </nav>
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-secondary py-4 px-6">
+          <div className="flex flex-col gap-4 items-center w-full">
+            <Button variant="ghost" asChild>
+              <Link
+                href="/explore"
+                className="hover:text-primary text-foreground w-full"
+                onClick={toggleMobileMenu}
+              >
+                Explore
+              </Link>
+            </Button>
 
-        {/* Desktop menu */}
-        <div className="max-sm:hidden md:flex gap-x-2 items-center">
-          <Button asChild variant="ghost" className="text-md">
-            <Link className="hover:text-primary" href="/create">
-              Create
-            </Link>
-          </Button>
-          <Button asChild variant="ghost" className="text-md">
-            <Link className="hover:text-primary" href="/explore">
-              Explore
-            </Link>
-          </Button>
-        </div>
+            <Button variant="ghost" asChild>
+              <Link
+                href="/create"
+                className="hover:text-primary text-foreground w-full"
+                onClick={toggleMobileMenu}
+              >
+                Create
+              </Link>
+            </Button>
 
-        <div className="flex items-center gap-4 justify-end">
-          <div className="flex gap-1 min-w-[40px]">
-            <Hint label="Credits Available" side="left">
-              <div className="flex gap-1">
-                <GemIcon />
-                {creditsAvailable ?? "-"}
-              </div>
-            </Hint>
-          </div>
-          <div className="max-sm:hidden sm:flex items-center justify-center gap-x-4">
-            <SignedIn>
-              <Button asChild>
-                <Link href="/upgrade">Upgrade</Link>
+            {isAuthenticated && (
+              <Button variant="outline" className="w-full justify-center">
+                {creditsAvailable} Credits
               </Button>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal" />
-            </SignedOut>
-          </div>
-
-          {/* Mobile menu */}
-          <div className="sm:hidden">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <HamburgerMenuIcon className="h-5 w-5" />
+            )}
+            <Authenticated>
+              <Button
+                variant="ghost"
+                className="hover:bg-transparent/20 justify-center w-full"
+                onClick={() => {
+                  clerk.signOut();
+                  toggleMobileMenu();
+                }}
+              >
+                <LogOutIcon className="mr-2" />
+                Sign Out
+              </Button>
+            </Authenticated>
+            <Unauthenticated>
+              <SignInButton>
+                <Button
+                  variant="default"
+                  className="w-full justify-center"
+                  onClick={toggleMobileMenu}
+                >
+                  Sign In
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/explore">Explore</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/create">Create</Link>
-                </DropdownMenuItem>
-                <SignedIn>
-                  <DropdownMenuItem>
-                    <Link href="/upgrade">Upgrade</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <UserButton />
-                  </DropdownMenuItem>
-                </SignedIn>
-                <SignedOut>
-                  <DropdownMenuItem>
-                    <SignInButton />
-                  </DropdownMenuItem>
-                </SignedOut>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </SignInButton>
+            </Unauthenticated>
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }

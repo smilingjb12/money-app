@@ -28,7 +28,7 @@ export default function ThumbnailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-screen-lg">
+    <div className="container items-center justify-center max-w-6xl">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ImageView imageId={images[0]!} title="Image A" />
         <ImageView imageId={images[1]!} title="Image B" />

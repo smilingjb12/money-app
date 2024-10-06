@@ -28,6 +28,7 @@ interface FormErrors {
 
 export default function CreatePage() {
   const { session } = useSession();
+  const [loading, setLoading] = useState(false);
   const { handleError } = useMutationErrorHandler();
   const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);
   const [imageAId, setImageAId] = useState<string>("");
@@ -63,6 +64,7 @@ export default function CreatePage() {
       return;
     }
 
+    setLoading(true);
     createPoll({
       aImageId: imageAId!,
       bImageId: imageBId!,
@@ -74,18 +76,21 @@ export default function CreatePage() {
         });
         router.push(`/thumbnail-polls/${pollId}`);
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(() => setLoading(false));
   };
 
   return (
-    <div className="mx-auto max-w-screen-lg">
-      <h1 className="text-4xl font-bold mb-6">Create a Thumbnail Test</h1>
-      <p className="text-lg max-w-screen-md mb-6">
+    <div className="container items-center justify-center max-w-6xl">
+      <h1 className="text-4xl font-bold mb-6 text-center">
+        Create a Thumbnail Test
+      </h1>
+      <p className="text-lg max-w-screen-md mx-auto mb-6 text-center">
         Create your test so that other people can vote on their favorite
         thumbnail and help you redesign or pick the best option.
       </p>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col max-w-screen-sm mb-8">
+        <div className="flex flex-col max-w-screen-sm mb-8 mx-auto">
           <Label htmlFor="title" className="text-md">
             Your Test Title
           </Label>
@@ -100,42 +105,45 @@ export default function CreatePage() {
           />
           {errors.title && <div className="text-red-400">{errors.title}</div>}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1 mb-8">
-          <ThumbnailUpload
-            title="Test image A"
-            showUpload={!hasNoCreditsLeft}
-            imageId={imageAId}
-            onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              setImageAId(
-                (uploaded[0].response as { storageId: string }).storageId
-              );
-            }}
-            error={errors.imageA}
-          />
-          <ThumbnailUpload
-            title="Test image B"
-            showUpload={!hasNoCreditsLeft}
-            imageId={imageBId}
-            onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              setImageBId((uploaded[0].response as any).storageId);
-            }}
-            error={errors.imageB}
-          />
-        </div>
+        {!hasNoCreditsLeft && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-1 mb-4 justify-items-center">
+            <ThumbnailUpload
+              title="Test image A"
+              showUpload={!hasNoCreditsLeft}
+              imageId={imageAId}
+              onUploadComplete={async (uploaded: UploadFileResponse[]) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                setImageAId(
+                  (uploaded[0].response as { storageId: string }).storageId
+                );
+              }}
+              error={errors.imageA}
+            />
+            <ThumbnailUpload
+              title="Test image B"
+              showUpload={!hasNoCreditsLeft}
+              imageId={imageBId}
+              onUploadComplete={async (uploaded: UploadFileResponse[]) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                setImageBId((uploaded[0].response as any).storageId);
+              }}
+              error={errors.imageB}
+            />
+          </div>
+        )}
 
         <div className="flex justify-start">
           <ActionButton
-            isLoading={!!session && hasNoCreditsLeft}
-            className="mt-6 mb-4"
+            disabled={!!session && hasNoCreditsLeft}
+            isLoading={loading}
+            className="mt-6 mb-4 mx-auto"
             type="submit"
           >
             Create a Poll (1 credit)
           </ActionButton>
         </div>
-        {!!session && hasNoCreditsLeft && (
-          <Alert className="mb-4 max-w-lg">
+        {!!session && hasNoCreditsLeft && !loading && (
+          <Alert className="mb-4 max-w-lg mx-auto">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>Out of Credits</AlertTitle>
             <AlertDescription className="text-left">
