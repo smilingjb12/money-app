@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SignInButton, useClerk } from "@clerk/nextjs";
+import { useClerk, useSignIn } from "@clerk/nextjs";
 import {
   Authenticated,
   Unauthenticated,
@@ -17,9 +17,17 @@ export function Header() {
   const { isAuthenticated } = useConvexAuth();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
   const clerk = useClerk();
+  const { signIn } = useSignIn();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const signInWithGoogle = async () => {
+    await signIn?.authenticateWithRedirect({
+      strategy: "oauth_google",
+      redirectUrl: "/",
+      redirectUrlComplete: "/",
+    });
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-md bg-secondary">
@@ -62,20 +70,10 @@ export function Header() {
           {isAuthenticated && (
             <Button variant="outline">{creditsAvailable} Credits</Button>
           )}
-          <Authenticated>
-            <Button
-              variant="ghost"
-              className="hover:bg-transparent/20"
-              onClick={() => clerk.signOut()}
-            >
-              <LogOutIcon className="mr-2" />
-              Sign Out
-            </Button>
-          </Authenticated>
           <Unauthenticated>
-            <SignInButton>
-              <Button variant="default">Sign In</Button>
-            </SignInButton>
+            <Button variant="default" onClick={signInWithGoogle}>
+              Sign In
+            </Button>
           </Unauthenticated>
         </div>
       </nav>
@@ -121,15 +119,13 @@ export function Header() {
               </Button>
             </Authenticated>
             <Unauthenticated>
-              <SignInButton>
-                <Button
-                  variant="default"
-                  className="w-full justify-center"
-                  onClick={toggleMobileMenu}
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
+              <Button
+                variant="default"
+                className="w-full justify-center"
+                onClick={signInWithGoogle}
+              >
+                Sign In
+              </Button>
             </Unauthenticated>
           </div>
         </div>
