@@ -20,6 +20,7 @@ export const stripeRouteHandler = async (ctx: ActionCtx, req: Request) => {
 };
 
 export const clerkRouteHandler = async (ctx: ActionCtx, req: Request) => {
+  console.log("Processing clerk webhook");
   const payloadString = await req.text();
   const headerPayload = req.headers;
 
@@ -35,6 +36,7 @@ export const clerkRouteHandler = async (ctx: ActionCtx, req: Request) => {
 
     switch (result.type) {
       case "user.created":
+        console.log("Processing user.created event:", result.data);
         await ctx.runMutation(internal.users.createSignedInUser, {
           userId: result.data.id,
           email: result.data.email_addresses[0].email_address,
@@ -43,6 +45,7 @@ export const clerkRouteHandler = async (ctx: ActionCtx, req: Request) => {
 
     return new Response(null, { status: 200 });
   } catch (error) {
+    console.error("Clerk webhook error", error);
     return new Response(`Webhook Error: ${error}`, {
       status: 400,
     });

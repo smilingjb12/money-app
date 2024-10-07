@@ -13,16 +13,6 @@ http.route({
 });
 
 http.route({
-  path: "/test",
-  method: "GET",
-  handler: httpAction(async (ctx, req) => {
-    return new Response("Test", {
-      status: 200,
-    });
-  }),
-});
-
-http.route({
   path: "/clerk",
   method: "POST",
   handler: httpAction(async (ctx, req) => {

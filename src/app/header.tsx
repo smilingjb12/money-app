@@ -1,49 +1,54 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useClerk, useSignIn } from "@clerk/nextjs";
-import {
-  Authenticated,
-  Unauthenticated,
-  useConvexAuth,
-  useQuery,
-} from "convex/react";
+import { Constants } from "@/constants";
+import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
-import { Constants } from "@/constants";
+import { AvatarDropdown } from "./avatar-dropdown";
 
 export function Header() {
-  const { isAuthenticated } = useConvexAuth();
+  const { user } = useUser();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
   const clerk = useClerk();
-  const { signIn } = useSignIn();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const signInWithGoogle = async () => {
-    await signIn?.authenticateWithRedirect({
-      strategy: "oauth_google",
-      redirectUrl: "/",
-      redirectUrlComplete: "/",
-    });
+
+  // const signInWithGoogle = async () => {
+  //   return signIn?.authenticateWithRedirect({
+  //     strategy: "oauth_google",
+  //     redirectUrl: "/sign-up/sso-callback",
+  //     redirectUrlComplete: "/",
+  //     continueSignUp: true,
+  //   });
+  // };
+
+  const creditsButton = () => {
+    return (
+      <Button variant="outline" className="w-full justify-center">
+        {creditsAvailable} Credits
+      </Button>
+    );
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-md bg-secondary">
-      <nav className="container flex h-20 w-full items-center justify-between px-4 md:px-6">
+      <nav className="container flex h-16 w-full items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-12">
           <Link
             href="/"
             className="flex items-center gap-2 group hover:text-primary transition-colors duration-100"
           >
-            <PackageIcon className="size-8" />
-            <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-2xl group-hover:text-primary">
+            <PackageIcon className="size-7" />
+            <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-xl group-hover:text-primary">
               {Constants.APP_NAME}
             </span>
           </Link>
-          <div className="hidden md:flex md:items-center ml-16">
+          <div className="hidden md:flex md:items-center md:ml-20 lg:ml-40">
             <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
               <Link
                 href="/explore"
@@ -68,25 +73,18 @@ export function Header() {
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </Button>
         <div className="hidden md:flex md:items-center gap-4 text-foreground">
-          {isAuthenticated && (
-            <Button variant="outline">{creditsAvailable} Credits</Button>
-          )}
           <Authenticated>
-            <Button
-              variant="ghost"
-              className="hover:bg-transparent/20 justify-center w-full"
-              onClick={() => {
-                clerk.signOut();
-              }}
-            >
-              <LogOutIcon className="mr-2" />
-              Sign Out
-            </Button>
+            {creditsButton()}
+            <AvatarDropdown
+              fullName={user?.fullName}
+              imageUrl={user?.imageUrl}
+              email={user?.emailAddresses[0].emailAddress}
+            />
           </Authenticated>
           <Unauthenticated>
-            <Button variant="default" onClick={signInWithGoogle}>
-              Sign In
-            </Button>
+            <SignInButton mode="modal">
+              <Button>Sign In</Button>
+            </SignInButton>
           </Unauthenticated>
         </div>
       </nav>
@@ -113,12 +111,9 @@ export function Header() {
               </Link>
             </Button>
 
-            {isAuthenticated && (
-              <Button variant="outline" className="w-full justify-center">
-                {creditsAvailable} Credits
-              </Button>
-            )}
             <Authenticated>
+              {creditsButton()}
+
               <Button
                 variant="ghost"
                 className="hover:bg-transparent/20 justify-center w-full"
@@ -132,13 +127,9 @@ export function Header() {
               </Button>
             </Authenticated>
             <Unauthenticated>
-              <Button
-                variant="default"
-                className="w-full justify-center"
-                onClick={signInWithGoogle}
-              >
-                Sign In
-              </Button>
+              <SignInButton mode="redirect">
+                <Button className="w-full justify-center">Sign In</Button>
+              </SignInButton>
             </Unauthenticated>
           </div>
         </div>
