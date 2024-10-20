@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { AvatarDropdown } from "./avatar-dropdown";
+import { Routes } from "@/lib/routes";
 
 export function Header() {
   const { user } = useUser();
@@ -50,14 +51,17 @@ export function Header() {
           </Link>
           <div className="hidden md:flex md:items-center md:ml-20 lg:ml-40">
             <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
+              <Authenticated>
+                <Link
+                  href={Routes.collectionPage()}
+                  className="hover:text-primary text-foreground transition-colors duration-100"
+                >
+                  Collection
+                </Link>
+              </Authenticated>
+
               <Link
-                href="/explore"
-                className="hover:text-primary text-foreground transition-colors duration-100"
-              >
-                Explore
-              </Link>
-              <Link
-                href="/create"
+                href={Routes.createPage()}
                 className="hover:text-primary text-foreground transition-colors duration-100"
               >
                 Create
@@ -93,24 +97,23 @@ export function Header() {
           <div className="flex flex-col gap-4 items-center w-full">
             <Button variant="ghost" asChild>
               <Link
-                href="/explore"
+                href={Routes.collectionPage()}
                 className="hover:text-primary text-foreground w-full"
                 onClick={toggleMobileMenu}
               >
-                Explore
+                Collection
               </Link>
             </Button>
 
             <Button variant="ghost" asChild>
               <Link
-                href="/create"
+                href={Routes.createPage()}
                 className="hover:text-primary text-foreground w-full"
                 onClick={toggleMobileMenu}
               >
                 Create
               </Link>
             </Button>
-
             <Authenticated>
               {creditsButton()}
 

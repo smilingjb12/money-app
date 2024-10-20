@@ -21,17 +21,17 @@ import type * as files from "../files.js";
 import type * as handlers_clerk from "../handlers/clerk.js";
 import type * as handlers_files from "../handlers/files.js";
 import type * as handlers_http from "../handlers/http.js";
+import type * as handlers_images from "../handlers/images.js";
 import type * as handlers_stripe from "../handlers/stripe.js";
-import type * as handlers_thumbnailPolls from "../handlers/thumbnailPolls.js";
 import type * as handlers_users from "../handlers/users.js";
 import type * as http from "../http.js";
+import type * as images from "../images.js";
 import type * as lib_convexEnv from "../lib/convexEnv.js";
 import type * as lib_env from "../lib/env.js";
 import type * as lib_helpers from "../lib/helpers.js";
 import type * as lib_rateLimits from "../lib/rateLimits.js";
 import type * as lib_session from "../lib/session.js";
 import type * as stripe from "../stripe.js";
-import type * as thumbnailPolls from "../thumbnailPolls.js";
 import type * as users from "../users.js";
 
 /**
@@ -49,17 +49,17 @@ declare const fullApi: ApiFromModules<{
   "handlers/clerk": typeof handlers_clerk;
   "handlers/files": typeof handlers_files;
   "handlers/http": typeof handlers_http;
+  "handlers/images": typeof handlers_images;
   "handlers/stripe": typeof handlers_stripe;
-  "handlers/thumbnailPolls": typeof handlers_thumbnailPolls;
   "handlers/users": typeof handlers_users;
   http: typeof http;
+  images: typeof images;
   "lib/convexEnv": typeof lib_convexEnv;
   "lib/env": typeof lib_env;
   "lib/helpers": typeof lib_helpers;
   "lib/rateLimits": typeof lib_rateLimits;
   "lib/session": typeof lib_session;
   stripe: typeof stripe;
-  thumbnailPolls: typeof thumbnailPolls;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

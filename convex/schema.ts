@@ -4,24 +4,11 @@ import { rateLimitTables } from "convex-helpers/server/rateLimit";
 
 export default defineSchema({
   ...rateLimitTables,
-  thumbnailPolls: defineTable({
+  images: defineTable({
     title: v.string(),
-    userId: v.string(),
-    aImageId: v.string(),
-    bImageId: v.string(),
-    aVotes: v.number(),
-    bVotes: v.number(),
-    votedUserIds: v.array(v.string()),
-    comments: v.array(
-      v.object({
-        userId: v.string(),
-        text: v.string(),
-        createdAt: v.number(),
-        userName: v.string(),
-        profileUrl: v.string(),
-      })
-    ),
-  }),
+    uploaderUserId: v.string(),
+    fileId: v.string(),
+  }).index("uploader_user_id", ["uploaderUserId"]),
   userPurchases: defineTable({
     userId: v.string(),
     stripeItemId: v.string(),
@@ -32,5 +19,5 @@ export default defineSchema({
     email: v.string(),
     credits: v.number(),
     isAnonymous: v.boolean(),
-  }).index("by_userId", ["userId"]),
+  }).index("user_id", ["userId"]),
 });

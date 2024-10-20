@@ -54,7 +54,7 @@ export const addCreditsHandler = async (
   console.log("Adding", args.creditsToAdd, "credits to user:", args.userId);
   const user = await ctx.db
     .query("users")
-    .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+    .withIndex("user_id", (q) => q.eq("userId", args.userId))
     .first();
 
   if (!user) {
@@ -77,7 +77,7 @@ export const getByUserIdHandler = async (
 ) => {
   const user = await ctx.db
     .query("users")
-    .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+    .withIndex("user_id", (q) => q.eq("userId", args.userId))
     .first();
 
   return user;

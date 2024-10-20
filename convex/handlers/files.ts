@@ -36,28 +36,26 @@ export const deduplicateFilesByHashHandler = async (ctx: MutationCtx) => {
   console.log("unique hashes count:", uniqueFileHashes.length);
   console.log("all files count:", allFiles.length);
 
-  const polls = await ctx.db.query("thumbnailPolls").collect();
-  for (const poll of polls) {
-    const fileA = allFiles.find((f) => f._id === poll.aImageId);
-    const fileB = allFiles.find((f) => f._id === poll.bImageId);
-    const aImageId = uniqueFileHashes.find(
-      (i) => i.sha256 === fileA!.sha256
+  const images = await ctx.db.query("images").collect();
+  for (const image of images) {
+    const file = allFiles.find((f) => f._id === image.fileId);
+    const fileId = uniqueFileHashes.find(
+      (i) => i.sha256 === file!.sha256
     )!.fileId;
-    const bImageId = uniqueFileHashes.find(
-      (i) => i.sha256 === fileB!.sha256
-    )!.fileId;
-    await ctx.db.patch(poll._id, { aImageId, bImageId });
+    await ctx.db.patch(image._id, { fileId: fileId });
   }
 };
 
 export const removeTemporaryFilesHandler = async (ctx: MutationCtx) => {
-  const polls = await ctx.db.query("thumbnailPolls").collect();
-  const usedImageIds = new Set(
-    polls.flatMap((poll) => [poll.aImageId, poll.bImageId])
-  );
+  const images = await ctx.db.query("images").collect();
+  const usedFileIds = [
+    ...new Set(images.map((image) => image.fileId as Id<"_storage">)),
+  ];
 
   const allFiles = await ctx.db.system.query("_storage").collect();
-  const unusedFiles = allFiles.filter((file) => !usedImageIds.has(file._id));
+  const unusedFiles = allFiles.filter(
+    (file) => !usedFileIds.includes(file._id)
+  );
 
   for (const file of unusedFiles) {
     await ctx.storage.delete(file._id);

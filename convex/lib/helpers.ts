@@ -17,14 +17,11 @@ export async function requireAuthentication(
 
 export async function ensureUploadSizeIsNotExceeded(
   ctx: QueryCtx,
-  aImageId: string,
-  bImageId: string
+  fileId: string
 ) {
   const uploadedFiles = await ctx.db.system
     .query("_storage")
-    .filter((q) =>
-      q.or(q.eq(q.field("_id"), aImageId), q.eq(q.field("_id"), bImageId))
-    )
+    .filter((q) => q.eq(q.field("_id"), fileId))
     .collect();
 
   if (

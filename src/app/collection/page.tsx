@@ -1,26 +1,18 @@
 "use client";
 
 import LoadingIndicator from "@/components/loading-indicator";
-import { Button } from "@/components/ui/button";
-import { useSession } from "@clerk/nextjs";
+import { Routes } from "@/lib/routes";
 import { usePaginatedQuery } from "convex/react";
-import { ThumbsUpIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { api } from "../../../convex/_generated/api";
-import { Doc } from "../../../convex/_generated/dataModel";
 
-export default function DashboardPage() {
-  const { session } = useSession();
+export default function CollectionPage() {
   const { results, isLoading } = usePaginatedQuery(
-    api.thumbnailPolls.getRecentThumbnailPolls,
+    api.images.getCollectionImages,
     {},
     { initialNumItems: 20 }
   );
-
-  const alreadyVotedFor = (poll: Doc<"thumbnailPolls">) => {
-    return session != null && poll.votedUserIds.includes(session!.user.id);
-  };
 
   if (isLoading) {
     return <LoadingIndicator className="mt-40" />;
@@ -31,13 +23,12 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {results?.map((i) => (
           <Link
-            href={`/thumbnail-polls/${i._id}`}
+            href={Routes.imagePage(i._id)}
             key={i._id}
             className="aspect-square relative overflow-hidden hover:opacity-90 transition-all"
           >
             <Image
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              src={(i as any).aImageUrl!}
+              src={i.imageUrl}
               alt={i.title}
               fill
               className="object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
@@ -50,22 +41,17 @@ export default function DashboardPage() {
                       <p className="text-lg">{i.title}</p>
                     </h3>
                   </div>
-                  <div className="flex items-center">
-                    <ThumbsUpIcon className="size-4 text-white mr-1" />
-                    <p className="text-white">{i.aVotes + i.bVotes}</p>
-                  </div>
                 </div>
-                <Button
-                  variant="default"
-                  className="w-3/4 mx-auto mt-3 bg-background text-foreground dark:bg-foreground dark:text-background hover:bg-background"
-                >
-                  {alreadyVotedFor(i) ? "View Results" : "Vote"}
-                </Button>
               </div>
             </div>
           </Link>
         ))}
       </div>
+      {!results.length && (
+        <div className="text-center text-lg font-medium text-gray-400 container mx-auto max-w-screen-lg">
+          No images in your collection yet
+        </div>
+      )}
     </div>
   );
 }

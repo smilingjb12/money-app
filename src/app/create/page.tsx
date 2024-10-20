@@ -19,20 +19,19 @@ import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
 import { ActionButton } from "@/components/action-button";
+import { Routes } from "@/lib/routes";
 
 interface FormErrors {
   title?: string;
-  imageA?: string;
-  imageB?: string;
+  fileId?: string;
 }
 
 export default function CreatePage() {
   const { session } = useSession();
   const [loading, setLoading] = useState(false);
   const { handleError } = useMutationErrorHandler();
-  const createPoll = useMutation(api.thumbnailPolls.createThumbnailPoll);
-  const [imageAId, setImageAId] = useState<string>("");
-  const [imageBId, setImageBId] = useState<string>("");
+  const uploadImage = useMutation(api.images.uploadImage);
+  const [fileId, setFileId] = useState<string>("");
   const router = useRouter();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -40,16 +39,13 @@ export default function CreatePage() {
 
   const hasNoCreditsLeft = creditsAvailable === 0;
 
-  const validateForm = (title: string, imageAId: string, imageBId: string) => {
+  const validateForm = (title: string, fileId: string) => {
     const formErrors: FormErrors = {};
     if (!title) {
       formErrors.title = "Fill in the title please";
     }
-    if (!imageAId) {
-      formErrors.imageA = "Upload image A please";
-    }
-    if (!imageBId) {
-      formErrors.imageB = "Upload image B please";
+    if (!fileId) {
+      formErrors.fileId = "Upload image please";
     }
     return formErrors;
   };
@@ -58,23 +54,22 @@ export default function CreatePage() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const title = formData.get("title") as string;
-    const formErrors = validateForm(title, imageAId, imageBId);
+    const formErrors = validateForm(title, fileId);
     setErrors(formErrors);
     if (!isEmpty(formErrors)) {
       return;
     }
 
     setLoading(true);
-    createPoll({
-      aImageId: imageAId!,
-      bImageId: imageBId!,
+    uploadImage({
+      fileId: fileId!,
       title,
     })
-      .then((pollId) => {
+      .then((imageId) => {
         toast({
           title: "Test created!",
         });
-        router.push(`/thumbnail-polls/${pollId}`);
+        router.push(Routes.imagePage(imageId));
       })
       .catch(handleError)
       .finally(() => setLoading(false));
@@ -106,28 +101,18 @@ export default function CreatePage() {
           {errors.title && <div className="text-red-400">{errors.title}</div>}
         </div>
         {!hasNoCreditsLeft && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-1 mb-4 justify-items-center">
+          <div className="flex items-center w-fit mx-auto gap-1 mb-4 justify-items-center">
             <ThumbnailUpload
               title="Test image A"
               showUpload={!hasNoCreditsLeft}
-              imageId={imageAId}
+              fileId={fileId}
               onUploadComplete={async (uploaded: UploadFileResponse[]) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                setImageAId(
+                setFileId(
                   (uploaded[0].response as { storageId: string }).storageId
                 );
               }}
-              error={errors.imageA}
-            />
-            <ThumbnailUpload
-              title="Test image B"
-              showUpload={!hasNoCreditsLeft}
-              imageId={imageBId}
-              onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                setImageBId((uploaded[0].response as any).storageId);
-              }}
-              error={errors.imageB}
+              error={errors.fileId}
             />
           </div>
         )}
@@ -136,7 +121,7 @@ export default function CreatePage() {
           <ActionButton
             disabled={!!session && hasNoCreditsLeft}
             isLoading={loading}
-            className="mt-6 mb-4 mx-auto"
+            className="mt-0 mb-4 mx-auto"
             type="submit"
           >
             Create a Poll (1 credit)
@@ -149,7 +134,7 @@ export default function CreatePage() {
             <AlertDescription className="text-left">
               No credits left to create a poll.{" "}
               <Button asChild className="p-0" variant="link">
-                <Link href="/upgrade">Upgrade</Link>
+                <Link href={Routes.upgradePage()}>Upgrade</Link>
               </Button>{" "}
               to get more credits.
             </AlertDescription>

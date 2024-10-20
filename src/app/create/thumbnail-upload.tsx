@@ -9,7 +9,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 
 interface ThumbnailUploadProps {
   title: string;
-  imageId: string;
+  fileId: string;
   onUploadComplete: (uploaded: UploadFileResponse[]) => void;
   showUpload: boolean;
   error?: string;
@@ -18,19 +18,19 @@ interface ThumbnailUploadProps {
 
 export function ThumbnailUpload({
   title,
-  imageId,
+  fileId,
   onUploadComplete,
   showUpload,
   error,
   className,
 }: ThumbnailUploadProps) {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-  const alreadyUploaded = !!imageId;
+  const alreadyUploaded = !!fileId;
   const imageUrl = useQuery(
     api.files.getFileUrl,
-    imageId
+    fileId
       ? {
-          fileId: imageId as Id<"_storage">,
+          fileId: fileId as Id<"_storage">,
         }
       : "skip"
   )!;
@@ -44,7 +44,7 @@ export function ThumbnailUpload({
       )}
     >
       <h2 className="text-2xl font-bold text-center">{title}</h2>
-      {imageId && (
+      {fileId && (
         <div className="relative w-full h-full">
           <Image
             className="object-cover"
