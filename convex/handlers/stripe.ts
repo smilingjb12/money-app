@@ -7,6 +7,7 @@ import Stripe from "stripe";
 import { DataModel } from "../_generated/dataModel";
 import { internal } from "../_generated/api";
 import { convexEnv } from "../lib/convexEnv";
+import { Constants } from "../../src/constants";
 
 const PRICE_ID_CREDITS: Record<string, number> = {
   [convexEnv.NEXT_PUBLIC_STRIPE_TIER_1_PRICEID]: Number(
@@ -49,7 +50,7 @@ export const stripeWebhookHandler = async (
   args: { payload: string; signature: string }
 ) => {
   const stripe = new Stripe(convexEnv.STRIPE_KEY, {
-    apiVersion: "2024-06-20",
+    apiVersion: Constants.STRIPE_API_VERSION,
   });
 
   const webhookSecret = convexEnv.STRIPE_WEBHOOKS_SECRET;
@@ -77,7 +78,7 @@ async function createCheckoutSession(
   const domain = convexEnv.SITE_URL;
   console.log("Hosting URL:", domain);
   const stripe = new Stripe(convexEnv.STRIPE_KEY!, {
-    apiVersion: "2024-06-20",
+    apiVersion: Constants.STRIPE_API_VERSION,
   });
   return await stripe.checkout.sessions.create({
     line_items: [
