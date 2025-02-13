@@ -44,7 +44,7 @@ export function ThumbnailUpload({
       )}
     >
       <h2 className="text-2xl font-bold text-center">{title}</h2>
-      {fileId && (
+      {fileId && imageUrl && (
         <div className="relative w-full h-full">
           <Image
             className="object-cover"
