@@ -48,7 +48,7 @@ export default function CollectionPage() {
         ))}
       </div>
       {!results.length && (
-        <div className="text-center text-lg font-medium text-gray-400 container mx-auto max-w-screen-lg">
+        <div className="text-center text-lg font-medium text-gray-400 container mx-auto max-w-(--breakpoint-lg)">
           No images in your collection yet
         </div>
       )}

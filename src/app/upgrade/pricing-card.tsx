@@ -23,7 +23,7 @@ export const PricingCard = ({
     router.push(url!);
   };
   return (
-    <div className="flex flex-col p-6 mx-auto lg:min-w-full max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+    <div className="flex flex-col p-6 mx-auto lg:min-w-full max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow-sm dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
       {title && <h3 className="mb-4 text-2xl font-semibold">{title}</h3>}
       <div className="flex justify-center mt-4">{iconGenerator()}</div>
       <div className="flex justify-center items-baseline mt-8 mb-2">

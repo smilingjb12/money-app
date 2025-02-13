@@ -80,12 +80,12 @@ export default function CreatePage() {
       <h1 className="text-4xl font-bold mb-6 text-center">
         Create a Thumbnail Test
       </h1>
-      <p className="text-lg max-w-screen-md mx-auto mb-6 text-center">
+      <p className="text-lg max-w-(--breakpoint-md) mx-auto mb-6 text-center">
         Create your test so that other people can vote on their favorite
         thumbnail and help you redesign or pick the best option.
       </p>
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col max-w-screen-sm mb-8 mx-auto">
+        <div className="flex flex-col max-w-(--breakpoint-sm) mb-8 mx-auto">
           <Label htmlFor="title" className="text-md">
             Your Test Title
           </Label>
