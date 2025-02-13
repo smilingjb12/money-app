@@ -22,17 +22,17 @@ const ThemedClerkProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <ThemedClerkProvider>
+    <ThemedClerkProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
           {children}
         </ConvexProviderWithClerk>
-      </ThemedClerkProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </ThemedClerkProvider>
   );
 };
