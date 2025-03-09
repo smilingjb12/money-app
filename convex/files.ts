@@ -1,17 +1,14 @@
 import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
-import {
-  cleanupFileStorageHandler,
-  deduplicateFilesByHashHandler,
-  generateUploadUrlHandler,
-  getFileUrlHandler,
-  removeTemporaryFilesHandler,
-} from "./handlers/files";
+import { ensureHasPositiveCredits, requireAuthentication } from "./lib/helpers";
+import { FileService } from "./services/file.service";
 
 export const generateUploadUrl = mutation({
   args: {},
   handler: async (ctx): Promise<string> => {
-    return await generateUploadUrlHandler(ctx);
+    await requireAuthentication(ctx);
+    await ensureHasPositiveCredits(ctx);
+    return await FileService.generateUploadUrl(ctx);
   },
 });
 
@@ -20,27 +17,13 @@ export const getFileUrl = query({
     fileId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
-    return await getFileUrlHandler(ctx, args);
+    return await FileService.getFileUrl(ctx, args);
   },
 });
 
 export const cleanupFileStorage = internalMutation({
   args: {},
   handler: async (ctx): Promise<void> => {
-    await cleanupFileStorageHandler(ctx);
-  },
-});
-
-export const deduplicateFilesByHash = internalMutation({
-  args: {},
-  handler: async (ctx) => {
-    await deduplicateFilesByHashHandler(ctx);
-  },
-});
-
-export const removeTemporaryFiles = internalMutation({
-  args: {},
-  handler: async (ctx) => {
-    await removeTemporaryFilesHandler(ctx);
+    await FileService.cleanupFileStorage(ctx);
   },
 });

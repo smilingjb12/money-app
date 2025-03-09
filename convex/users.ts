@@ -1,26 +1,19 @@
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery, query } from "./_generated/server";
-import {
-  addCreditsHandler,
-  createSignedInUserHandler,
-  decrementCreditsHandler,
-  getAvailableCreditsHandler,
-  getByUserIdHandler,
-  getCurrentUserHandler,
-} from "./handlers/users";
+import { UserService } from "./services/user.service";
 
 export const getAvailableCredits = query({
   args: {},
   handler: async (ctx): Promise<number> => {
-    return await getAvailableCreditsHandler(ctx);
+    return await UserService.getAvailableCredits(ctx);
   },
 });
 
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx): Promise<Doc<"users"> | null> => {
-    return await getCurrentUserHandler(ctx);
+    return await UserService.getCurrentUser(ctx);
   },
 });
 
@@ -30,16 +23,7 @@ export const createSignedInUser = internalMutation({
     email: v.string(),
   },
   handler: async (ctx, args) => {
-    return await createSignedInUserHandler(ctx, args);
-  },
-});
-
-export const decrementCredits = internalMutation({
-  args: {
-    userId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await decrementCreditsHandler(ctx, args);
+    return await UserService.createSignedInUser(ctx, args);
   },
 });
 
@@ -48,7 +32,7 @@ export const getByUserId = internalQuery({
     userId: v.string(),
   },
   handler: async (ctx, args) => {
-    return await getByUserIdHandler(ctx, args);
+    return await UserService.getUserById(ctx, args);
   },
 });
 
@@ -60,6 +44,6 @@ export const addCredits = internalMutation({
     creditsToAdd: v.number(),
   },
   handler: async (ctx, args) => {
-    return await addCreditsHandler(ctx, args);
+    return await UserService.addCredits(ctx, args);
   },
 });

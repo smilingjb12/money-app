@@ -1,30 +1,22 @@
-import { internal } from "../_generated/api";
 import { Id } from "../_generated/dataModel";
 import { MutationCtx, QueryCtx } from "../_generated/server";
-import {
-  ensureHasPositiveCredits,
-  requireAuthentication,
-} from "../lib/helpers";
 
-export const generateUploadUrlHandler = async (ctx: MutationCtx) => {
-  await requireAuthentication(ctx);
-  await ensureHasPositiveCredits(ctx);
-  return await ctx.storage.generateUploadUrl();
+export const FileService = {
+  async getFileUrl(ctx: QueryCtx, args: { fileId: Id<"_storage"> }) {
+    return await ctx.storage.getUrl(args.fileId);
+  },
+
+  async generateUploadUrl(ctx: MutationCtx) {
+    return await ctx.storage.generateUploadUrl();
+  },
+
+  async cleanupFileStorage(ctx: MutationCtx) {
+    await deduplicateFilesByHashHandler(ctx);
+    await removeTemporaryFilesHandler(ctx);
+  },
 };
 
-export const getFileUrlHandler = async (
-  ctx: QueryCtx,
-  args: { fileId: Id<"_storage"> }
-) => {
-  return await ctx.storage.getUrl(args.fileId);
-};
-
-export const cleanupFileStorageHandler = async (ctx: MutationCtx) => {
-  await ctx.runMutation(internal.files.deduplicateFilesByHash, {});
-  await ctx.runMutation(internal.files.removeTemporaryFiles, {});
-};
-
-export const deduplicateFilesByHashHandler = async (ctx: MutationCtx) => {
+async function deduplicateFilesByHashHandler(ctx: MutationCtx) {
   const allFiles = await ctx.db.system.query("_storage").collect();
   const uniqueFileHashes: Array<{ sha256: string; fileId: string }> = [];
   for (const file of allFiles) {
@@ -44,9 +36,9 @@ export const deduplicateFilesByHashHandler = async (ctx: MutationCtx) => {
     )!.fileId;
     await ctx.db.patch(image._id, { fileId: fileId });
   }
-};
+}
 
-export const removeTemporaryFilesHandler = async (ctx: MutationCtx) => {
+async function removeTemporaryFilesHandler(ctx: MutationCtx) {
   const images = await ctx.db.query("images").collect();
   const usedFileIds = [
     ...new Set(images.map((image) => image.fileId as Id<"_storage">)),
@@ -61,4 +53,4 @@ export const removeTemporaryFilesHandler = async (ctx: MutationCtx) => {
     await ctx.storage.delete(file._id);
   }
   console.log("Deleted", unusedFiles.length, "unused files.");
-};
+}

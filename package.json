@@ -26,7 +26,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "convex": "^1.19.2",
+    "convex": "^1.19.5",
     "convex-helpers": "^0.1.71",
     "date-fns": "^4.1.0",
     "lodash": "^4.17.21",

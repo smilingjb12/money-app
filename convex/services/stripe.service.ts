@@ -1,13 +1,11 @@
-"use node";
-
-import { ConvexError } from "convex/values";
-import { ActionCtx } from "../_generated/server";
 import { GenericActionCtx, UserIdentity } from "convex/server";
+import { ConvexError } from "convex/values";
 import Stripe from "stripe";
-import { DataModel } from "../_generated/dataModel";
-import { internal } from "../_generated/api";
-import { convexEnv } from "../lib/convexEnv";
 import { Constants } from "../../src/constants";
+import { internal } from "../_generated/api";
+import { DataModel } from "../_generated/dataModel";
+import { ActionCtx } from "../_generated/server";
+import { convexEnv } from "../lib/convexEnv";
 
 const PRICE_ID_CREDITS: Record<string, number> = {
   [convexEnv.NEXT_PUBLIC_STRIPE_TIER_1_PRICEID]: Number(
@@ -26,49 +24,48 @@ type Metadata = {
   priceId: string;
 };
 
-export const payActionHandler = async (
-  ctx: ActionCtx,
-  args: { stripePriceId: string }
-) => {
-  console.log("stripe.pay action called");
-  const user = await ctx.auth.getUserIdentity();
-  console.log("Caller user:", user);
-  if (!user) {
-    throw new ConvexError("You must be logged in to purchase credits");
-  }
-  if (!user.emailVerified) {
-    throw new ConvexError("You must have a verified email to pay");
-  }
-
-  const session = await createCheckoutSession(user, args.stripePriceId);
-  console.log("Session URL:", session.url);
-  return session.url;
-};
-
-export const stripeWebhookHandler = async (
-  ctx: ActionCtx,
-  args: { payload: string; signature: string }
-) => {
-  const stripe = new Stripe(convexEnv.STRIPE_KEY, {
-    apiVersion: Constants.STRIPE_API_VERSION,
-  });
-
-  const webhookSecret = convexEnv.STRIPE_WEBHOOKS_SECRET;
-  try {
-    const event = stripe.webhooks.constructEvent(
-      args.payload,
-      args.signature,
-      webhookSecret
-    );
-
-    if (event.type === "checkout.session.completed") {
-      await processCheckoutSessionCompletedEvent(ctx, event);
+export const StripeService = {
+  async pay(ctx: ActionCtx, args: { stripePriceId: string }) {
+    console.log("stripe.pay action called");
+    const user = await ctx.auth.getUserIdentity();
+    console.log("Caller user:", user);
+    if (!user) {
+      throw new ConvexError("You must be logged in to purchase credits");
     }
-    return { success: true };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: (error as { message: string }).message };
-  }
+    if (!user.emailVerified) {
+      throw new ConvexError("You must have a verified email to pay");
+    }
+
+    const session = await createCheckoutSession(user, args.stripePriceId);
+    console.log("Session URL:", session.url);
+    return session.url;
+  },
+
+  async processCheckoutSessionCompletedEvent(
+    ctx: ActionCtx,
+    args: { payload: string; signature: string }
+  ) {
+    const stripe = new Stripe(convexEnv.STRIPE_KEY, {
+      apiVersion: Constants.STRIPE_API_VERSION,
+    });
+
+    const webhookSecret = convexEnv.STRIPE_WEBHOOKS_SECRET;
+    try {
+      const event = stripe.webhooks.constructEvent(
+        args.payload,
+        args.signature,
+        webhookSecret
+      );
+
+      if (event.type === "checkout.session.completed") {
+        await processCheckoutSessionCompletedEvent(ctx, event);
+      }
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      return { success: false, error: (error as { message: string }).message };
+    }
+  },
 };
 
 async function createCheckoutSession(
