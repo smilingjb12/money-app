@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import clsx from "clsx";
 
+import { ActionButton } from "@/components/action-button";
 import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
+import { Routes } from "@/lib/routes";
 import { useSession } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { isEmpty } from "lodash";
@@ -18,8 +20,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
-import { ActionButton } from "@/components/action-button";
-import { Routes } from "@/lib/routes";
 
 interface FormErrors {
   title?: string;
@@ -50,7 +50,7 @@ export default function CreatePage() {
     return formErrors;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const title = formData.get("title") as string;
@@ -62,7 +62,7 @@ export default function CreatePage() {
 
     setLoading(true);
     uploadImage({
-      fileId: fileId!,
+      fileId: fileId,
       title,
     })
       .then((imageId) => {
@@ -106,8 +106,7 @@ export default function CreatePage() {
               title="Test image A"
               showUpload={!hasNoCreditsLeft}
               fileId={fileId}
-              onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onUploadComplete={(uploaded: UploadFileResponse[]) => {
                 setFileId(
                   (uploaded[0].response as { storageId: string }).storageId
                 );

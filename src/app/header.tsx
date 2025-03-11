@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Constants } from "@/constants";
+import { Routes } from "@/lib/routes";
 import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 import { AvatarDropdown } from "./avatar-dropdown";
-import { Routes } from "@/lib/routes";
 
 export function Header() {
   const { user } = useUser();
@@ -120,8 +120,8 @@ export function Header() {
               <Button
                 variant="ghost"
                 className="hover:bg-transparent/20 justify-center w-full"
-                onClick={() => {
-                  clerk.signOut();
+                onClick={async () => {
+                  await clerk.signOut();
                   toggleMobileMenu();
                 }}
               >

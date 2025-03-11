@@ -14,7 +14,7 @@ export function useMutationErrorHandler() {
       } else {
         toast({
           title: "Error",
-          description: error.data,
+          description: (error as ConvexError<string>).data,
           variant: "destructive",
         });
       }

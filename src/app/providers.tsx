@@ -13,7 +13,7 @@ const ThemedClerkProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ClerkProvider
       appearance={{ baseTheme: dark }}
-      publishableKey={nextEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+      publishableKey={nextEnv.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       {children}
     </ClerkProvider>

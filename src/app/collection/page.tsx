@@ -28,7 +28,7 @@ export default function CollectionPage() {
             className="aspect-square relative overflow-hidden hover:opacity-90 transition-all"
           >
             <Image
-              src={i.imageUrl}
+              src={i.imageUrl!}
               alt={i.title}
               fill
               className="object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"

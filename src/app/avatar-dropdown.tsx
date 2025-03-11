@@ -29,7 +29,7 @@ export const AvatarDropdown = ({ fullName, email, imageUrl }: Props) => {
       .join("") ?? "";
 
   const deleteMyData = () => {
-    confirm().then((confirmed) => {
+    void confirm().then((confirmed) => {
       if (confirmed) {
         console.log("deleting data");
       } else {

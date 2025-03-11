@@ -27,22 +27,24 @@ export const ImageService = {
     }
   ) {
     const userIdentity = await ctx.auth.getUserIdentity();
-    const page = await ctx.db
+    const results = await ctx.db
       .query("images")
       .withIndex("uploader_user_id", (q) =>
         q.eq("uploaderUserId", userIdentity!.subject)
       )
       .order("desc")
       .paginate(args.paginationOpts);
-    const result = await Promise.all(
-      page.page.map(async (poll) => ({
-        ...poll,
-        imageUrl: await ctx.storage.getUrl(poll.fileId as Id<"_storage">),
-      }))
-    );
-    page.page = result;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return page as any;
+
+    const pageResult = {
+      ...results,
+      page: await Promise.all(
+        results.page.map(async (image) => ({
+          ...image,
+          imageUrl: await ctx.storage.getUrl(image.fileId as Id<"_storage">),
+        }))
+      ),
+    };
+    return pageResult;
   },
 
   async uploadImage(ctx: MutationCtx, args: { fileId: string; title: string }) {
