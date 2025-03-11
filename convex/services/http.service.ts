@@ -1,4 +1,4 @@
-import { WebhookEvent } from "@clerk/clerk-sdk-node";
+import { WebhookEvent } from "@clerk/express";
 import { Webhook, WebhookRequiredHeaders } from "svix";
 import { internal } from "../_generated/api";
 import { ActionCtx } from "../_generated/server";
