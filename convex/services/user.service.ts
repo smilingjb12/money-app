@@ -34,7 +34,7 @@ export const UserService = {
   async getCurrentUser(ctx: QueryCtx): Promise<Doc<"users"> | null> {
     const userIdentity = await ctx.auth.getUserIdentity();
     return await UserService.getUserById(ctx, {
-      userId: userIdentity!.subect as string,
+      userId: userIdentity!.subject,
     });
   },
 

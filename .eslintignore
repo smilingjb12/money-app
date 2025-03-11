@@ -1,0 +1,10 @@
+# Ignore generated files
+convex/_generated/**/*
+node_modules
+.next
+
+# Config files
+vitest.config.mts
+postcss.config.mjs
+next.config.mjs
+convex/auth.config.js 

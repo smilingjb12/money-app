@@ -1,0 +1,43 @@
+---
+description: General rules
+globs: 
+alwaysApply: false
+---
+# Project Rules
+
+## General
+- App uses Tailwind CSS for styling. Prefer using Tailwind color variables and utility classes instead of hardcoding values.
+- App uses Convex as backend-as-a-service with all queries and mutations residing in the `convex/` directory.
+- App doesn't use React Server Components; all data fetching is done client-side using Convex hooks.
+- App uses NextJS with the latest version and features but avoids using server-specific features.
+- App uses ShadCN for reusable UI components. Import components from `@/components/ui`. If a required component is missing try finding a new one at ShadCN docs.
+- Project uses TypeScript with strict type checking enabled.
+
+## Architecture
+- Frontend code lives in `src/` directory with pages in `src/pages/`.
+- Convex schema is defined in `convex/schema.ts`.
+- Convex queries and mutations are organized by domain in separate files within `convex/`.
+- New application component files should be created in the same folder next tot their parent component.
+- Component files are named dash-cased (e.g. `my-component-name.tsx`).
+
+## Data Flow
+- All data access goes through Convex client hooks (useQuery, useMutation).
+- Handle loading and error states explicitly for all data operations.
+- There's a global error handler for Convex mutation that can be found at [use-mutation-error-handler.ts](mdc:src/hooks/use-mutation-error-handler.ts).
+
+## Styling
+- Use Tailwind's utility classes for styling components.
+- Leverage ShadCN's component library and extend using class-variance-authority when needed.
+- Use `cn()` utility function for conditional class name merging.
+- Follow mobile-first responsive design patterns.
+
+## Development Workflow
+- Run `npx convex dev` to start the Convex development server alongside your NextJS app.
+- Use ESLint and Prettier for code quality and formatting.
+- Don't write tests unless specifically instructed to do so.
+
+## Best Practices
+- Prefer using latest language features and library versions.
+- Keep components small and focused on a single responsibility.
+- Use Convex's validation and security features to protect data.
+- Follow ShadCN's component extension patterns rather than modifying source components.

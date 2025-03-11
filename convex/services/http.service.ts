@@ -33,7 +33,7 @@ export const HttpService = {
     const headerPayload = req.headers;
 
     try {
-      const result = await HttpService.verifyClerkWebhook({
+      const result = HttpService.verifyClerkWebhook({
         payload: payloadString,
         headers: {
           "svix-id": headerPayload.get("svix-id")!,
@@ -54,13 +54,14 @@ export const HttpService = {
       return new Response(null, { status: 200 });
     } catch (error) {
       console.error("Clerk webhook error", error);
+      /* eslint-disable-next-line  @typescript-eslint/restrict-template-expressions   */
       return new Response(`Webhook Error: ${error}`, {
         status: 400,
       });
     }
   },
 
-  async verifyClerkWebhook(args: {
+  verifyClerkWebhook(args: {
     headers: WebhookRequiredHeaders;
     payload: string;
   }) {

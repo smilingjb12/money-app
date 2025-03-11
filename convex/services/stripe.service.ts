@@ -74,7 +74,7 @@ async function createCheckoutSession(
 ): Promise<Stripe.Response<Stripe.Checkout.Session>> {
   const domain = convexEnv.SITE_URL;
   console.log("Hosting URL:", domain);
-  const stripe = new Stripe(convexEnv.STRIPE_KEY!, {
+  const stripe = new Stripe(convexEnv.STRIPE_KEY, {
     apiVersion: Constants.STRIPE_API_VERSION,
   });
   return await stripe.checkout.sessions.create({
