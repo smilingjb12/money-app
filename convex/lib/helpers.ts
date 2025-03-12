@@ -1,7 +1,7 @@
 import { UserIdentity } from "convex/server";
 import { ConvexError } from "convex/values";
-import { api } from "../_generated/api";
 import { QueryCtx } from "../_generated/server";
+import { UserService } from "../services/user.service";
 import { convexEnv } from "./convexEnv";
 
 export async function requireAuthentication(
@@ -34,7 +34,7 @@ export async function ensureUploadSizeIsNotExceeded(
 }
 
 export async function ensureHasPositiveCredits(ctx: QueryCtx) {
-  const currentUser = await ctx.runQuery(api.users.getCurrentUser, {});
+  const currentUser = await UserService.getCurrentUser(ctx);
   console.log("currentUser", currentUser);
   if (currentUser!.credits <= 0) {
     throw new Error("Not enough credits to perform the action");

@@ -5,7 +5,7 @@ import { Routes } from "@/lib/routes";
 import { usePaginatedQuery } from "convex/react";
 import Image from "next/image";
 import Link from "next/link";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 
 export default function CollectionPage() {
   const { results, isLoading } = usePaginatedQuery(

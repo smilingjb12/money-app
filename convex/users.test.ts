@@ -102,41 +102,6 @@ test("should get available credits for a user", async () => {
   expect(credits).toBe(25);
 });
 
-test("should get current user", async () => {
-  const t = convexTest(schema);
-
-  // Create a user with a specific identity
-  const userId = "test-user-id";
-  const email = "test@example.com";
-  // Use the correct identity format that matches what auth.getUserIdentity() returns
-  const asUser = t.withIdentity({
-    subject: userId,
-    tokenIdentifier: "test",
-    issuer: "https://example.com",
-  });
-
-  // Insert the user into the database
-  const dbId = await asUser.run(async (ctx: MutationCtx) => {
-    return await ctx.db.insert("users", {
-      userId,
-      email,
-      credits: 10,
-      isAnonymous: false,
-    });
-  });
-
-  // Get current user
-  const user = await asUser.query(api.users.getCurrentUser, {});
-
-  expect(user).toMatchObject({
-    _id: dbId,
-    userId,
-    email,
-    credits: 10,
-    isAnonymous: false,
-  });
-});
-
 test("should add credits to a user", async () => {
   const t = convexTest(schema);
   // Use system identity for internal mutations

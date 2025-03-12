@@ -1,5 +1,4 @@
 import { v } from "convex/values";
-import { Doc } from "./_generated/dataModel";
 import { internalMutation, internalQuery, query } from "./_generated/server";
 import { UserService } from "./services/user.service";
 
@@ -7,13 +6,6 @@ export const getAvailableCredits = query({
   args: {},
   handler: async (ctx): Promise<number> => {
     return await UserService.getAvailableCredits(ctx);
-  },
-});
-
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx): Promise<Doc<"users"> | null> => {
-    return await UserService.getCurrentUser(ctx);
   },
 });
 

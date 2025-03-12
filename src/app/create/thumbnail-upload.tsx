@@ -71,7 +71,7 @@ export function ThumbnailUpload({
         </div>
       )}
 
-      {error && <div className="text-red-400">{error}</div>}
+      {error && <div className="text-destructive">{error}</div>}
     </div>
   );
 }

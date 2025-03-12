@@ -150,7 +150,7 @@ export function UploadZone(props: {
           {props.subtitle}
         </div>
       ) : null}
-      {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
+      {error && <div className="mt-2 text-sm text-destructive">{error}</div>}
       {files.length > 0 ? (
         <button
           className={twMerge(

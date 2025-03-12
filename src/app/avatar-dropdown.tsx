@@ -62,7 +62,7 @@ export const AvatarDropdown = ({ fullName, email, imageUrl }: Props) => {
           </div>
           <DropdownMenuItem
             onClick={deleteMyData}
-            className="text-red-500 focus:bg-destructive focus:text-destructive-foreground px-8 py-3 cursor-pointer"
+            className="text-destructive focus:bg-destructive focus:text-destructive-foreground px-8 py-3 cursor-pointer"
           >
             <TriangleAlert className="mr-2 h-4 w-4" />
             <span className="ml-5">Delete My Data</span>

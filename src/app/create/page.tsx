@@ -11,7 +11,7 @@ import { ActionButton } from "@/components/action-button";
 import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { Routes } from "@/lib/routes";
-import { useSession } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, useSession } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { isEmpty } from "lodash";
 import { TriangleAlert } from "lucide-react";
@@ -94,11 +94,13 @@ export default function CreatePage() {
             name="title"
             type="text"
             className={clsx("text-lg", {
-              "border-red-400 border": errors.title,
+              "border-destructive border": errors.title,
             })}
             placeholder="Label your test to make it easier to manage later"
           />
-          {errors.title && <div className="text-red-400">{errors.title}</div>}
+          {errors.title && (
+            <div className="text-destructive">{errors.title}</div>
+          )}
         </div>
         {!hasNoCreditsLeft && (
           <div className="flex items-center w-fit mx-auto gap-1 mb-4 justify-items-center">
@@ -117,14 +119,21 @@ export default function CreatePage() {
         )}
 
         <div className="flex justify-start">
-          <ActionButton
-            disabled={!!session && hasNoCreditsLeft}
-            isLoading={loading}
-            className="mt-0 mb-4 mx-auto"
-            type="submit"
-          >
-            Create a Poll (1 credit)
-          </ActionButton>
+          <SignedOut>
+            <SignInButton mode="redirect">
+              <Button className="mt-0 mb-4 mx-auto">Sign In to start</Button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <ActionButton
+              disabled={!!session && hasNoCreditsLeft}
+              isLoading={loading}
+              className="mt-0 mb-4 mx-auto"
+              type="submit"
+            >
+              Create a Poll (1 credit)
+            </ActionButton>
+          </SignedIn>
         </div>
         {!!session && hasNoCreditsLeft && !loading && (
           <Alert className="mb-4 max-w-lg mx-auto">
