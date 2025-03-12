@@ -21,6 +21,7 @@ export const getImage = query({
     imageId: v.id("images"),
   },
   handler: async (ctx, args) => {
+    // [AllowAnonymous]
     return await ImageService.getImage(ctx, args.imageId);
   },
 });

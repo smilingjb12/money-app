@@ -1,10 +1,12 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery, query } from "./_generated/server";
+import { requireAuthentication } from "./lib/helpers";
 import { UserService } from "./services/user.service";
 
 export const getAvailableCredits = query({
   args: {},
   handler: async (ctx): Promise<number> => {
+    await requireAuthentication(ctx);
     return await UserService.getAvailableCredits(ctx);
   },
 });

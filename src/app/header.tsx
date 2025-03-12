@@ -18,8 +18,11 @@ import { api } from "../../convex/_generated/api";
 import { AvatarDropdown } from "./avatar-dropdown";
 
 export function Header() {
-  const { user } = useUser();
-  const creditsAvailable = useQuery(api.users.getAvailableCredits);
+  const { user, isSignedIn } = useUser();
+  const creditsAvailable = useQuery(
+    api.users.getAvailableCredits,
+    isSignedIn ? {} : "skip"
+  );
   const clerk = useClerk();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -34,7 +37,7 @@ export function Header() {
   //   });
   // };
 
-  const creditsButton = () => {
+  const CreditsButton = () => {
     return (
       <Button variant="outline" className="w-full justify-center">
         {creditsAvailable} Credits
@@ -84,7 +87,7 @@ export function Header() {
         </Button>
         <div className="hidden md:flex md:items-center gap-4 text-foreground">
           <SignedIn>
-            {creditsButton()}
+            <CreditsButton />
             <AvatarDropdown
               fullName={user?.fullName}
               imageUrl={user?.imageUrl}
@@ -122,7 +125,7 @@ export function Header() {
             </Button>
 
             <SignedIn>
-              {creditsButton()}
+              <CreditsButton />
 
               <Button
                 variant="ghost"

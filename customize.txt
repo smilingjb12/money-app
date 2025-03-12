@@ -2,3 +2,7 @@
 - Rebrand /rate-limited page
 - Configure protected routes in middleware
 - Change favicon
+- Change APP_NAME
+- Change app header icon
+- Update all legal pages
+- Rebrand Clerk app (logo/name)
