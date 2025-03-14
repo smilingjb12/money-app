@@ -11,8 +11,13 @@ import { ActionButton } from "@/components/action-button";
 import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { Routes } from "@/lib/routes";
-import { SignedIn, SignedOut, SignInButton, useSession } from "@clerk/nextjs";
-import { useMutation, useQuery } from "convex/react";
+import { SignInButton, useSession } from "@clerk/nextjs";
+import {
+  Authenticated,
+  Unauthenticated,
+  useMutation,
+  useQuery,
+} from "convex/react";
 import { isEmpty } from "lodash";
 import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
@@ -69,7 +74,7 @@ export default function CreatePage() {
         toast({
           title: "Test created!",
         });
-        router.push(Routes.imagePage(imageId));
+        router.push(Routes.imageWithId(imageId));
       })
       .catch(handleError)
       .finally(() => setLoading(false));
@@ -119,12 +124,12 @@ export default function CreatePage() {
         )}
 
         <div className="flex justify-start">
-          <SignedOut>
+          <Unauthenticated>
             <SignInButton mode="redirect">
               <Button className="mt-0 mb-4 mx-auto">Sign In to start</Button>
             </SignInButton>
-          </SignedOut>
-          <SignedIn>
+          </Unauthenticated>
+          <Authenticated>
             <ActionButton
               disabled={!!session && hasNoCreditsLeft}
               isLoading={loading}
@@ -133,7 +138,7 @@ export default function CreatePage() {
             >
               Create a Poll (1 credit)
             </ActionButton>
-          </SignedIn>
+          </Authenticated>
         </div>
         {!!session && hasNoCreditsLeft && !loading && (
           <Alert className="mb-4 max-w-lg mx-auto">
@@ -142,7 +147,7 @@ export default function CreatePage() {
             <AlertDescription className="text-left">
               No credits left to create a poll.{" "}
               <Button asChild className="p-0" variant="link">
-                <Link href={Routes.upgradePage()}>Upgrade</Link>
+                <Link href={Routes.upgrade()}>Upgrade</Link>
               </Button>{" "}
               to get more credits.
             </AlertDescription>

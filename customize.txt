@@ -6,3 +6,4 @@
 - Change app header icon
 - Update all legal pages
 - Rebrand Clerk app (logo/name)
+- Clerk: configure webhook and SSO connections

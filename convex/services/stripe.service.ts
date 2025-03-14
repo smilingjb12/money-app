@@ -89,7 +89,7 @@ async function createCheckoutSession(
     success_url: `${domain}`,
     cancel_url: `${domain}`,
     metadata: {
-      userId: user.subject,
+      userId: user.subject, // this is externalUserId
       priceId: stripePriceId,
     },
   });
@@ -106,7 +106,7 @@ async function processCheckoutSessionCompletedEvent(
   console.log("Completed checkout session event:", completedEvent);
   const priceId = completedEvent.metadata.priceId;
   await ctx.runMutation(internal.users.addCredits, {
-    userId,
+    externalUserId: userId,
     stripeCheckoutSessionId: completedEvent.id,
     stripeItemId: priceId,
     creditsToAdd: PRICE_ID_CREDITS[priceId],

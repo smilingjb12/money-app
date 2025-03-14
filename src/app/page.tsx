@@ -45,7 +45,7 @@ export default function Home() {
               </svg>
             </div>
             <Link
-              href={Routes.createPage()}
+              href={Routes.create()}
               scroll={true}
               className="cursor-pointer text-primary inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-300 dark:hover:text-background dark:focus:ring-gray-800"
             >

@@ -11,28 +11,37 @@ export const getAvailableCredits = query({
   },
 });
 
-export const createSignedInUser = internalMutation({
+export const deleteUser = internalMutation({
   args: {
-    userId: v.string(),
-    email: v.string(),
+    externalUserId: v.string(),
   },
   handler: async (ctx, args) => {
-    return await UserService.createSignedInUser(ctx, args);
+    return await UserService.deleteUser(ctx, args);
   },
 });
 
-export const getByUserId = internalQuery({
+export const createOrUpdateUser = internalMutation({
   args: {
-    userId: v.string(),
+    externalUserId: v.string(),
+    email: v.string(),
   },
   handler: async (ctx, args) => {
-    return await UserService.getUserById(ctx, args);
+    return await UserService.createOrUpdateUser(ctx, args);
+  },
+});
+
+export const getByExternalUserId = internalQuery({
+  args: {
+    externalUserId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await UserService.getUserByExternalUserId(ctx, args);
   },
 });
 
 export const addCredits = internalMutation({
   args: {
-    userId: v.string(),
+    externalUserId: v.string(),
     stripeCheckoutSessionId: v.string(),
     stripeItemId: v.string(),
     creditsToAdd: v.number(),

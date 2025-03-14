@@ -5,6 +5,10 @@ import { ActionCtx } from "../_generated/server";
 import { convexEnv } from "../lib/convexEnv";
 import { StripeService } from "./stripe.service";
 
+const SVIX_ID_HEADER = "svix-id";
+const SVIX_TIMESTAMP_HEADER = "svix-timestamp";
+const SVIX_SIGNATURE_HEADER = "svix-signature";
+
 export const HttpService = {
   async processStripeWebhook(ctx: ActionCtx, req: Request) {
     const signature = req.headers.get("stripe-signature") as string;
@@ -33,24 +37,13 @@ export const HttpService = {
     const headerPayload = req.headers;
 
     try {
-      const result = HttpService.verifyClerkWebhook({
+      const result = verifyClerkWebhook({
         payload: payloadString,
-        headers: {
-          "svix-id": headerPayload.get("svix-id")!,
-          "svix-timestamp": headerPayload.get("svix-timestamp")!,
-          "svix-signature": headerPayload.get("svix-signature")!,
-        },
+        headers: headerPayload,
       });
 
-      switch (result.type) {
-        case "user.created":
-          console.log("Processing user.created event:", result.data);
-          await ctx.runMutation(internal.users.createSignedInUser, {
-            userId: result.data.id,
-            email: result.data.email_addresses[0].email_address,
-          });
-      }
-
+      console.log("Processing", result.type, "event:", result.data);
+      await processClerkEvent(ctx, result);
       return new Response(null, { status: 200 });
     } catch (error) {
       console.error("Clerk webhook error", error);
@@ -60,13 +53,32 @@ export const HttpService = {
       });
     }
   },
-
-  verifyClerkWebhook(args: {
-    headers: WebhookRequiredHeaders;
-    payload: string;
-  }) {
-    const wh = new Webhook(convexEnv.CLERK_WEBHOOK_SECRET);
-    const payload = wh.verify(args.payload, args.headers) as WebhookEvent;
-    return payload;
-  },
 };
+
+function verifyClerkWebhook(args: { headers: Headers; payload: string }) {
+  const wh = new Webhook(convexEnv.CLERK_WEBHOOK_SECRET);
+  const webhookHeaders: WebhookRequiredHeaders = {
+    [SVIX_ID_HEADER]: args.headers.get(SVIX_ID_HEADER)!,
+    [SVIX_TIMESTAMP_HEADER]: args.headers.get(SVIX_TIMESTAMP_HEADER)!,
+    [SVIX_SIGNATURE_HEADER]: args.headers.get(SVIX_SIGNATURE_HEADER)!,
+  };
+  const payload = wh.verify(args.payload, webhookHeaders) as WebhookEvent;
+  return payload;
+}
+
+async function processClerkEvent(ctx: ActionCtx, result: WebhookEvent) {
+  switch (result.type) {
+    case "user.created":
+    case "user.updated":
+      await ctx.runMutation(internal.users.createOrUpdateUser, {
+        externalUserId: result.data.id,
+        email: result.data.email_addresses[0].email_address,
+      });
+      break;
+    case "user.deleted":
+      await ctx.runMutation(internal.users.deleteUser, {
+        externalUserId: result.data.id!,
+      });
+      break;
+  }
+}

@@ -53,17 +53,19 @@ export const ImageService = {
     await rateLimitActivity(ctx, userIdentity!.subject);
     await ensureUploadSizeIsNotExceeded(ctx, args.fileId);
     const userId = userIdentity!.subject;
-    const user = await ctx.runQuery(internal.users.getByUserId, {
-      userId: userId,
+    const user = await ctx.runQuery(internal.users.getByExternalUserId, {
+      externalUserId: userId,
     });
     if (user!.credits - 1 < 0) {
       throw new ConvexError("Not enough credits to create new test");
     }
-    await UserService.decrementCredits(ctx, { userId: user!.userId });
+    await UserService.decrementCredits(ctx, {
+      externalUserId: user!.externalUserId,
+    });
 
     const imageId = await ctx.db.insert("images", {
       title: args.title,
-      uploaderUserId: user!.userId,
+      uploaderUserId: user!.externalUserId,
       fileId: args.fileId,
     });
     return imageId;

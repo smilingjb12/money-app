@@ -3,14 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Constants } from "@/constants";
 import { Routes } from "@/lib/routes";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  useClerk,
-  useUser,
-} from "@clerk/nextjs";
-import { useQuery } from "convex/react";
+import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -60,17 +54,17 @@ export function Header() {
           </Link>
           <div className="hidden md:flex md:items-center md:ml-20 lg:ml-20">
             <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
-              <SignedIn>
+              <Authenticated>
                 <Link
-                  href={Routes.collectionPage()}
+                  href={Routes.collection()}
                   className="hover:text-primary text-foreground transition-colors duration-100"
                 >
                   Collection
                 </Link>
-              </SignedIn>
+              </Authenticated>
 
               <Link
-                href={Routes.createPage()}
+                href={Routes.create()}
                 className="hover:text-primary text-foreground transition-colors duration-100"
               >
                 Create
@@ -86,19 +80,19 @@ export function Header() {
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </Button>
         <div className="hidden md:flex md:items-center gap-4 text-foreground">
-          <SignedIn>
+          <Authenticated>
             <CreditsButton />
             <AvatarDropdown
               fullName={user?.fullName}
               imageUrl={user?.imageUrl}
               email={user?.emailAddresses[0].emailAddress}
             />
-          </SignedIn>
-          <SignedOut>
+          </Authenticated>
+          <Unauthenticated>
             <SignInButton mode="modal">
               <Button>Sign In</Button>
             </SignInButton>
-          </SignedOut>
+          </Unauthenticated>
         </div>
       </nav>
       {isMobileMenuOpen && (
@@ -106,7 +100,7 @@ export function Header() {
           <div className="flex flex-col gap-4 items-center w-full">
             <Button variant="ghost" asChild>
               <Link
-                href={Routes.collectionPage()}
+                href={Routes.collection()}
                 className="hover:text-primary text-foreground w-full"
                 onClick={toggleMobileMenu}
               >
@@ -116,7 +110,7 @@ export function Header() {
 
             <Button variant="ghost" asChild>
               <Link
-                href={Routes.createPage()}
+                href={Routes.create()}
                 className="hover:text-primary text-foreground w-full"
                 onClick={toggleMobileMenu}
               >
@@ -124,7 +118,7 @@ export function Header() {
               </Link>
             </Button>
 
-            <SignedIn>
+            <Authenticated>
               <CreditsButton />
 
               <Button
@@ -138,12 +132,12 @@ export function Header() {
                 <LogOutIcon className="mr-2" />
                 Sign Out
               </Button>
-            </SignedIn>
-            <SignedOut>
+            </Authenticated>
+            <Unauthenticated>
               <SignInButton mode="redirect">
                 <Button className="w-full justify-center">Sign In</Button>
               </SignInButton>
-            </SignedOut>
+            </Unauthenticated>
           </div>
         </div>
       )}

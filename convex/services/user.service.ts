@@ -4,20 +4,39 @@ import { MutationCtx, QueryCtx } from "../_generated/server";
 import { convexEnv } from "../lib/convexEnv";
 
 export const UserService = {
-  async createSignedInUser(
+  async deleteUser(ctx: MutationCtx, args: { externalUserId: string }) {
+    const user = await UserService.getUserByExternalUserId(ctx, {
+      externalUserId: args.externalUserId,
+    });
+    if (!user) {
+      return;
+    }
+    return await ctx.db.delete(user._id);
+  },
+
+  async createOrUpdateUser(
     ctx: MutationCtx,
-    args: { userId: string; email: string }
+    args: { externalUserId: string; email: string }
   ) {
+    const user = await UserService.getUserByExternalUserId(ctx, {
+      externalUserId: args.externalUserId,
+    });
+    if (user) {
+      return await ctx.db.patch(user._id, {
+        email: args.email,
+      });
+    }
     return await ctx.db.insert("users", {
-      userId: args.userId,
+      externalUserId: args.externalUserId,
       email: args.email,
       credits: Number(convexEnv.DEFAULT_CREDITS),
-      isAnonymous: false,
     });
   },
 
-  async decrementCredits(ctx: MutationCtx, args: { userId: string }) {
-    const user = await UserService.getUserById(ctx, { userId: args.userId });
+  async decrementCredits(ctx: MutationCtx, args: { externalUserId: string }) {
+    const user = await UserService.getUserByExternalUserId(ctx, {
+      externalUserId: args.externalUserId,
+    });
     await ctx.db.patch(user!._id, {
       credits: user!.credits - 1,
     });
@@ -33,41 +52,55 @@ export const UserService = {
 
   async getCurrentUser(ctx: QueryCtx): Promise<Doc<"users"> | null> {
     const userIdentity = await ctx.auth.getUserIdentity();
-    return await UserService.getUserById(ctx, {
-      userId: userIdentity!.subject,
+    return await UserService.getUserByExternalUserId(ctx, {
+      externalUserId: userIdentity!.subject,
     });
   },
 
   async addCredits(
     ctx: MutationCtx,
     args: {
-      userId: string;
+      externalUserId: string;
       creditsToAdd: number;
       stripeCheckoutSessionId: string;
       stripeItemId: string;
     }
   ) {
-    console.log("Adding", args.creditsToAdd, "credits to user:", args.userId);
-    const user = await UserService.getUserById(ctx, { userId: args.userId });
+    console.log(
+      "Adding",
+      args.creditsToAdd,
+      "credits to user:",
+      args.externalUserId
+    );
+    const user = await UserService.getUserByExternalUserId(ctx, {
+      externalUserId: args.externalUserId,
+    });
 
     if (!user) {
-      throw new ConvexError("No user found with userId = " + args.userId);
+      throw new ConvexError(
+        "No user found with externalUserId = " + args.externalUserId
+      );
     }
 
     await ctx.db.insert("userPurchases", {
       stripeCheckoutSessionId: args.stripeCheckoutSessionId,
       stripeItemId: args.stripeItemId,
-      userId: args.userId,
+      externalUserId: args.externalUserId,
     });
     await ctx.db.patch(user._id, {
       credits: user.credits + args.creditsToAdd,
     });
   },
 
-  async getUserById(ctx: QueryCtx, args: { userId: string }) {
+  async getUserByExternalUserId(
+    ctx: QueryCtx,
+    args: { externalUserId: string }
+  ) {
     const user = await ctx.db
       .query("users")
-      .withIndex("user_id", (q) => q.eq("userId", args.userId))
+      .withIndex("external_user_id", (q) =>
+        q.eq("externalUserId", args.externalUserId)
+      )
       .first();
 
     return user;

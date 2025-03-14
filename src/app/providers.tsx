@@ -25,8 +25,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
     <ThemedClerkProvider>
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
-        enableSystem
+        defaultTheme="dark"
         disableTransitionOnChange
       >
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>

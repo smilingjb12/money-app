@@ -21,8 +21,8 @@ test("should create a signed in user", async () => {
   const email = "test@example.com";
 
   // Create a new user
-  await asSystem.mutation(internal.users.createSignedInUser, {
-    userId,
+  await asSystem.mutation(internal.users.createOrUpdateUser, {
+    externalUserId: userId,
     email,
   });
 
@@ -30,7 +30,7 @@ test("should create a signed in user", async () => {
   const user = await asSystem.run(async (ctx: QueryCtx) => {
     return await ctx.db
       .query("users")
-      .withIndex("user_id", (q) => q.eq("userId", userId))
+      .withIndex("external_user_id", (q) => q.eq("externalUserId", userId))
       .first();
   });
 
@@ -53,16 +53,15 @@ test("should get user by userId", async () => {
   // Create a user first
   await asSystem.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      userId,
+      externalUserId: userId,
       email,
       credits: 10,
-      isAnonymous: false,
     });
   });
 
   // Get the user by userId
-  const user = await asSystem.query(internal.users.getByUserId, {
-    userId,
+  const user = await asSystem.query(internal.users.getByExternalUserId, {
+    externalUserId: userId,
   });
 
   expect(user).toMatchObject({
@@ -89,10 +88,9 @@ test("should get available credits for a user", async () => {
   // Insert the user into the database
   await asUser.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      userId,
+      externalUserId: userId,
       email,
       credits: 25,
-      isAnonymous: false,
     });
   });
 
@@ -113,16 +111,15 @@ test("should add credits to a user", async () => {
   // Create a user first
   await asSystem.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      userId,
+      externalUserId: userId,
       email,
       credits: 10,
-      isAnonymous: false,
     });
   });
 
   // Add credits to the user
   await asSystem.mutation(internal.users.addCredits, {
-    userId,
+    externalUserId: userId,
     stripeCheckoutSessionId: "cs_test_123",
     stripeItemId: "si_test_123",
     creditsToAdd: 5,
@@ -132,7 +129,7 @@ test("should add credits to a user", async () => {
   const updatedUser = await asSystem.run(async (ctx: QueryCtx) => {
     return await ctx.db
       .query("users")
-      .withIndex("user_id", (q) => q.eq("userId", userId))
+      .withIndex("external_user_id", (q) => q.eq("externalUserId", userId))
       .first();
   });
 
@@ -143,7 +140,7 @@ test("should add credits to a user", async () => {
   const purchase = await asSystem.run(async (ctx: QueryCtx) => {
     return await ctx.db
       .query("userPurchases")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .filter((q) => q.eq(q.field("externalUserId"), userId))
       .first();
   });
 
@@ -164,7 +161,7 @@ test("should throw error when adding credits to non-existent user", async () => 
   // Attempt to add credits to a non-existent user
   await expect(
     asSystem.mutation(internal.users.addCredits, {
-      userId: nonExistentUserId,
+      externalUserId: nonExistentUserId,
       stripeCheckoutSessionId: "cs_test_123",
       stripeItemId: "si_test_123",
       creditsToAdd: 5,

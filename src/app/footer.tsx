@@ -1,11 +1,12 @@
 import { Constants } from "@/constants";
+import { Routes } from "@/lib/routes";
 import Link from "next/link";
 
 export function Footer() {
   const footerLinks = [
-    { href: "/legal/terms-of-service", label: "Terms of Service" },
-    { href: "/legal/privacy-policy", label: "Privacy Policy" },
-    { href: "/legal/refund-policy", label: "Refund Policy" },
+    { href: Routes.termsOfService(), label: "Terms of Service" },
+    { href: Routes.privacyPolicy(), label: "Privacy Policy" },
+    { href: Routes.refundPolicy(), label: "Refund Policy" },
   ];
 
   return (

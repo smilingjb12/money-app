@@ -1,17 +1,25 @@
+export const COLLECTION_SEGMENT = "collection";
+
 export const Routes = {
-  imagePage(imageId: string) {
+  imageWithId(imageId: string) {
     return `/images/${imageId}`;
   },
-  collectionPage() {
-    return "/collection";
+  collection() {
+    return `/${COLLECTION_SEGMENT}`;
   },
-  createPage() {
+  create() {
     return "/create";
   },
-  upgradePage() {
+  upgrade() {
     return "/upgrade";
   },
-  refundPolicyPage() {
+  refundPolicy() {
     return "/legal/refund-policy";
+  },
+  privacyPolicy() {
+    return "/legal/privacy-policy";
+  },
+  termsOfService() {
+    return "/legal/terms-of-service";
   },
 };

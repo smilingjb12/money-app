@@ -11,7 +11,7 @@ export const Disclaimer = () => {
         <span>Please review our</span>
         <Link
           className="text-primary hover:text-primary/90"
-          href={Routes.refundPolicyPage()}
+          href={Routes.refundPolicy()}
         >
           &nbsp; Refund Policy &nbsp;
         </Link>
