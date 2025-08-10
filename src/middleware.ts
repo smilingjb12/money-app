@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function middleware(request: NextRequest) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function middleware(_request: NextRequest) {
   // In a client-side only architecture with Convex Auth, we can't easily check
   // authentication status in middleware. Instead, we'll rely on the pages themselves
   // to handle auth state and redirect if needed.

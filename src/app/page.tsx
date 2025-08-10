@@ -13,7 +13,7 @@ export default function Home() {
   }, []);
 
   return (
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-background">
       <div className="grid max-w-(--breakpoint-xl) px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
         <div className="mr-auto place-self-center lg:col-span-6">
           <h1
@@ -22,14 +22,14 @@ export default function Home() {
             Upload and score your thumbnails
           </h1>
           <p
-            className={`max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400 transition-all duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+            className={`max-w-2xl mb-6 font-light text-muted-foreground lg:mb-8 md:text-lg lg:text-xl transition-all duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
           >
             See how your thumbnails perform and get feedback from the community.
           </p>
           <div
             className={`transition-all duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
           >
-            <div className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+            <div className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center rounded-lg bg-primary hover:bg-primary/90 focus:ring-4 focus:ring-primary/30">
               Get started
               <svg
                 className="w-5 h-5 ml-2 -mr-1"
@@ -47,7 +47,7 @@ export default function Home() {
             <Link
               href={Routes.create()}
               scroll={true}
-              className="cursor-pointer text-primary inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-300 dark:hover:text-background dark:focus:ring-gray-800"
+              className="cursor-pointer text-primary inline-flex items-center justify-center px-5 py-3 font-medium text-center border border-border rounded-lg hover:bg-muted focus:ring-4 focus:ring-muted"
             >
               Create a Test
             </Link>
@@ -63,7 +63,7 @@ export default function Home() {
               height={500}
               priority
             />
-            <div className="absolute -bottom-4 left-0 right-0 h-16 bg-linear-to-t from-black/30 to-transparent blur-xl transform -skew-y-3"></div>
+            <div className="absolute -bottom-4 left-0 right-0 h-16 bg-linear-to-t from-foreground/30 to-transparent blur-xl transform -skew-y-3"></div>
           </div>
         </div>
       </div>

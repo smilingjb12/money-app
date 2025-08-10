@@ -152,6 +152,18 @@ Located in `convex/schema.ts`:
 - **Mobile-first**: Follow mobile-first responsive design patterns
 - **Class Merging**: Use `cn()` utility for conditional class name merging
 
+### Theming Guidelines
+- **Theme Variables**: Always use CSS custom properties defined in `globals.css` via Tailwind theme variables
+- **Semantic Colors**: Use semantic color names that describe purpose, not appearance:
+  - `text-foreground` / `text-background` - Primary text colors
+  - `text-muted-foreground` - Secondary/muted text
+  - `bg-background` / `bg-card` - Background colors
+  - `text-destructive` / `border-destructive` - Error/danger states
+  - `bg-primary` / `text-primary-foreground` - Primary action colors
+  - `border-border` / `bg-muted` - UI element borders and backgrounds
+- **Dark Mode**: Theme variables automatically handle light/dark mode switching
+- **Avoid**: Never use hardcoded colors like `text-gray-500`, `bg-white`, `text-red-500`, `border-gray-300`
+
 ## CI/CD Pipeline
 
 ### GitHub Actions
@@ -175,7 +187,7 @@ Located in `convex/schema.ts`:
 - **Testing**: Don't write tests unless specifically instructed
 - **Components**: Keep small and focused on single responsibility
 - **Latest Features**: Prefer using latest language features and library versions
-- **Tailwind**: Use utility classes and color variables instead of hardcoded values
+- **Tailwind**: Always use theme variables (`text-foreground`, `bg-background`, `text-muted-foreground`, `text-destructive`, etc.) instead of hardcoded colors. Never use hardcoded color values like `text-gray-500`, `bg-white`, `text-red-500` - use semantic theme variables for consistent theming across light/dark modes
 
 ## Important Notes
 

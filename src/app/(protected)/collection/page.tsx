@@ -33,11 +33,11 @@ export default function CollectionPage() {
               fill
               className="object-cover rounded-lg transition-transform duration-300 ease-in-out hover:scale-105"
             />
-            <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-black bg-opacity-60 transition-all opacity-100 group-hover:opacity-100">
+            <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-foreground/60 transition-all opacity-100 group-hover:opacity-100">
               <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col items-start justify-end h-full">
                 <div className="flex flex-row justify-between w-full items-center">
                   <div>
-                    <h3 className="text-white text-xl font-semibold mb-2 line-clamp-1">
+                    <h3 className="text-background text-xl font-semibold mb-2 line-clamp-1">
                       <p className="text-lg">{i.title}</p>
                     </h3>
                   </div>
@@ -48,7 +48,7 @@ export default function CollectionPage() {
         ))}
       </div>
       {!results.length && (
-        <div className="text-center text-lg font-medium text-gray-400 container mx-auto max-w-(--breakpoint-lg)">
+        <div className="text-center text-lg font-medium text-muted-foreground container mx-auto max-w-(--breakpoint-lg)">
           No images in your collection yet
         </div>
       )}
