@@ -18,67 +18,62 @@ import {
   useMutation,
   useQuery,
 } from "convex/react";
-import { isEmpty } from "lodash";
 import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { api } from "../../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
 
-interface FormErrors {
-  title?: string;
-  fileId?: string;
+interface FormData {
+  title: string;
+  fileId: string;
 }
 
 export default function CreatePage() {
   const { signIn } = useAuthActions();
   const user = useQuery(api.users.getCurrentUser);
-  const [loading, setLoading] = useState(false);
   const { handleError } = useMutationErrorHandler();
   const uploadImage = useMutation(api.images.uploadImage);
-  const [fileId, setFileId] = useState<string>("");
   const router = useRouter();
   const creditsAvailable = useQuery(api.users.getAvailableCredits);
-  const [errors, setErrors] = useState<FormErrors>({});
   const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      fileId: "",
+    },
+  });
+
+  const fileId = watch("fileId");
+
+  // Register fileId field for validation
+  register("fileId", {
+    required: "Upload image please",
+  });
 
   const hasNoCreditsLeft = creditsAvailable === 0;
 
-  const validateForm = (title: string, fileId: string) => {
-    const formErrors: FormErrors = {};
-    if (!title) {
-      formErrors.title = "Fill in the title please";
+  const onSubmit = async (data: FormData) => {
+    try {
+      const imageId = await uploadImage({
+        fileId: data.fileId,
+        title: data.title,
+      });
+      toast({
+        title: "Test created!",
+      });
+      router.push(Routes.imageWithId(imageId));
+    } catch (error) {
+      handleError(error);
     }
-    if (!fileId) {
-      formErrors.fileId = "Upload image please";
-    }
-    return formErrors;
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const title = formData.get("title") as string;
-    const formErrors = validateForm(title, fileId);
-    setErrors(formErrors);
-    if (!isEmpty(formErrors)) {
-      return;
-    }
-
-    setLoading(true);
-    uploadImage({
-      fileId: fileId,
-      title,
-    })
-      .then((imageId) => {
-        toast({
-          title: "Test created!",
-        });
-        router.push(Routes.imageWithId(imageId));
-      })
-      .catch(handleError)
-      .finally(() => setLoading(false));
   };
 
   return (
@@ -90,22 +85,24 @@ export default function CreatePage() {
         Create your test so that other people can vote on their favorite
         thumbnail and help you redesign or pick the best option.
       </p>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col max-w-(--breakpoint-sm) mb-8 mx-auto">
           <Label htmlFor="title" className="text-md">
             Your Test Title
           </Label>
           <Input
             id="title"
-            name="title"
             type="text"
             className={clsx("text-lg", {
               "border-destructive border": errors.title,
             })}
             placeholder="Label your test to make it easier to manage later"
+            {...register("title", {
+              required: "Fill in the title please",
+            })}
           />
           {errors.title && (
-            <div className="text-destructive">{errors.title}</div>
+            <div className="text-destructive">{errors.title.message}</div>
           )}
         </div>
         {!hasNoCreditsLeft && (
@@ -115,11 +112,9 @@ export default function CreatePage() {
               showUpload={!hasNoCreditsLeft}
               fileId={fileId}
               onUploadComplete={(uploaded: UploadFileResponse[]) => {
-                setFileId(
-                  (uploaded[0].response as { storageId: string }).storageId
-                );
+                setValue("fileId", (uploaded[0].response as { storageId: string }).storageId);
               }}
-              error={errors.fileId}
+              error={errors.fileId?.message}
             />
           </div>
         )}
@@ -136,7 +131,7 @@ export default function CreatePage() {
           <Authenticated>
             <ActionButton
               disabled={!!user && hasNoCreditsLeft}
-              isLoading={loading}
+              isLoading={isSubmitting}
               className="mt-0 mb-4 mx-auto"
               type="submit"
             >
@@ -144,7 +139,7 @@ export default function CreatePage() {
             </ActionButton>
           </Authenticated>
         </div>
-        {!!user && hasNoCreditsLeft && !loading && (
+        {!!user && hasNoCreditsLeft && !isSubmitting && (
           <Alert className="mb-4 max-w-lg mx-auto">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>Out of Credits</AlertTitle>
