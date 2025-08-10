@@ -4,8 +4,8 @@ import { nextEnv } from "@/nextEnv";
 import clsx from "clsx";
 import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
-import { api } from "../../../convex/_generated/api";
-import { Id } from "../../../convex/_generated/dataModel";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 interface ThumbnailUploadProps {
   title: string;

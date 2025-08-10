@@ -7,3 +7,4 @@
 - Update all legal pages
 - Rebrand Clerk app (logo/name)
 - Clerk: configure webhook and SSO connections
+- Update landing page texts

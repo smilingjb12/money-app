@@ -1,5 +1,6 @@
 import { Constants } from "@/constants";
 import { Routes } from "@/lib/routes";
+import { PackageIcon } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
@@ -10,26 +11,55 @@ export function Footer() {
   ];
 
   return (
-    <div className="bg-background py-8 border-t border-accent/70">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-4">
-        <div className="text-center md:text-left mb-4 md:mb-0 space-y-2">
-          <p className="text-sm text-primary-foreground/70">
-            Copyright @ {new Date().getFullYear()} {Constants.APP_NAME}. All
-            rights reserved.
-          </p>
-        </div>
-        <nav className="flex gap-4">
-          {footerLinks.map((link) => (
-            <Link
-              href={link.href}
-              className="text-sm text-primary-foreground/70 hover:text-primary-foreground"
-              key={link.href}
-            >
-              {link.label}
+    <footer className="bg-background py-12 border-t border-border">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-4 gap-8">
+          {/* Logo and Description */}
+          <div className="md:col-span-2">
+            <Link href="/" className="flex items-center gap-2 mb-4 w-fit">
+              <PackageIcon className="h-8 w-8 text-primary" />
+              <span className="text-xl font-semibold text-foreground">
+                {Constants.APP_NAME}
+              </span>
             </Link>
-          ))}
-        </nav>
+            <p className="text-muted-foreground mb-4 max-w-md">
+              {Constants.APP_DESCRIPTION_META}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} {Constants.APP_NAME}. All rights reserved.
+            </p>
+          </div>
+
+          {/* Legal */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Legal</h3>
+            <nav className="flex flex-col gap-2">
+              {footerLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Support</h3>
+            <div className="flex flex-col gap-2">
+              <a
+                href={`mailto:${Constants.SUPPORT_EMAIL}`}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Contact Support
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </footer>
   );
 }

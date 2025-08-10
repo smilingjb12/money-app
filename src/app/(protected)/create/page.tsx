@@ -23,7 +23,7 @@ import { TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import { ThumbnailUpload } from "./thumbnail-upload";
 
 interface FormErrors {

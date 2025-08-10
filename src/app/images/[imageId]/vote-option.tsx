@@ -1,4 +1,4 @@
-import { ThumbnailUpload } from "@/app/create/thumbnail-upload";
+import { ThumbnailUpload } from "@/app/(protected)/create/thumbnail-upload";
 
 export const VoteOption = ({
   title,

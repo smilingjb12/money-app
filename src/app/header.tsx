@@ -36,18 +36,31 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 shadow-md bg-background/80 backdrop-blur-lg border-b border-accent/70">
+    <header className="fixed top-0 left-0 right-0 z-50 shadow-md bg-background/60 backdrop-blur-lg border-b border-accent/50">
       <nav className="container flex h-16 w-full items-center justify-between px-4 md:px-6 lg:px-20">
         <div className="flex items-center gap-12">
-          <Link
-            href="/"
-            className="flex items-center gap-2 group hover:text-primary transition-colors duration-100"
-          >
-            <PackageIcon className="size-7" />
-            <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-xl group-hover:text-primary">
-              {Constants.APP_NAME}
-            </span>
-          </Link>
+          <Authenticated>
+            <Link
+              href={Routes.collection()}
+              className="flex items-center gap-2 group hover:text-primary transition-colors duration-100"
+            >
+              <PackageIcon className="size-7" />
+              <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-xl group-hover:text-primary">
+                {Constants.APP_NAME}
+              </span>
+            </Link>
+          </Authenticated>
+          <Unauthenticated>
+            <Link
+              href="/"
+              className="flex items-center gap-2 group hover:text-primary transition-colors duration-100"
+            >
+              <PackageIcon className="size-7" />
+              <span className="text-base font-semibold sm:text-lg md:text-xl lg:text-xl group-hover:text-primary">
+                {Constants.APP_NAME}
+              </span>
+            </Link>
+          </Unauthenticated>
           <div className="hidden md:flex md:items-center md:ml-20 lg:ml-20">
             <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
               <Authenticated>
@@ -57,14 +70,13 @@ export function Header() {
                 >
                   Collection
                 </Link>
+                <Link
+                  href={Routes.create()}
+                  className="hover:text-primary text-foreground transition-colors duration-100"
+                >
+                  Create
+                </Link>
               </Authenticated>
-
-              <Link
-                href={Routes.create()}
-                className="hover:text-primary text-foreground transition-colors duration-100"
-              >
-                Create
-              </Link>
             </div>
           </div>
         </div>
@@ -97,27 +109,27 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-background/80 backdrop-blur-lg py-4 px-6">
           <div className="flex flex-col gap-4 items-center w-full">
-            <Button variant="ghost" asChild>
-              <Link
-                href={Routes.collection()}
-                className="hover:text-primary text-foreground w-full"
-                onClick={toggleMobileMenu}
-              >
-                Collection
-              </Link>
-            </Button>
-
-            <Button variant="ghost" asChild>
-              <Link
-                href={Routes.create()}
-                className="hover:text-primary text-foreground w-full"
-                onClick={toggleMobileMenu}
-              >
-                Create
-              </Link>
-            </Button>
-
             <Authenticated>
+              <Button variant="ghost" asChild>
+                <Link
+                  href={Routes.collection()}
+                  className="hover:text-primary text-foreground w-full"
+                  onClick={toggleMobileMenu}
+                >
+                  Collection
+                </Link>
+              </Button>
+
+              <Button variant="ghost" asChild>
+                <Link
+                  href={Routes.create()}
+                  className="hover:text-primary text-foreground w-full"
+                  onClick={toggleMobileMenu}
+                >
+                  Create
+                </Link>
+              </Button>
+
               <CreditsButton />
 
               <Button

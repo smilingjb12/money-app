@@ -24,12 +24,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run test convex/users.test.ts` - Run specific Convex test file
 - `npm run test src/components/` - Run tests for specific directory
 
+### Custom Claude Code Commands
+- `/build-fix` - Run npm run build and automatically fix any TypeScript or build errors
+- `/build-fix --lint` - Run build, fix errors, then run linting
+
 ## Architecture Overview
 
 ### Tech Stack
 - **Frontend**: Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS
 - **Backend**: Convex (database, API, file storage, real-time sync)
-- **Authentication**: Clerk with JWT integration
+- **Authentication**: convex-auth authentication
 - **Payments**: Stripe with webhook-driven credit system
 - **Testing**: Vitest + React Testing Library + convex-test
 - **UI Components**: Radix UI primitives with custom styling
@@ -38,7 +42,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This application uses Next.js in a **client-side only** architecture:
 
 - **No API Routes**: Next.js API routes (`app/api/`) are not used - Convex handles all backend functionality
-- **No Server Components**: All React components are client-side components using Convex hooks for data fetching
+- **No Server Components**: All React components are client-side components using Convex hooks for data fetching (except for pre-rendered public marketing routes)
 - **Static Generation Only**: Next.js is used purely for static site generation of public pages (landing, legal pages) for SEO benefits
 - **Single Page Application**: The actual application in `src/app/` functions as an SPA with client-side routing
 - **Convex Backend**: All dynamic functionality (auth, database, file storage, real-time sync) is handled by Convex
