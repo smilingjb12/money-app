@@ -1,8 +1,9 @@
-/* eslint-disable import/no-anonymous-default-export */
+import { convexEnv } from "./lib/convexEnv";
+
 export default {
   providers: [
     {
-      domain: process.env.CLERK_JWT_ISSUER_DOMAIN,
+      domain: convexEnv.CONVEX_SITE_URL,
       applicationID: "convex",
     },
   ],

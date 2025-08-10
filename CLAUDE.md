@@ -34,6 +34,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Testing**: Vitest + React Testing Library + convex-test
 - **UI Components**: Radix UI primitives with custom styling
 
+### Next.js Usage Pattern
+This application uses Next.js in a **client-side only** architecture:
+
+- **No API Routes**: Next.js API routes (`app/api/`) are not used - Convex handles all backend functionality
+- **No Server Components**: All React components are client-side components using Convex hooks for data fetching
+- **Static Generation Only**: Next.js is used purely for static site generation of public pages (landing, legal pages) for SEO benefits
+- **Single Page Application**: The actual application in `src/app/` functions as an SPA with client-side routing
+- **Convex Backend**: All dynamic functionality (auth, database, file storage, real-time sync) is handled by Convex
+
 ### Service-Oriented Architecture
 The codebase uses a service layer pattern in Convex:
 
@@ -46,10 +55,12 @@ Key services in `convex/services/`:
 - `HttpService` - Webhook processing (Clerk user sync)
 
 ### Authentication Flow
-1. **Clerk** handles user authentication and provides JWT tokens
-2. **Convex** validates JWTs via `convex/auth.config.ts`
-3. **Middleware** (`src/middleware.ts`) protects routes
-4. **Webhook sync** keeps Clerk users in sync with Convex database via `convex/http.ts`
+1. **Convex Auth** (`@convex-dev/auth`) handles authentication with Google OAuth provider
+2. **Google OAuth** configured in `convex/auth.ts` using `@auth/core/providers/google`
+3. **JWT validation** via `convex/auth.config.ts` for secure session management
+4. **Frontend hooks** use `useAuthActions`, `Authenticated`, `Unauthenticated` from `@convex-dev/auth/react`
+5. **Middleware** (`src/middleware.ts`) protects routes
+6. **User sync** automatic user creation on first authentication
 
 ### Credit-Based Payment System
 - Users get default credits on signup (configurable via `DEFAULT_CREDITS`)
@@ -73,7 +84,9 @@ Key services in `convex/services/`:
 
 Required environment variables:
 - `NEXT_PUBLIC_CONVEX_URL` - Convex deployment URL
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk authentication
+- `AUTH_GOOGLE_ID` - Google OAuth client ID
+- `AUTH_GOOGLE_SECRET` - Google OAuth client secret
+- `JWKS` - JWT signing keys for auth validation
 - Stripe price IDs and credit amounts for 3 tiers
 - `NEXT_PUBLIC_UPLOAD_SIZE_LIMIT` - File upload size limit
 
@@ -98,9 +111,10 @@ Located in `convex/schema.ts`:
 - Toast notifications via `src/hooks/use-toast.ts`
 
 ### Testing Setup
-- **Vitest** with jsdom environment for React components
-- **convex-test** for backend function testing
-- Test files: `**/*.test.{ts,tsx}` in src/, `**/*.test.ts` in convex/
+- **Vitest** configured with dual environments: jsdom (frontend) and edge-runtime (Convex)
+- **Environment matching**: Frontend tests (`src/**/*.test.{ts,tsx}`) use jsdom, Convex tests (`convex/**/*.test.ts`) use edge-runtime
+- **convex-test** for backend function testing with dependency inlining
+- **JUnit reporting** for CI/CD with output to `./junit.xml`
 - Setup file: `src/test/setup.ts` (configures testing-library)
 - Mock environment variables in tests using `vi.mock()`
 
@@ -122,6 +136,46 @@ Located in `convex/schema.ts`:
 - `lib/` - Shared utilities and environment validation
 - `_generated/` - Auto-generated Convex types (do not edit)
 - Root files: API endpoints and cron jobs
+
+## UI Component System
+
+### ShadCN Integration
+- **Configuration**: `components.json` defines aliases and Tailwind integration
+- **Component Library**: Pre-built components in `src/components/ui/` using Radix primitives
+- **Import Pattern**: Use `@/components/ui` for UI components
+- **Extension Strategy**: Use `class-variance-authority` for component variants, extend rather than modify source components
+- **Styling**: CSS variables-based theming with Tailwind utilities
+
+### Component Patterns
+- **Naming**: Component files use dash-case naming (e.g., `avatar-dropdown.tsx`)
+- **Colocation**: New components should be created next to their parent component
+- **Mobile-first**: Follow mobile-first responsive design patterns
+- **Class Merging**: Use `cn()` utility for conditional class name merging
+
+## CI/CD Pipeline
+
+### GitHub Actions
+- **Workflow**: `.github/workflows/ci.yml` runs on push/PR to master
+- **Node Version**: Uses Node.js 20 with npm caching
+- **Pipeline Steps**: 
+  1. `npm ci` - Install dependencies
+  2. `npm run lint` - Lint Next.js and Convex code
+  3. `npm test` - Run Vitest tests with JUnit reporting
+- **Test Output**: JUnit XML results for CI integration
+
+## Development Guidelines
+
+### Architecture Constraints
+- **No React Server Components**: All data fetching is client-side using Convex hooks
+- **Client-side Data Flow**: Use `useQuery` and `useMutation` hooks for all data operations
+- **Service Layer**: Business logic organized in `convex/services/` directory
+- **TypeScript Strict**: Both frontend and Convex use strict TypeScript configuration
+
+### Code Style Preferences
+- **Testing**: Don't write tests unless specifically instructed
+- **Components**: Keep small and focused on single responsibility
+- **Latest Features**: Prefer using latest language features and library versions
+- **Tailwind**: Use utility classes and color variables instead of hardcoded values
 
 ## Important Notes
 

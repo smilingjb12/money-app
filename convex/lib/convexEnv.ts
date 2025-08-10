@@ -1,8 +1,6 @@
 import { createEnvRecord } from "./env";
 
 const ENV_VARS = [
-  "CLERK_WEBHOOK_SECRET",
-  "CLERK_JWT_ISSUER_DOMAIN",
   "NEXT_PUBLIC_STRIPE_TIER_1_PRICEID",
   "NEXT_PUBLIC_STRIPE_TIER_2_PRICEID",
   "NEXT_PUBLIC_STRIPE_TIER_3_PRICEID",
@@ -14,6 +12,9 @@ const ENV_VARS = [
   "SITE_URL",
   "DEFAULT_CREDITS",
   "NEXT_PUBLIC_UPLOAD_SIZE_LIMIT",
+  "AUTH_GOOGLE_ID",
+  "AUTH_GOOGLE_SECRET",
+  "CONVEX_SITE_URL",
 ] as const;
 
 export const convexEnv = createEnvRecord(ENV_VARS);

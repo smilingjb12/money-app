@@ -21,7 +21,7 @@ export const getFileUrl = query({
   },
 });
 
-export const cleanupFileStorage = internalMutation({
+export const _cleanupFileStorage = internalMutation({
   args: {},
   handler: async (ctx): Promise<void> => {
     await FileService.cleanupFileStorage(ctx);

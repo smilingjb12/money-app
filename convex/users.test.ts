@@ -2,6 +2,7 @@ import { convexTest } from "convex-test";
 import { ConvexError } from "convex/values";
 import { expect, test, vi } from "vitest";
 import { api, internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import { MutationCtx, QueryCtx } from "./_generated/server";
 import schema from "./schema";
 
@@ -12,87 +13,43 @@ vi.mock("./lib/convexEnv", () => ({
   },
 }));
 
-test("should create a signed in user", async () => {
+test("should get current user", async () => {
   const t = convexTest(schema);
-  // Use system identity for internal mutations
-  const asSystem = t.withIdentity({ name: "System" });
-
-  const userId = "test-user-id";
+  
   const email = "test@example.com";
 
-  // Create a new user
-  await asSystem.mutation(internal.users.createOrUpdateUser, {
-    externalUserId: userId,
-    email,
-  });
-
-  // Verify the user was created correctly
-  const user = await asSystem.run(async (ctx: QueryCtx) => {
-    return await ctx.db
-      .query("users")
-      .withIndex("external_user_id", (q) => q.eq("externalUserId", userId))
-      .first();
-  });
-
-  expect(user).toMatchObject({
-    userId,
-    email,
-    credits: 10, // Default credits from convexEnv
-    isAnonymous: false,
-  });
-});
-
-test("should get user by userId", async () => {
-  const t = convexTest(schema);
-  // Use system identity for internal queries
-  const asSystem = t.withIdentity({ name: "System" });
-
-  const userId = "test-user-id";
-  const email = "test@example.com";
-
-  // Create a user first
-  await asSystem.run(async (ctx: MutationCtx) => {
+  // Create a user in the database first to get a real user ID
+  const userId = await t.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      externalUserId: userId,
       email,
-      credits: 10,
     });
   });
 
-  // Get the user by userId
-  const user = await asSystem.query(internal.users.getByExternalUserId, {
-    externalUserId: userId,
-  });
+  // Create a user with auth context using the real user ID
+  const asUser = t.withIdentity({ subject: userId });
+
+  // Get current user
+  const user = await asUser.query(api.users.getCurrentUser, {});
 
   expect(user).toMatchObject({
-    userId,
     email,
-    credits: 10,
-    isAnonymous: false,
   });
 });
 
-test("should get available credits for a user", async () => {
+test("should get available credits for authenticated user", async () => {
   const t = convexTest(schema);
 
-  // Create a user with a specific identity
-  const userId = "test-user-id";
   const email = "test@example.com";
-  // Use the correct identity format that matches what auth.getUserIdentity() returns
-  const asUser = t.withIdentity({
-    subject: userId,
-    tokenIdentifier: "test",
-    issuer: "https://example.com",
-  });
-
-  // Insert the user into the database
-  await asUser.run(async (ctx: MutationCtx) => {
+  
+  // Create a user in the database first to get a real user ID
+  const userId = await t.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      externalUserId: userId,
       email,
       credits: 25,
     });
   });
+
+  const asUser = t.withIdentity({ subject: userId });
 
   // Get available credits
   const credits = await asUser.query(api.users.getAvailableCredits, {});
@@ -100,26 +57,32 @@ test("should get available credits for a user", async () => {
   expect(credits).toBe(25);
 });
 
+test("should return default credits for unauthenticated user", async () => {
+  const t = convexTest(schema);
+
+  // Get available credits without any authentication
+  const credits = await t.query(api.users.getAvailableCredits, {});
+
+  expect(credits).toBe(10); // DEFAULT_CREDITS
+});
+
 test("should add credits to a user", async () => {
   const t = convexTest(schema);
-  // Use system identity for internal mutations
   const asSystem = t.withIdentity({ name: "System" });
 
-  const userId = "test-user-id";
   const email = "test@example.com";
 
-  // Create a user first
-  await asSystem.run(async (ctx: MutationCtx) => {
+  // Create a user first and get the real user ID
+  const userId = await asSystem.run(async (ctx: MutationCtx) => {
     return await ctx.db.insert("users", {
-      externalUserId: userId,
       email,
       credits: 10,
     });
   });
 
   // Add credits to the user
-  await asSystem.mutation(internal.users.addCredits, {
-    externalUserId: userId,
+  await asSystem.mutation(internal.users._addCredits, {
+    userId: userId.toString(),
     stripeCheckoutSessionId: "cs_test_123",
     stripeItemId: "si_test_123",
     creditsToAdd: 5,
@@ -127,20 +90,16 @@ test("should add credits to a user", async () => {
 
   // Verify credits were added
   const updatedUser = await asSystem.run(async (ctx: QueryCtx) => {
-    return await ctx.db
-      .query("users")
-      .withIndex("external_user_id", (q) => q.eq("externalUserId", userId))
-      .first();
+    return await ctx.db.get(userId);
   });
 
-  // Add null check to satisfy TypeScript
   expect(updatedUser?.credits).toBe(15);
 
   // Verify purchase record was created
   const purchase = await asSystem.run(async (ctx: QueryCtx) => {
     return await ctx.db
       .query("userPurchases")
-      .filter((q) => q.eq(q.field("externalUserId"), userId))
+      .filter((q) => q.eq(q.field("userId"), userId))
       .first();
   });
 
@@ -153,15 +112,15 @@ test("should add credits to a user", async () => {
 
 test("should throw error when adding credits to non-existent user", async () => {
   const t = convexTest(schema);
-  // Use system identity for internal mutations
   const asSystem = t.withIdentity({ name: "System" });
 
-  const nonExistentUserId = "non-existent-user";
+  // Use a fake but properly formatted user ID
+  const nonExistentUserId = "k17xxxxxxxxxxxxxxxxxxxxxxxx" as Id<"users">;
 
   // Attempt to add credits to a non-existent user
   await expect(
-    asSystem.mutation(internal.users.addCredits, {
-      externalUserId: nonExistentUserId,
+    asSystem.mutation(internal.users._addCredits, {
+      userId: nonExistentUserId,
       stripeCheckoutSessionId: "cs_test_123",
       stripeItemId: "si_test_123",
       creditsToAdd: 5,

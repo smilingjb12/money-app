@@ -1,47 +1,27 @@
 import { v } from "convex/values";
-import { internalMutation, internalQuery, query } from "./_generated/server";
-import { requireAuthentication } from "./lib/helpers";
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { internalMutation, query } from "./_generated/server";
 import { UserService } from "./services/user.service";
+
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) return null;
+    return await ctx.db.get(userId);
+  },
+});
 
 export const getAvailableCredits = query({
   args: {},
   handler: async (ctx): Promise<number> => {
-    await requireAuthentication(ctx);
     return await UserService.getAvailableCredits(ctx);
   },
 });
 
-export const deleteUser = internalMutation({
+export const _addCredits = internalMutation({
   args: {
-    externalUserId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await UserService.deleteUser(ctx, args);
-  },
-});
-
-export const createOrUpdateUser = internalMutation({
-  args: {
-    externalUserId: v.string(),
-    email: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await UserService.createOrUpdateUser(ctx, args);
-  },
-});
-
-export const getByExternalUserId = internalQuery({
-  args: {
-    externalUserId: v.string(),
-  },
-  handler: async (ctx, args) => {
-    return await UserService.getUserByExternalUserId(ctx, args);
-  },
-});
-
-export const addCredits = internalMutation({
-  args: {
-    externalUserId: v.string(),
+    userId: v.string(),
     stripeCheckoutSessionId: v.string(),
     stripeItemId: v.string(),
     creditsToAdd: v.number(),

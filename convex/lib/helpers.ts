@@ -1,18 +1,19 @@
-import { UserIdentity } from "convex/server";
 import { ConvexError } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { Id } from "../_generated/dataModel";
 import { QueryCtx } from "../_generated/server";
 import { UserService } from "../services/user.service";
 import { convexEnv } from "./convexEnv";
 
 export async function requireAuthentication(
   ctx: QueryCtx
-): Promise<UserIdentity> {
-  const userIdentity = await ctx.auth.getUserIdentity();
-  if (!userIdentity) {
+): Promise<Id<"users">> {
+  const userId = await getAuthUserId(ctx);
+  if (!userId) {
     throw new ConvexError("Unauthorized");
   }
 
-  return userIdentity;
+  return userId;
 }
 
 export async function ensureUploadSizeIsNotExceeded(
@@ -34,9 +35,9 @@ export async function ensureUploadSizeIsNotExceeded(
 }
 
 export async function ensureHasPositiveCredits(ctx: QueryCtx) {
-  const currentUser = await UserService.getCurrentUser(ctx);
-  console.log("currentUser", currentUser);
-  if (currentUser!.credits <= 0) {
+  const credits = await UserService.getAvailableCredits(ctx);
+  console.log("available credits", credits);
+  if (credits <= 0) {
     throw new Error("Not enough credits to perform the action");
   }
 }

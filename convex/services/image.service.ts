@@ -1,12 +1,13 @@
 import { MutationCtx } from "../_generated/server";
 
 import { ConvexError } from "convex/values";
-import { internal } from "../_generated/api";
+import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "../_generated/dataModel";
 import { QueryCtx } from "../_generated/server";
-import { ensureUploadSizeIsNotExceeded } from "../lib/helpers";
+import { ensureUploadSizeIsNotExceeded, requireAuthentication } from "../lib/helpers";
 import { rateLimitActivity } from "../lib/rateLimits";
 import { UserService } from "./user.service";
+import { convexEnv } from "../lib/convexEnv";
 
 export const ImageService = {
   async getImage(ctx: QueryCtx, imageId: Id<"images">) {
@@ -26,11 +27,11 @@ export const ImageService = {
       };
     }
   ) {
-    const userIdentity = await ctx.auth.getUserIdentity();
+    const userId = await requireAuthentication(ctx);
     const results = await ctx.db
       .query("images")
       .withIndex("uploader_user_id", (q) =>
-        q.eq("uploaderUserId", userIdentity!.subject)
+        q.eq("uploaderUserId", userId)
       )
       .order("desc")
       .paginate(args.paginationOpts);
@@ -49,23 +50,22 @@ export const ImageService = {
 
   async uploadImage(ctx: MutationCtx, args: { fileId: string; title: string }) {
     console.log("Creating poll with args:", args);
-    const userIdentity = await ctx.auth.getUserIdentity();
-    await rateLimitActivity(ctx, userIdentity!.subject);
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Not authenticated");
+    
+    await rateLimitActivity(ctx, userId);
     await ensureUploadSizeIsNotExceeded(ctx, args.fileId);
-    const userId = userIdentity!.subject;
-    const user = await ctx.runQuery(internal.users.getByExternalUserId, {
-      externalUserId: userId,
-    });
-    if (user!.credits - 1 < 0) {
+    
+    const user = await UserService.ensureUserExists(ctx);
+    const currentCredits = user.credits ?? Number(convexEnv.DEFAULT_CREDITS);
+    if (currentCredits - 1 < 0) {
       throw new ConvexError("Not enough credits to create new test");
     }
-    await UserService.decrementCredits(ctx, {
-      externalUserId: user!.externalUserId,
-    });
+    await UserService.decrementCredits(ctx);
 
     const imageId = await ctx.db.insert("images", {
       title: args.title,
-      uploaderUserId: user!.externalUserId,
+      uploaderUserId: userId,
       fileId: args.fileId,
     });
     return imageId;

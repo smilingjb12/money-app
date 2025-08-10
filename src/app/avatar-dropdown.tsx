@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/hooks/use-confirm";
-import { useClerk } from "@clerk/nextjs";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { LogOut, TriangleAlert } from "lucide-react";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const AvatarDropdown = ({ fullName, email, imageUrl }: Props) => {
-  const clerk = useClerk();
+  const { signOut } = useAuthActions();
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete My Data",
     "Are you sure you want to delete your data?",
@@ -68,7 +68,7 @@ export const AvatarDropdown = ({ fullName, email, imageUrl }: Props) => {
             <span className="ml-5 text-red-500">Delete My Data</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => clerk.signOut()}
+            onClick={() => signOut()}
             className="px-8 py-3 cursor-pointer"
           >
             <LogOut className="mr-2 h-4 w-4" />

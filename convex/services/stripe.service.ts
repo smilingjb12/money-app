@@ -105,8 +105,8 @@ async function processCheckoutSessionCompletedEvent(
   const userId = completedEvent.metadata.userId;
   console.log("Completed checkout session event:", completedEvent);
   const priceId = completedEvent.metadata.priceId;
-  await ctx.runMutation(internal.users.addCredits, {
-    externalUserId: userId,
+  await ctx.runMutation(internal.users._addCredits, {
+    userId: userId,
     stripeCheckoutSessionId: completedEvent.id,
     stripeItemId: priceId,
     creditsToAdd: PRICE_ID_CREDITS[priceId],

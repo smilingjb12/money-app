@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Constants } from "@/constants";
 import { Routes } from "@/lib/routes";
-import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { LogOutIcon, Menu, PackageIcon, X } from "lucide-react";
 import Link from "next/link";
@@ -12,24 +12,20 @@ import { api } from "../../convex/_generated/api";
 import { AvatarDropdown } from "./avatar-dropdown";
 
 export function Header() {
-  const { user, isSignedIn } = useUser();
-  const creditsAvailable = useQuery(
-    api.users.getAvailableCredits,
-    isSignedIn ? {} : "skip"
-  );
-  const clerk = useClerk();
+  const { signIn, signOut } = useAuthActions();
+  const user = useQuery(api.users.getCurrentUser);
+  const creditsAvailable = useQuery(api.users.getAvailableCredits);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  // const signInWithGoogle = async () => {
-  //   return signIn?.authenticateWithRedirect({
-  //     strategy: "oauth_google",
-  //     redirectUrl: "/sign-up/sso-callback",
-  //     redirectUrlComplete: "/",
-  //     continueSignUp: true,
-  //   });
-  // };
+  const signInWithGoogle = async () => {
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
 
   const CreditsButton = () => {
     return (
@@ -83,15 +79,18 @@ export function Header() {
           <Authenticated>
             <CreditsButton />
             <AvatarDropdown
-              fullName={user?.fullName}
-              imageUrl={user?.imageUrl}
-              email={user?.emailAddresses[0].emailAddress}
+              fullName={user?.name || ""}
+              imageUrl={user?.image || ""}
+              email={user?.email || ""}
             />
           </Authenticated>
           <Unauthenticated>
-            <SignInButton mode="modal">
-              <Button>Sign In</Button>
-            </SignInButton>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => void signInWithGoogle()}>
+                Sign In
+              </Button>
+              <Button onClick={() => void signInWithGoogle()}>Sign Up</Button>
+            </div>
           </Unauthenticated>
         </div>
       </nav>
@@ -125,7 +124,7 @@ export function Header() {
                 variant="ghost"
                 className="hover:bg-transparent/20 justify-center w-full"
                 onClick={async () => {
-                  await clerk.signOut();
+                  await signOut();
                   toggleMobileMenu();
                 }}
               >
@@ -134,9 +133,27 @@ export function Header() {
               </Button>
             </Authenticated>
             <Unauthenticated>
-              <SignInButton mode="redirect">
-                <Button className="w-full justify-center">Sign In</Button>
-              </SignInButton>
+              <div className="flex flex-col gap-2 w-full">
+                <Button
+                  variant="outline"
+                  className="w-full justify-center"
+                  onClick={() => {
+                    void signInWithGoogle();
+                    toggleMobileMenu();
+                  }}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  className="w-full justify-center"
+                  onClick={() => {
+                    void signInWithGoogle();
+                    toggleMobileMenu();
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </div>
             </Unauthenticated>
           </div>
         </div>

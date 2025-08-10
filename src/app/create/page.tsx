@@ -11,7 +11,7 @@ import { ActionButton } from "@/components/action-button";
 import { UploadFileResponse } from "@/components/upload-zone/upload-files";
 import { useMutationErrorHandler } from "@/hooks/use-mutation-error-handler";
 import { Routes } from "@/lib/routes";
-import { SignInButton, useSession } from "@clerk/nextjs";
+import { useAuthActions } from "@convex-dev/auth/react";
 import {
   Authenticated,
   Unauthenticated,
@@ -32,7 +32,8 @@ interface FormErrors {
 }
 
 export default function CreatePage() {
-  const { session } = useSession();
+  const { signIn } = useAuthActions();
+  const user = useQuery(api.users.getCurrentUser);
   const [loading, setLoading] = useState(false);
   const { handleError } = useMutationErrorHandler();
   const uploadImage = useMutation(api.images.uploadImage);
@@ -125,13 +126,16 @@ export default function CreatePage() {
 
         <div className="flex justify-start">
           <Unauthenticated>
-            <SignInButton mode="redirect">
-              <Button className="mt-0 mb-4 mx-auto">Sign In to start</Button>
-            </SignInButton>
+            <Button 
+              className="mt-0 mb-4 mx-auto"
+              onClick={() => signIn("google")}
+            >
+              Sign In to start
+            </Button>
           </Unauthenticated>
           <Authenticated>
             <ActionButton
-              disabled={!!session && hasNoCreditsLeft}
+              disabled={!!user && hasNoCreditsLeft}
               isLoading={loading}
               className="mt-0 mb-4 mx-auto"
               type="submit"
@@ -140,7 +144,7 @@ export default function CreatePage() {
             </ActionButton>
           </Authenticated>
         </div>
-        {!!session && hasNoCreditsLeft && !loading && (
+        {!!user && hasNoCreditsLeft && !loading && (
           <Alert className="mb-4 max-w-lg mx-auto">
             <TriangleAlert className="h-4 w-4" />
             <AlertTitle>Out of Credits</AlertTitle>

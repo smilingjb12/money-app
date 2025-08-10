@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="0.0294462">
-    <testsuite name="convex/users.test.ts" timestamp="2025-03-12T21:25:22.141Z" hostname="BESTPC" tests="5" failures="0" errors="0" skipped="0" time="0.0294462">
-        <testcase classname="convex/users.test.ts" name="should create a signed in user" time="0.0227119">
+<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="0.0537246">
+    <testsuite name="convex/users.test.ts" timestamp="2025-07-20T22:03:53.220Z" hostname="BESTPC" tests="5" failures="0" errors="0" skipped="0" time="0.0537246">
+        <testcase classname="convex/users.test.ts" name="should get current user" time="0.0398805">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should get user by userId" time="0.0011811">
+        <testcase classname="convex/users.test.ts" name="should get available credits for authenticated user" time="0.0018231">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should get available credits for a user" time="0.0009508">
+        <testcase classname="convex/users.test.ts" name="should return default credits for unauthenticated user" time="0.0012379">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should add credits to a user" time="0.0025582">
+        <testcase classname="convex/users.test.ts" name="should add credits to a user" time="0.0072793">
             <system-out>
-Adding [33m5[39m credits to user: test-user-id
+Adding [33m5[39m credits to user: 10000;users
 
             </system-out>
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should throw error when adding credits to non-existent user" time="0.0013547">
+        <testcase classname="convex/users.test.ts" name="should throw error when adding credits to non-existent user" time="0.0017476">
             <system-out>
-Adding [33m5[39m credits to user: non-existent-user
+Adding [33m5[39m credits to user: k17xxxxxxxxxxxxxxxxxxxxxxxx
 
             </system-out>
         </testcase>
