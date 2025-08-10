@@ -8,3 +8,4 @@
 - Rebrand Clerk app (logo/name)
 - Clerk: configure webhook and SSO connections
 - Update landing page texts
+- Customize the "delete my data" mutations/queries and texts
