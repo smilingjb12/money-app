@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="0.0537246">
-    <testsuite name="convex/users.test.ts" timestamp="2025-07-20T22:03:53.220Z" hostname="BESTPC" tests="5" failures="0" errors="0" skipped="0" time="0.0537246">
-        <testcase classname="convex/users.test.ts" name="should get current user" time="0.0398805">
+<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="0.0410977">
+    <testsuite name="convex/users.test.ts" timestamp="2025-08-10T21:03:17.259Z" hostname="BESTPC" tests="5" failures="0" errors="0" skipped="0" time="0.0410977">
+        <testcase classname="convex/users.test.ts" name="should get current user" time="0.0337669">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should get available credits for authenticated user" time="0.0018231">
+        <testcase classname="convex/users.test.ts" name="should get available credits for authenticated user" time="0.0011875">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should return default credits for unauthenticated user" time="0.0012379">
+        <testcase classname="convex/users.test.ts" name="should return default credits for unauthenticated user" time="0.0005014">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should add credits to a user" time="0.0072793">
+        <testcase classname="convex/users.test.ts" name="should add credits to a user" time="0.0034416">
             <system-out>
 Adding [33m5[39m credits to user: 10000;users
 
             </system-out>
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should throw error when adding credits to non-existent user" time="0.0017476">
+        <testcase classname="convex/users.test.ts" name="should throw error when adding credits to non-existent user" time="0.0014646">
             <system-out>
 Adding [33m5[39m credits to user: k17xxxxxxxxxxxxxxxxxxxxxxxx
 

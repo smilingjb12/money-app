@@ -16,7 +16,7 @@ export const getFileUrl = query({
   args: {
     fileId: v.id("_storage"),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<string | null> => {
     return await FileService.getFileUrl(ctx, args);
   },
 });

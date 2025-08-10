@@ -20,7 +20,13 @@ export const getImage = query({
   args: {
     imageId: v.id("images"),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{
+    _id: Id<"images">;
+    uploaderUserId: Id<"users">;
+    title: string;
+    fileId: string;
+    _creationTime: number;
+  } | null> => {
     // [AllowAnonymous]
     return await ImageService.getImage(ctx, args.imageId);
   },
@@ -28,7 +34,18 @@ export const getImage = query({
 
 export const getCollectionImages = query({
   args: { paginationOpts: paginationOptsValidator },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{
+    page: {
+      _id: Id<"images">;
+      uploaderUserId: Id<"users">;
+      title: string;
+      fileId: string;
+      _creationTime: number;
+      imageUrl: string | null;
+    }[];
+    isDone: boolean;
+    continueCursor: string;
+  }> => {
     await requireAuthentication(ctx);
     return await ImageService.getCollectionImages(ctx, args);
   },

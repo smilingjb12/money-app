@@ -6,7 +6,7 @@ import { StripeService } from "./services/stripe.service";
 
 export const pay = action({
   args: { stripePriceId: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<string | null> => {
     // [AllowAnonymous]
     return await StripeService.pay(ctx, args);
   },

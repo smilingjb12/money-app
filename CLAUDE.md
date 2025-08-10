@@ -136,10 +136,10 @@ Located in `convex/schema.ts`:
 - `lib/` - Utility functions and route definitions
 
 ### Backend (`convex/`)
-- `services/` - Business logic layer
-- `lib/` - Shared utilities and environment validation
+- `services/` - Business logic layer (all database operations should be implemented here)
+- `lib/` - Shared utilities, environment validation, and authentication helpers
 - `_generated/` - Auto-generated Convex types (do not edit)
-- Root files: API endpoints and cron jobs
+- Root files: API endpoints and cron jobs (should delegate to services)
 
 ## UI Component System
 
@@ -185,6 +185,10 @@ Located in `convex/schema.ts`:
 - **No React Server Components**: All data fetching is client-side using Convex hooks
 - **Client-side Data Flow**: Use `useQuery` and `useMutation` hooks for all data operations
 - **Service Layer**: Business logic organized in `convex/services/` directory
+- **Service Delegation**: All queries/mutations/actions should delegate implementation to respective services
+- **Authentication Helper**: Use `requireAuthentication()` from `convex/lib/helpers.ts` for authenticated endpoints
+- **Internal Functions**: All internal mutations/queries should have underscore prefix (e.g., `_exampleOfInternalMutation`)
+- **Return Types Required**: All queries, mutations, and actions must include explicit return types in their handler functions (e.g., `handler: async (ctx, args): Promise<ReturnType> => {}`). This improves type safety and makes the API contract clear.
 - **TypeScript Strict**: Both frontend and Convex use strict TypeScript configuration
 
 ### Code Style Preferences
