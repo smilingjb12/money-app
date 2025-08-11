@@ -4,7 +4,13 @@
       "WebFetch(domain:labs.convex.dev)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(npx convex env:*)"
+      "Bash(npx convex env:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "WebFetch(domain:stack.convex.dev)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

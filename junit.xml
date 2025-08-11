@@ -1,23 +1,125 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="0.0410977">
-    <testsuite name="convex/users.test.ts" timestamp="2025-08-10T21:03:17.259Z" hostname="BESTPC" tests="5" failures="0" errors="0" skipped="0" time="0.0410977">
-        <testcase classname="convex/users.test.ts" name="should get current user" time="0.0337669">
+<testsuites name="vitest tests" tests="54" failures="0" errors="0" time="2.898163">
+    <testsuite name="src/app/legal/refund-policy/page.test.tsx" timestamp="2025-08-11T01:59:52.674Z" hostname="BESTPC" tests="7" failures="0" errors="0" skipped="0" time="0.323927">
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should render the page with non-empty content" time="0.1665135">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should get available credits for authenticated user" time="0.0011875">
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should display last updated date" time="0.0088162">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should return default credits for unauthenticated user" time="0.0005014">
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should contain all major sections" time="0.0626732">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should add credits to a user" time="0.0034416">
-            <system-out>
-Adding [33m5[39m credits to user: 10000;users
-
-            </system-out>
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should contain substantial text content" time="0.0101517">
         </testcase>
-        <testcase classname="convex/users.test.ts" name="should throw error when adding credits to non-existent user" time="0.0014646">
-            <system-out>
-Adding [33m5[39m credits to user: k17xxxxxxxxxxxxxxxxxxxxxxxx
-
-            </system-out>
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should have proper page structure with container and article" time="0.0195682">
+        </testcase>
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should contain contact email link" time="0.0178861">
+        </testcase>
+        <testcase classname="src/app/legal/refund-policy/page.test.tsx" name="Refund Policy Page &gt; should use consistent styling with other legal pages" time="0.0355745">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/footer.test.tsx" timestamp="2025-08-11T01:59:52.677Z" hostname="BESTPC" tests="11" failures="0" errors="0" skipped="0" time="0.5760448">
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should display all legal navigation links" time="0.3004117">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should have correct href attributes for legal links" time="0.0497589">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should display app logo and name" time="0.0305831">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should display Legal section heading" time="0.019199">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should display Support section with contact email" time="0.0274864">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should display copyright text with current year" time="0.0218296">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should apply correct CSS classes for styling" time="0.0226419">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; should have proper link hover styles" time="0.022891">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; Accessibility &gt; should have semantic footer element" time="0.0129066">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; Accessibility &gt; should have proper heading hierarchy" time="0.0157406">
+        </testcase>
+        <testcase classname="src/app/footer.test.tsx" name="Footer Component &gt; Accessibility &gt; should have accessible navigation for legal links" time="0.0473984">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/legal/privacy-policy/page.test.tsx" timestamp="2025-08-11T01:59:52.683Z" hostname="BESTPC" tests="6" failures="0" errors="0" skipped="0" time="0.2392785">
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should render the page with non-empty content" time="0.1551443">
+        </testcase>
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should display last updated date" time="0.0107738">
+        </testcase>
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should contain all major sections" time="0.0294713">
+        </testcase>
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should contain substantial text content" time="0.0149846">
+        </testcase>
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should have proper page structure with container and article" time="0.0161036">
+        </testcase>
+        <testcase classname="src/app/legal/privacy-policy/page.test.tsx" name="Privacy Policy Page &gt; should contain contact email link" time="0.0106319">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/page.test.tsx" timestamp="2025-08-11T01:59:52.686Z" hostname="BESTPC" tests="13" failures="0" errors="0" skipped="2" time="0.8729165">
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Unauthenticated State &gt; should display &apos;Get Started Now&apos; button that triggers sign in" time="0.229541">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Unauthenticated State &gt; should display &apos;Start Free Trial&apos; button in final CTA section" time="0.1216896">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Unauthenticated State &gt; should display &apos;Get Started&apos; button in pricing section" time="0.0498361">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Unauthenticated State &gt; should not display authenticated-only content" time="0.0628484">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Authenticated State &gt; should currently still show &apos;Get Started Now&apos; button (not yet implemented to show &apos;Go to Dashboard&apos;)" time="0.0666094">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Authenticated State &gt; should currently still show sign-in button instead of &apos;Go to Dashboard&apos; (not yet implemented)" time="0.0746313">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Authenticated State &gt; should display &apos;Sign in to start&apos; button in pricing section when authenticated" time="0.0520896">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Authenticated State &gt; FUTURE: should display &apos;Go to Dashboard&apos; button in hero section when authenticated" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Authenticated State &gt; FUTURE: should display &apos;Go to Dashboard&apos; button in final CTA when authenticated" time="0">
+            <skipped/>
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Common Elements &gt; should always display Contact Sales button" time="0.0315864">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Common Elements &gt; should display upgrade buttons in pricing section" time="0.0360741">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Common Elements &gt; should display main heading with business tagline" time="0.1128935">
+        </testcase>
+        <testcase classname="src/app/page.test.tsx" name="Landing Page &gt; Common Elements &gt; should display feature sections" time="0.0299934">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/legal/terms-of-service/page.test.tsx" timestamp="2025-08-11T01:59:52.689Z" hostname="BESTPC" tests="6" failures="0" errors="0" skipped="0" time="0.2824126">
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should render the page with non-empty content" time="0.1596717">
+        </testcase>
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should display last updated date" time="0.0106758">
+        </testcase>
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should contain all major sections" time="0.0613128">
+        </testcase>
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should contain substantial text content" time="0.0065977">
+        </testcase>
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should have proper page structure with container and article" time="0.027481">
+        </testcase>
+        <testcase classname="src/app/legal/terms-of-service/page.test.tsx" name="Terms of Service Page &gt; should contain contact email link" time="0.0138392">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/app/header.test.tsx" timestamp="2025-08-11T01:59:52.691Z" hostname="BESTPC" tests="11" failures="0" errors="0" skipped="0" time="0.6035836">
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Unauthenticated State &gt; should display Sign In and Sign Up buttons when user is not authenticated" time="0.1503613">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Unauthenticated State &gt; should call signIn when Sign In button is clicked" time="0.0199441">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Unauthenticated State &gt; should call signIn when Sign Up button is clicked" time="0.00846">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Unauthenticated State &gt; should not show navigation links when unauthenticated" time="0.0099938">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Unauthenticated State &gt; should show mobile menu with Sign In/Sign Up when hamburger menu is clicked" time="0.2064374">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Authenticated State &gt; should display Dashboard button when user is authenticated" time="0.0458221">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Authenticated State &gt; should display credits when user is authenticated" time="0.0174781">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Authenticated State &gt; should display navigation links when user is authenticated" time="0.0108686">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Authenticated State &gt; should show mobile menu with authenticated content when hamburger menu is clicked" time="0.0430511">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Authenticated State &gt; should call signOut when Sign Out button in mobile menu is clicked" time="0.0398013">
+        </testcase>
+        <testcase classname="src/app/header.test.tsx" name="Header Component &gt; Mobile Menu Toggle &gt; should toggle mobile menu visibility when hamburger button is clicked" time="0.0474279">
         </testcase>
     </testsuite>
 </testsuites>

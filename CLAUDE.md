@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` - Start Next.js development server with Turbopack
 - `npm run build` - Build production version
 - `npm run lint` - Lint both Next.js app and Convex functions (`--dir . --dir convex`)
-- `npm run test` - Run tests in watch mode with Vitest
-- `npm run test:once` - Run tests once and exit
+- `npm run test:once` - Run tests once and exit (preferred for CI/automated testing)
+- `npm run test` - Run tests in watch mode with Vitest (development only)
 
 ### Convex Backend
 - `npx convex dev` - Start Convex development environment, watch for changes, deploy functions
@@ -21,8 +21,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run stripe:trigger` - Trigger test payment events
 
 ### Testing Specific Files
-- `npm run test convex/users.test.ts` - Run specific Convex test file
-- `npm run test src/components/` - Run tests for specific directory
+- `npm run test:once convex/users.test.ts` - Run specific Convex test file
+- `npm run test:once src/components/` - Run tests for specific directory
 
 ### Custom Claude Code Commands
 - `/build-fix` - Run npm run build and automatically fix any TypeScript or build errors
@@ -176,7 +176,7 @@ Located in `convex/schema.ts`:
 - **Pipeline Steps**: 
   1. `npm ci` - Install dependencies
   2. `npm run lint` - Lint Next.js and Convex code
-  3. `npm test` - Run Vitest tests with JUnit reporting
+  3. `npm run test:once` - Run Vitest tests with JUnit reporting
 - **Test Output**: JUnit XML results for CI integration
 
 ## Development Guidelines
