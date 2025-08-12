@@ -2,9 +2,17 @@ import { Routes } from "@/lib/routes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Authenticated, useConvexAuth } from "convex/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function NavigationLinks() {
   const { isLoading } = useConvexAuth();
+  const pathname = usePathname();
+
+  const navigationItems = [
+    { href: Routes.collection(), label: "Collection" },
+    { href: Routes.create(), label: "Create" },
+  ];
 
   return (
     <div className="hidden md:flex md:items-center md:ml-20 lg:ml-20">
@@ -16,18 +24,18 @@ export function NavigationLinks() {
           </div>
         ) : (
           <Authenticated>
-            <Link
-              href={Routes.collection()}
-              className="hover:text-primary text-foreground transition-colors duration-100"
-            >
-              Collection
-            </Link>
-            <Link
-              href={Routes.create()}
-              className="hover:text-primary text-foreground transition-colors duration-100"
-            >
-              Create
-            </Link>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "hover:text-muted-foreground text-foreground transition-colors duration-100 py-2 px-3 border-b-2 border-transparent",
+                  pathname === item.href && "border-foreground"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </Authenticated>
         )}
       </div>
