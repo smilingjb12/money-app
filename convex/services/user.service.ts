@@ -6,9 +6,14 @@ import { convexEnv } from "../lib/convexEnv";
 
 export const UserService = {
   async decrementCredits(ctx: MutationCtx) {
-    const user = await UserService.ensureUserExists(ctx);
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Not authenticated");
+
+    const user = await ctx.db.get(userId);
+    if (!user) throw new ConvexError("User not found");
+
     const currentCredits = user.credits ?? Number(convexEnv.DEFAULT_CREDITS);
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(userId, {
       credits: currentCredits - 1,
     });
   },
@@ -28,25 +33,6 @@ export const UserService = {
     return await ctx.db.get(userId);
   },
 
-  async ensureUserExists(ctx: MutationCtx): Promise<Doc<"users">> {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new ConvexError("Not authenticated");
-
-    const user = await ctx.db.get(userId);
-    if (!user) throw new ConvexError("User not found");
-
-    // Initialize credits if not set
-    if (user.credits === undefined) {
-      await ctx.db.patch(userId, {
-        credits: Number(convexEnv.DEFAULT_CREDITS),
-      });
-      const updatedUser = await ctx.db.get(userId);
-      if (!updatedUser) throw new ConvexError("Failed to update user credits");
-      return updatedUser;
-    }
-
-    return user;
-  },
 
   async addCredits(
     ctx: MutationCtx,

@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { requireAuthentication } from "./lib/helpers";
 import { UserService } from "./services/user.service";
-import { Doc, Id } from "./_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 
 /**
  * GDPR Article 17 - Right to Erasure Implementation
@@ -25,7 +25,9 @@ import { Doc, Id } from "./_generated/dataModel";
 
 export const deleteUserData = mutation({
   args: {},
-  handler: async (ctx): Promise<{
+  handler: async (
+    ctx
+  ): Promise<{
     success: boolean;
     deletedImages: number;
     message: string;
@@ -40,7 +42,9 @@ export const deleteUserData = mutation({
  */
 export const getDataDeletionSummary = query({
   args: {},
-  handler: async (ctx): Promise<{
+  handler: async (
+    ctx
+  ): Promise<{
     personalDataFields: {
       name: boolean;
       email: boolean;
@@ -71,6 +75,7 @@ export const getCurrentUser = query({
 export const getAvailableCredits = query({
   args: {},
   handler: async (ctx): Promise<number> => {
+    // [AllowAnonymous]
     return await UserService.getAvailableCredits(ctx);
   },
 });

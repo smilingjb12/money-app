@@ -1,13 +1,11 @@
 import { MutationCtx } from "../_generated/server";
 
 import { ConvexError } from "convex/values";
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { Id } from "../_generated/dataModel";
 import { QueryCtx } from "../_generated/server";
 import { ensureUploadSizeIsNotExceeded, requireAuthentication } from "../lib/helpers";
 import { rateLimitActivity } from "../lib/rateLimits";
 import { UserService } from "./user.service";
-import { convexEnv } from "../lib/convexEnv";
 
 export const ImageService = {
   async getImage(ctx: QueryCtx, imageId: Id<"images">) {
@@ -50,14 +48,12 @@ export const ImageService = {
 
   async uploadImage(ctx: MutationCtx, args: { fileId: string; title: string }) {
     console.log("Creating poll with args:", args);
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new ConvexError("Not authenticated");
+    const userId = await requireAuthentication(ctx);
     
     await rateLimitActivity(ctx, userId);
     await ensureUploadSizeIsNotExceeded(ctx, args.fileId);
     
-    const user = await UserService.ensureUserExists(ctx);
-    const currentCredits = user.credits ?? Number(convexEnv.DEFAULT_CREDITS);
+    const currentCredits = await UserService.getAvailableCredits(ctx);
     if (currentCredits - 1 < 0) {
       throw new ConvexError("Not enough credits to create new test");
     }

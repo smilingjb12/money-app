@@ -1,16 +1,31 @@
 import { ConvexError } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { Id } from "../_generated/dataModel";
+import { Id, Doc } from "../_generated/dataModel";
 import { QueryCtx } from "../_generated/server";
 import { UserService } from "../services/user.service";
 import { convexEnv } from "./convexEnv";
 
+export type UserRole = NonNullable<Doc<"users">["role"]>;
+
+export function getUserRole(user: Doc<"users">): UserRole {
+  return user.role ?? "user";
+}
+
+
 export async function requireAuthentication(
-  ctx: QueryCtx
+  ctx: QueryCtx,
+  requiredRole: UserRole = "user"
 ): Promise<Id<"users">> {
   const userId = await getAuthUserId(ctx);
   if (!userId) {
     throw new ConvexError("Unauthorized");
+  }
+
+  if (requiredRole === "admin") {
+    const user = await ctx.db.get(userId);
+    if (!user || getUserRole(user) !== "admin") {
+      throw new ConvexError("Insufficient permissions - admin access required");
+    }
   }
 
   return userId;

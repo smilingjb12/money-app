@@ -9,13 +9,17 @@ import { Authenticated, Unauthenticated } from "convex/react";
 import { ArrowRight, CheckCircle, Star, Users, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { signIn } = useAuthActions();
+  const router = useRouter();
 
   const signInWithGoogle = async () => {
     try {
       await signIn("google");
+      // After successful sign-in, redirect to dashboard
+      router.push(Routes.dashboard());
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
@@ -41,7 +45,7 @@ export default function Home() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Authenticated>
                     <Button asChild size="lg" className="text-lg px-8">
-                      <Link href={Routes.collection()}>
+                      <Link href={Routes.dashboard()}>
                         Get Started Now
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
@@ -414,7 +418,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Authenticated>
                 <Button asChild size="lg" className="text-lg px-8">
-                  <Link href={Routes.collection()}>
+                  <Link href={Routes.dashboard()}>
                     Go to Dashboard
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>

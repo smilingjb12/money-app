@@ -196,6 +196,7 @@ Located in `convex/schema.ts`:
 - **Components**: Keep small and focused on single responsibility
 - **Latest Features**: Prefer using latest language features and library versions
 - **Tailwind**: Always use theme variables (`text-foreground`, `bg-background`, `text-muted-foreground`, `text-destructive`, etc.) instead of hardcoded colors. Never use hardcoded color values like `text-gray-500`, `bg-white`, `text-red-500` - use semantic theme variables for consistent theming across light/dark modes
+- **TypeScript Types**: Avoid `any` type as much as possible - only use when absolutely necessary. Prefer specific types, union types, `unknown`, or generic types. Use type utilities like `Partial<T>`, `Pick<T, K>`, `Omit<T, K>` for precise typing
 
 ## Important Notes
 

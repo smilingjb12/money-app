@@ -15,6 +15,7 @@ export default defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
     credits: v.optional(v.number()),
+    role: v.optional(v.union(v.literal("user"), v.literal("admin"))),
   }).index("email", ["email"]),
   images: defineTable({
     title: v.string(),

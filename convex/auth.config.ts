@@ -1,6 +1,6 @@
 import { convexEnv } from "./lib/convexEnv";
 
-export default {
+const authConfig = {
   providers: [
     {
       domain: convexEnv.CONVEX_SITE_URL,
@@ -8,3 +8,5 @@ export default {
     },
   ],
 };
+
+export default authConfig;
