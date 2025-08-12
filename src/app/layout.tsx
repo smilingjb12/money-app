@@ -8,6 +8,7 @@ import ScrollToTop from "@/components/scroll-to-top";
 import { Constants } from "@/constants";
 import NextTopLoader from "nextjs-toploader";
 import { ConditionalFooter } from "./conditional-footer";
+import { PrivacyBanner } from "@/components/privacy-banner";
 
 export const metadata: Metadata = {
   title: {
@@ -113,6 +114,7 @@ export default function RootLayout({
             {children}
           </div>
           <ConditionalFooter />
+          <PrivacyBanner />
           <Toaster />
         </Providers>
       </body>
