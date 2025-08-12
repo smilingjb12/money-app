@@ -25,4 +25,7 @@ export const Routes = {
   termsOfService() {
     return "/legal/terms-of-service";
   },
+  showcase() {
+    return "/showcase";
+  },
 };
