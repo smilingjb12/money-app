@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Constants } from "@/constants";
 import { Routes } from "@/lib/routes";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { Authenticated, Unauthenticated } from "convex/react";
+import { useConvexAuth } from "convex/react";
 import { ArrowRight, CheckCircle, Star, Users, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,15 +13,20 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const { signIn } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
   const router = useRouter();
 
-  const signInWithGoogle = async () => {
-    try {
-      await signIn("google");
-      // After successful sign-in, redirect to dashboard
+  const handleGetStarted = async () => {
+    if (isAuthenticated) {
       router.push(Routes.dashboard());
-    } catch (error) {
-      console.error("Error signing in with Google:", error);
+    } else {
+      try {
+        await signIn("google");
+        // After successful sign-in, redirect to dashboard
+        router.push(Routes.dashboard());
+      } catch (error) {
+        console.error("Error signing in with Google:", error);
+      }
     }
   };
 
@@ -41,25 +46,19 @@ export default function Home() {
                     {Constants.BUSINESS.VALUE_PROPOSITION}
                   </p>
                 </div>
-                
+
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Authenticated>
-                    <Button asChild size="lg" className="text-lg px-8">
-                      <Link href={Routes.dashboard()}>
-                        Get Started Now
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Link>
-                    </Button>
-                  </Authenticated>
-                  <Unauthenticated>
-                    <Button onClick={() => void signInWithGoogle()} size="lg" className="text-lg px-8">
-                      Get Started Now
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Unauthenticated>
+                  <Button
+                    onClick={() => void handleGetStarted()}
+                    size="lg"
+                    className="text-lg px-8"
+                  >
+                    Get Started Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
                 </div>
               </div>
-              
+
               <div className="relative">
                 <Image
                   src="/landing.png"
@@ -87,7 +86,7 @@ export default function Home() {
                 Powerful features designed to help you work smarter, not harder
               </p>
             </div>
-            
+
             <div className="space-y-24">
               {/* Feature 1 - Image Left */}
               <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -192,22 +191,30 @@ export default function Home() {
                 Choose the perfect plan for your needs
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-8">
               <Card className="border-border flex flex-col">
                 <CardContent className="p-8 flex flex-col flex-1">
                   <div className="text-center flex flex-col flex-1">
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Starter</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                      Starter
+                    </h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-foreground">$0</span>
+                      <span className="text-4xl font-bold text-foreground">
+                        $0
+                      </span>
                       <span className="text-muted-foreground">/month</span>
                     </div>
-                    <p className="text-muted-foreground mb-6">Perfect for trying out the platform</p>
-                    
+                    <p className="text-muted-foreground mb-6">
+                      Perfect for trying out the platform
+                    </p>
+
                     <div className="space-y-3 mb-8 flex-1">
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Up to 3 projects</span>
+                        <span className="text-foreground">
+                          Up to 3 projects
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
@@ -215,26 +222,25 @@ export default function Home() {
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Community support</span>
+                        <span className="text-foreground">
+                          Community support
+                        </span>
                       </div>
                     </div>
-                    
+
                     <div className="mt-auto">
-                      <Unauthenticated>
-                        <Button onClick={() => void signInWithGoogle()} className="w-full" variant="outline">
-                          Get Started
-                        </Button>
-                      </Unauthenticated>
-                      <Authenticated>
-                        <Button onClick={() => void signInWithGoogle()} className="w-full" variant="outline">
-                          Sign in to start
-                        </Button>
-                      </Authenticated>
+                      <Button
+                        onClick={() => void handleGetStarted()}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        {isAuthenticated ? "Go to Dashboard" : "Get Started"}
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-primary shadow-lg relative flex flex-col">
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
@@ -243,32 +249,46 @@ export default function Home() {
                 </div>
                 <CardContent className="p-8 flex flex-col flex-1">
                   <div className="text-center flex flex-col flex-1">
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Professional</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                      Professional
+                    </h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-foreground">$29</span>
+                      <span className="text-4xl font-bold text-foreground">
+                        $29
+                      </span>
                       <span className="text-muted-foreground">/month</span>
                     </div>
-                    <p className="text-muted-foreground mb-6">For growing teams and businesses</p>
-                    
+                    <p className="text-muted-foreground mb-6">
+                      For growing teams and businesses
+                    </p>
+
                     <div className="space-y-3 mb-8 flex-1">
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Unlimited projects</span>
+                        <span className="text-foreground">
+                          Unlimited projects
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Advanced features</span>
+                        <span className="text-foreground">
+                          Advanced features
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Priority support</span>
+                        <span className="text-foreground">
+                          Priority support
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Team collaboration</span>
+                        <span className="text-foreground">
+                          Team collaboration
+                        </span>
                       </div>
                     </div>
-                    
+
                     <div className="mt-auto">
                       <Button asChild className="w-full">
                         <Link href={Routes.upgrade()}>Upgrade Now</Link>
@@ -277,36 +297,50 @@ export default function Home() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-border flex flex-col">
                 <CardContent className="p-8 flex flex-col flex-1">
                   <div className="text-center flex flex-col flex-1">
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Enterprise</h3>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                      Enterprise
+                    </h3>
                     <div className="mb-4">
-                      <span className="text-4xl font-bold text-foreground">$99</span>
+                      <span className="text-4xl font-bold text-foreground">
+                        $99
+                      </span>
                       <span className="text-muted-foreground">/month</span>
                     </div>
-                    <p className="text-muted-foreground mb-6">For large organizations</p>
-                    
+                    <p className="text-muted-foreground mb-6">
+                      For large organizations
+                    </p>
+
                     <div className="space-y-3 mb-8 flex-1">
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Everything in Professional</span>
+                        <span className="text-foreground">
+                          Everything in Professional
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Custom integrations</span>
+                        <span className="text-foreground">
+                          Custom integrations
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Dedicated support</span>
+                        <span className="text-foreground">
+                          Dedicated support
+                        </span>
                       </div>
                       <div className="flex items-center">
                         <CheckCircle className="h-5 w-5 text-primary mr-3" />
-                        <span className="text-foreground">Advanced security</span>
+                        <span className="text-foreground">
+                          Advanced security
+                        </span>
                       </div>
                     </div>
-                    
+
                     <div className="mt-auto">
                       <Button asChild className="w-full" variant="outline">
                         <Link href={Routes.upgrade()}>Upgrade Now</Link>
@@ -332,69 +366,94 @@ export default function Home() {
                 See what our customers have to say
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-8">
               <Card className="border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-5 w-5 text-yellow-500 fill-current"
+                      />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    &quot;This platform has completely transformed how we manage our projects. The collaboration features are incredible.&quot;
+                    &quot;This platform has completely transformed how we manage
+                    our projects. The collaboration features are
+                    incredible.&quot;
                   </p>
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Sarah Johnson</div>
-                      <div className="text-sm text-muted-foreground">Product Manager</div>
+                      <div className="font-semibold text-foreground">
+                        Sarah Johnson
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Product Manager
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-5 w-5 text-yellow-500 fill-current"
+                      />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    &quot;The analytics features help us make better decisions. We&apos;ve seen a 40% improvement in productivity.&quot;
+                    &quot;The analytics features help us make better decisions.
+                    We&apos;ve seen a 40% improvement in productivity.&quot;
                   </p>
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Mike Chen</div>
-                      <div className="text-sm text-muted-foreground">Tech Lead</div>
+                      <div className="font-semibold text-foreground">
+                        Mike Chen
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Tech Lead
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star key={i} className="h-5 w-5 text-yellow-500 fill-current" />
+                      <Star
+                        key={i}
+                        className="h-5 w-5 text-yellow-500 fill-current"
+                      />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    &quot;Simple, fast, and reliable. Everything we needed in one place. Highly recommend to any team.&quot;
+                    &quot;Simple, fast, and reliable. Everything we needed in
+                    one place. Highly recommend to any team.&quot;
                   </p>
                   <div className="flex items-center">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-semibold text-foreground">Emily Davis</div>
-                      <div className="text-sm text-muted-foreground">Startup Founder</div>
+                      <div className="font-semibold text-foreground">
+                        Emily Davis
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Startup Founder
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -412,24 +471,19 @@ export default function Home() {
               Ready to get started?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join thousands of teams already using {Constants.APP_NAME} to streamline their workflow
+              Join thousands of teams already using {Constants.APP_NAME} to
+              streamline their workflow
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Authenticated>
-                <Button asChild size="lg" className="text-lg px-8">
-                  <Link href={Routes.dashboard()}>
-                    Go to Dashboard
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-              </Authenticated>
-              <Unauthenticated>
-                <Button onClick={() => void signInWithGoogle()} size="lg" className="text-lg px-8">
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Unauthenticated>
+              <Button
+                onClick={() => void handleGetStarted()}
+                size="lg"
+                className="text-lg px-8"
+              >
+                {isAuthenticated ? "Go to Dashboard" : "Start Free Trial"}
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Button variant="outline" size="lg" className="text-lg px-8">
                 Contact Sales
               </Button>

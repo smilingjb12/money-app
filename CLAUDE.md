@@ -155,6 +155,8 @@ Located in `convex/schema.ts`:
 - **Colocation**: New components should be created next to their parent component
 - **Mobile-first**: Follow mobile-first responsive design patterns
 - **Class Merging**: Use `cn()` utility for conditional class name merging
+- **Self-Contained Components**: All newly created components should ideally be self-contained with minimal to no passed-in props. Since Convex queries are cached by default, multiple components can safely use the same query with identical parameters without negative performance impact. This promotes better component isolation and reduces prop drilling.
+- **Skeleton Encapsulation**: If a component requires a loading skeleton, the skeleton should be encapsulated within the component itself rather than conditionally rendered by parent components. Components should handle their own loading states internally, making them fully self-contained and reducing complexity in parent components.
 
 ### Theming Guidelines
 - **Theme Variables**: Always use CSS custom properties defined in `globals.css` via Tailwind theme variables
@@ -206,3 +208,4 @@ Located in `convex/schema.ts`:
 - **File deduplication**: Files are deduplicated by SHA256 hash to save storage costs
 - **Real-time updates**: Convex provides automatic real-time updates to React components
 - **TypeScript strict mode**: Both frontend and backend use strict TypeScript configuration
+- **Post-completion validation**: After completing all todos, always run `npm run lint` and `npm run build` to ensure code quality and verify no TypeScript or build errors were introduced
