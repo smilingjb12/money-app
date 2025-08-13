@@ -21,9 +21,7 @@ export default function Home() {
       router.push(Routes.dashboard());
     } else {
       try {
-        await signIn("google");
-        // After successful sign-in, redirect to dashboard
-        router.push(Routes.dashboard());
+        await signIn("google", { redirectTo: Routes.dashboard() });
       } catch (error) {
         console.error("Error signing in with Google:", error);
       }

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/lib/routes";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useRouter } from "next/navigation";
 
 interface AuthButtonsProps {
   variant?: "desktop" | "mobile";
@@ -13,16 +12,13 @@ export function AuthButtons({
   onToggleMenu,
 }: AuthButtonsProps) {
   const { signIn } = useAuthActions();
-  const router = useRouter();
 
   const handleSignIn = async () => {
     try {
-      await signIn("google");
+      await signIn("google", { redirectTo: Routes.dashboard() });
       if (onToggleMenu) {
         onToggleMenu();
       }
-      // Redirect to dashboard after successful sign in
-      router.push(Routes.dashboard());
     } catch (error) {
       console.error("Error signing in with Google:", error);
     }
