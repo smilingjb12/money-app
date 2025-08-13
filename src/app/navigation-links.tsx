@@ -29,7 +29,7 @@ export function NavigationLinks() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "hover:text-muted-foreground text-foreground transition-colors duration-100 py-2 px-3 border-b-2 border-transparent",
+                  "text-foreground transition-colors duration-100 py-2 px-3 border-b-2 border-transparent hover:border-foreground",
                   pathname === item.href && "border-foreground"
                 )}
               >
