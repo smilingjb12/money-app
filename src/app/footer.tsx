@@ -11,8 +11,8 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-background py-12 border-t border-border">
-      <div className="container mx-auto px-4">
+    <footer className="bg-background/60 backdrop-blur py-12 border-t border-border/70">
+      <div className="container mx-auto px-4 max-w-6xl">
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="md:col-span-2">
@@ -63,3 +63,4 @@ export function Footer() {
     </footer>
   );
 }
+

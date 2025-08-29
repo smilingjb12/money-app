@@ -29,7 +29,15 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className="relative bg-background bg-radial-fade min-h-screen">
+      {/* Subtle animated glow background */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="animated-glow glow-primary w-[42rem] h-[42rem] -top-40 -left-40" />
+        <div
+          className="animated-glow glow-accent w-[36rem] h-[36rem] -bottom-32 -right-24"
+          style={{ animationDelay: "1.8s" }}
+        />
+      </div>
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto px-4 py-0 md:py-0">
@@ -63,7 +71,7 @@ export default function Home() {
                   alt="Platform Dashboard Preview"
                   width={600}
                   height={400}
-                  className="rounded-lg shadow-2xl border border-border"
+                  className="rounded-xl shadow-2xl border border-border/70"
                   priority
                 />
               </div>
@@ -73,7 +81,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -353,7 +361,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -370,11 +378,8 @@ export default function Home() {
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-500 fill-current"
-                      />
-                    ))}
+                      <Star key={i} className="h-5 w-5 text-warning fill-current" />
+                  ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
                     &quot;This platform has completely transformed how we manage
@@ -401,10 +406,7 @@ export default function Home() {
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-500 fill-current"
-                      />
+                      <Star key={i} className="h-5 w-5 text-warning fill-current" />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
@@ -431,10 +433,7 @@ export default function Home() {
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     {Array.from({ length: 5 }, (_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-500 fill-current"
-                      />
+                      <Star key={i} className="h-5 w-5 text-warning fill-current" />
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">

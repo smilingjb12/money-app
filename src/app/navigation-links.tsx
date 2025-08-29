@@ -16,7 +16,7 @@ export function NavigationLinks() {
 
   return (
     <div className="hidden md:flex md:items-center md:ml-20 lg:ml-20">
-      <div className="flex items-center md:gap-6 lg:gap-12 text-sm sm:text-base md:text-lg lg:text-lg font-medium">
+      <div className="flex items-center md:gap-6 lg:gap-8 text-sm sm:text-base md:text-base lg:text-lg font-medium">
         {isLoading ? (
           <div className="flex items-center md:gap-6 lg:gap-12">
             <Skeleton className="h-6 w-20" />
@@ -29,8 +29,8 @@ export function NavigationLinks() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-foreground transition-colors duration-100 py-2 px-3 border-b-2 border-transparent hover:border-foreground",
-                  pathname === item.href && "border-foreground"
+                  "text-foreground/90 hover:text-foreground px-3 py-1.5 rounded-md transition-colors hover:bg-accent/50",
+                  pathname === item.href && "bg-accent/60 text-accent-foreground"
                 )}
               >
                 {item.label}

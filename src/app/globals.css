@@ -43,6 +43,14 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  
+  /* Animation keyframes for ShadCN components */
+  --animate-in: fadeIn 0.2s ease-out;
+  --animate-out: fadeOut 0.2s ease-out;
+  --animate-spin: spin 1s linear infinite;
+  --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-bounce: bounce 1s infinite;
 }
 
 @utility container {
@@ -90,11 +98,198 @@
 }
 
 @layer utilities {
-  body {
-    font-family: Arial, Helvetica, sans-serif;
+  /* Selection + subtle utility tweaks */
+  .text-balance { text-wrap: balance; }
+}
+
+/* ShadCN Animation Utilities for Tailwind v4 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideInFromTop {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slideInFromBottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOutToTop {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+
+@keyframes slideOutToBottom {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes slideOutToLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes slideOutToRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+@keyframes zoomOut {
+  from { transform: scale(1); }
+  to { transform: scale(0.95); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
   }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* ShadCN Animation Utilities */
+@utility animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@utility animate-out {
+  animation: fadeOut 0.2s ease-out;
+}
+
+@utility fade-in-0 {
+  animation: fadeIn 0.15s ease-out;
+}
+
+@utility fade-out-0 {
+  animation: fadeOut 0.15s ease-out;
+}
+
+@utility fade-out-80 {
+  animation: fadeOut 0.15s ease-out;
+  opacity: 0.2;
+}
+
+@utility zoom-in-95 {
+  animation: zoomIn 0.15s ease-out;
+  transform-origin: center;
+}
+
+@utility zoom-out-95 {
+  animation: zoomOut 0.15s ease-out;
+  transform-origin: center;
+}
+
+@utility slide-in-from-top-full {
+  animation: slideInFromTop 0.2s ease-out;
+}
+
+@utility slide-in-from-bottom-full {
+  animation: slideInFromBottom 0.2s ease-out;
+}
+
+@utility slide-in-from-left-1/2 {
+  animation: slideInFromLeft 0.2s ease-out;
+  transform: translateX(-50%);
+}
+
+@utility slide-in-from-top-48% {
+  animation: slideInFromTop 0.2s ease-out;
+  transform: translateY(-48%);
+}
+
+@utility slide-out-to-left-1/2 {
+  animation: slideOutToLeft 0.2s ease-out;
+  transform: translateX(-50%);
+}
+
+@utility slide-out-to-top-48% {
+  animation: slideOutToTop 0.2s ease-out;
+  transform: translateY(-48%);
+}
+
+@utility slide-out-to-right-full {
+  animation: slideOutToRight 0.2s ease-out;
+}
+
+@utility slide-in-from-top-2 {
+  animation: slideInFromTop 0.15s ease-out;
+  transform: translateY(-8px);
+}
+
+@utility slide-in-from-bottom-2 {
+  animation: slideInFromBottom 0.15s ease-out;
+  transform: translateY(8px);
+}
+
+@utility slide-in-from-left-2 {
+  animation: slideInFromLeft 0.15s ease-out;
+  transform: translateX(-8px);
+}
+
+@utility slide-in-from-right-2 {
+  animation: slideInFromRight 0.15s ease-out;
+  transform: translateX(8px);
+}
+
+@utility animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@utility animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@utility animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility animate-bounce {
+  animation: bounce 1s infinite;
+}
 
 @layer base {
   :root {
@@ -164,5 +359,86 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html { scroll-behavior: smooth; }
+
+  /* Better text rendering */
+  body {
+    font-feature-settings: "rlig" 1, "calt" 1, "cv02" 1, "cv03" 1, "cv04" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.16);
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Decorative utility backgrounds (theme-aware) */
+@layer utilities {
+  .bg-grid {
+    background-image: linear-gradient(
+        to right,
+        hsl(var(--border) / 0.35) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--border) / 0.35) 1px,
+        transparent 1px
+      );
+    background-size: 28px 28px, 28px 28px;
+    mask-image: radial-gradient(circle at center, black 40%, transparent 70%);
+  }
+
+  .bg-radial-fade {
+    background-image: radial-gradient(
+      800px 400px at 50% -10%,
+      hsl(var(--primary) / 0.10),
+      transparent 70%
+    );
+  }
+
+  .glass {
+    background-color: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(12px);
+  }
+
+  /* Subtle animated glow utilities */
+  @keyframes float-glow {
+    from {
+      transform: translateY(0) scale(1);
+      opacity: 0.16;
+    }
+    to {
+      transform: translateY(-10px) scale(1.05);
+      opacity: 0.26;
+    }
+  }
+  .animated-glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    will-change: transform, opacity;
+    animation: float-glow 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animated-glow { animation: none; }
+  }
+  .glow-primary {
+    background: radial-gradient(
+      circle at center,
+      hsl(var(--primary) / 0.35),
+      transparent 70%
+    );
+  }
+  .glow-accent {
+    background: radial-gradient(
+      circle at center,
+      hsl(var(--accent) / 0.30),
+      transparent 70%
+    );
   }
 }

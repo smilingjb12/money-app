@@ -110,7 +110,7 @@ export default function RootLayout({
           />
           <ScrollToTop />
           <Header />
-          <div className="flex min-h-screen w-full flex-col py-32 px-6">
+          <div className="flex min-h-screen w-full flex-col pt-24">
             {children}
           </div>
           <ConditionalFooter />

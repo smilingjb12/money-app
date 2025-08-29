@@ -121,8 +121,8 @@ export function UploadZone(props: {
       className={
         props.className?.(combinedState) ??
         twMerge(
-          "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-900/25 dark:border-gray-200/25 px-6 py-10 text-center",
-          isDragActive && "bg-blue-600/10",
+          "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border/50 px-6 py-10 text-center",
+          isDragActive && "bg-primary/10",
           files.length === 0 && "py-[4.25rem]"
         )
       }
@@ -132,7 +132,7 @@ export function UploadZone(props: {
       <label
         htmlFor="file-upload"
         className={twMerge(
-          "relative text-primary mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500"
+          "relative text-primary mt-4 flex w-64 cursor-pointer items-center justify-center text-sm font-semibold leading-6 focus-within:outline-hidden focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-primary/90"
         )}
       >
         Choose files or drag and drop
@@ -144,7 +144,7 @@ export function UploadZone(props: {
       {props.subtitle !== undefined ? (
         <div
           className={twMerge(
-            "m-0 h-[1.25rem] text-xs leading-5 text-gray-600 dark:text-gray-500"
+            "m-0 h-[1.25rem] text-xs leading-5 text-muted-foreground"
           )}
         >
           {props.subtitle}
@@ -154,11 +154,11 @@ export function UploadZone(props: {
       {files.length > 0 ? (
         <button
           className={twMerge(
-            "relative mt-4 flex h-10 w-36 items-center justify-center overflow-hidden rounded-md text-white after:transition-[width] after:duration-500",
+            "relative mt-4 flex h-10 w-36 items-center justify-center overflow-hidden rounded-md text-primary-foreground after:transition-[width] after:duration-500",
             isUploading
-              ? `before:absolute before:-z-20 before:w-full before:h-full before:bg-blue-400 ` +
-                  `bg-blue-400 after:absolute after:-z-10 after:left-0 after:h-full after:bg-blue-600 ${progressWidths[uploadProgress]}`
-              : "bg-blue-600"
+              ? `before:absolute before:-z-20 before:w-full before:h-full before:bg-primary/70 ` +
+                  `bg-primary after:absolute after:-z-10 after:left-0 after:h-full after:bg-primary ${progressWidths[uploadProgress]}`
+              : "bg-primary"
           )}
           onClick={onUploadClick}
           disabled={isUploading}
