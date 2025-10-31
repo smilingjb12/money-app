@@ -63,7 +63,7 @@ Key services in `convex/services/`:
 2. **Google OAuth** configured in `convex/auth.ts` using `@auth/core/providers/google`
 3. **JWT validation** via `convex/auth.config.ts` for secure session management
 4. **Frontend hooks** use `useAuthActions`, `Authenticated`, `Unauthenticated` from `@convex-dev/auth/react`
-5. **Middleware** (`src/middleware.ts`) protects routes
+5. **Proxy** (`src/proxy.ts`) protects routes
 6. **User sync** automatic user creation on first authentication
 
 ### Credit-Based Payment System

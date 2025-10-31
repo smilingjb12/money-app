@@ -1,6 +1,6 @@
 - Stripe price Ids @stripe and @env
 - Rebrand /rate-limited page
-- Configure protected routes in middleware
+- Configure protected routes in proxy
 - Change favicon
 - Change APP_NAME
 - Change app header icon

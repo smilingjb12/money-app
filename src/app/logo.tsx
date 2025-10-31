@@ -4,12 +4,13 @@ import Link from "next/link";
 
 interface LogoProps {
   className?: string;
+  href?: string;
 }
 
-export function Logo({ className }: LogoProps) {
+export function Logo({ className, href = "/" }: LogoProps) {
   return (
     <Link
-      href="/"
+      href={href}
       className={`flex items-center gap-2 hover:text-primary transition-colors duration-150 ${className || ""}`}
     >
       <PackageIcon className="size-7 text-primary" />

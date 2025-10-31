@@ -48,15 +48,6 @@ export function UserSection({ variant = "desktop", onToggleMenu }: UserSectionPr
   if (variant === "mobile") {
     return (
       <>
-        <Button
-          asChild
-          className="bg-primary text-primary-foreground hover:bg-primary/90 w-full justify-center"
-        >
-          <Link href={Routes.collection()} onClick={onToggleMenu}>
-            Dashboard
-          </Link>
-        </Button>
-
         <Button variant="ghost" asChild>
           <Link
             href={Routes.collection()}
@@ -93,12 +84,6 @@ export function UserSection({ variant = "desktop", onToggleMenu }: UserSectionPr
 
   return (
     <>
-      <Button
-        asChild
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        <Link href={Routes.collection()}>Dashboard</Link>
-      </Button>
       <CreditsDisplay />
       <AvatarDropdown
         fullName={user?.name || ""}

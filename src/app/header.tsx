@@ -2,6 +2,7 @@
 
 import { useConvexAuth } from "convex/react";
 import { useState } from "react";
+import { Routes } from "@/lib/routes";
 import { AuthButtons } from "./auth-buttons";
 import { Logo } from "./logo";
 import { MobileMenuToggle } from "./mobile-menu-toggle";
@@ -20,7 +21,7 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 shadow-sm bg-background/60 backdrop-blur-lg border-b border-border/60">
       <nav className="container max-w-6xl flex h-16 w-full items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-12">
-          <Logo />
+          <Logo href={isAuthenticated ? Routes.collection() : "/"} />
           <NavigationLinks />
         </div>
         {/* Mobile actions (theme + menu) */}
