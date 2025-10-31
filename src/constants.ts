@@ -2,7 +2,7 @@ export const Constants = {
   APP_NAME: "FlowSpace",
   APP_DESCRIPTION_META: "Streamline your workflow, collaborate with your team, and manage projects efficiently with FlowSpace - the all-in-one SaaS platform for modern teams.",
   SUPPORT_EMAIL: "support@flowspace.app",
-  TOP_LOADER_COLOR: "hsl(var(--primary) / 0.6)",
+  TOP_LOADER_COLOR: "color-mix(in srgb, var(--color-primary) 60%, transparent)",
   STRIPE_API_VERSION: "2025-01-27.acacia" as const,
   
   // SEO Configuration

@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Routes } from "@/lib/routes";
+import { cn } from "@/lib/utils";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth, useQuery } from "convex/react";
 import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { api } from "../../convex/_generated/api";
 import { AvatarDropdown } from "./avatar-dropdown";
 import { CreditsDisplay } from "./credits-display";
@@ -18,6 +20,7 @@ export function UserSection({ variant = "desktop", onToggleMenu }: UserSectionPr
   const { signOut } = useAuthActions();
   const { isLoading } = useConvexAuth();
   const user = useQuery(api.users.getCurrentUser);
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     await signOut();
@@ -51,7 +54,10 @@ export function UserSection({ variant = "desktop", onToggleMenu }: UserSectionPr
         <Button variant="ghost" asChild>
           <Link
             href={Routes.collection()}
-            className="hover:text-primary text-foreground w-full"
+            className={cn(
+              "w-full text-foreground transition-colors hover:text-primary",
+              pathname === Routes.collection() && "text-primary"
+            )}
             onClick={onToggleMenu}
           >
             Collection
@@ -61,7 +67,10 @@ export function UserSection({ variant = "desktop", onToggleMenu }: UserSectionPr
         <Button variant="ghost" asChild>
           <Link
             href={Routes.create()}
-            className="hover:text-primary text-foreground w-full"
+            className={cn(
+              "w-full text-foreground transition-colors hover:text-primary",
+              pathname === Routes.create() && "text-primary"
+            )}
             onClick={onToggleMenu}
           >
             Create

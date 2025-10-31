@@ -29,8 +29,8 @@ export function NavigationLinks() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-foreground/90 hover:text-foreground px-3 py-1.5 rounded-md transition-colors hover:bg-accent/50",
-                  pathname === item.href && "bg-accent/60 text-accent-foreground"
+                  "relative px-3 pt-1 pb-2 text-foreground/80 transition-colors hover:text-foreground after:absolute after:left-0 after:right-0 after:bottom-0 after:h-[2px] after:bg-transparent after:content-['']",
+                  pathname === item.href && "text-foreground after:bg-primary"
                 )}
               >
                 {item.label}
